@@ -5,7 +5,7 @@
                 <button
                     onclick={() => onclick(path)}
                     data-path={path}
-                    class="breadcrumb"
+                    class="dropzone"
                 >
                     <span>{name}</span></button>
             {:else}

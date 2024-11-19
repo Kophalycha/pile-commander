@@ -61,30 +61,3 @@ interact('.dropzone').dropzone({
         event.relatedTarget.classList.remove('can-drop')
     }
 })
-interact('.breadcrumb').dropzone({
-    accept: '.widget',
-    ondropactivate: (event) => {
-        event.target.classList.add('drop-active')
-    },
-    ondragenter: (event) => {
-        event.target.classList.add('drop-target')
-        event.relatedTarget.classList.add('can-drop')
-    },
-    ondragleave: (event) => {
-        event.target.classList.remove('drop-target')
-        event.relatedTarget.classList.remove('can-drop')
-    },
-    ondrop: async (event) => {
-        const {from_config} = await Move_widget({
-			from_folder_path: folder_explorer.selected_folder_path,
-			widget_name: event.relatedTarget.id,
-			to_folder_path: event.target.dataset.path,
-		})
-        folder_explorer.update_explorer(from_config)
-    },
-    ondropdeactivate: (event) => {
-        event.target.classList.remove('drop-active')
-        event.target.classList.remove('drop-target')
-        event.relatedTarget.classList.remove('can-drop')
-    }
-})
