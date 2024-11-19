@@ -4,7 +4,9 @@
     onread={Read_widget}
     onwrite={Write_widget}
 
-    onshow={folder_path => Show_folder(folder_path)}
+    onshow={async folder_path => 
+        folder_explorer.show_folder(...await Show_folder(folder_path))
+    }
     
     {onclick}
     {ondblclick}
@@ -12,7 +14,10 @@
     {onselect}
 
 />
-<Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} onclick={i => Go_to_folder(i + 1)} />
+<Breadcrumbs
+    breadcrumbs={folder_explorer.breadcrumbs}
+    onclick={async i => folder_explorer.show_folder(...await Go_to_folder(i + 1))}
+/>
 
 <script>
 import { StartUp } from "$lib/services"
@@ -23,9 +28,9 @@ import "./app.css"
 import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { Rename_folder, Remove_folder, Go_to_folder } from "$lib/services/folder"
+import { Rename_folder, Remove_folder } from "$lib/services/folder"
 import { Create_widget, Read_widget, Write_widget } from "$lib/services/widget"
-import { Show_folder } from "$lib/services/folder"
+import { Show_folder, Go_to_folder } from "$lib/services/navigator"
 
 function onclick() {
     folder_explorer.deselect_widget()

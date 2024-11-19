@@ -2,25 +2,20 @@ import { Drag_widget } from "$lib/services/folder"
 
 export class FolderExplorerStore {
 	
-	ROOT_FOLDER_PATH: string | null = null
-	separator: string | null = null
-	breadcrumbs: string[] = $derived(this.selected_folder_path?.replace(this.ROOT_FOLDER_PATH, "Home")?.split(this.separator))
-	init(root_folder_path: string, separator: string) {
-		this.ROOT_FOLDER_PATH = root_folder_path
-		this.separator = separator
-	}
-
+	breadcrumbs: string[] = $state([])
 
 	selected_folder_path = <WidgetPath>$state()
 	selected_folder_name = <WidgetName>$state()
 	selected_folder_config = <FolderConfig>$state()
 
-	show_folder(selected_folder_path: string, selected_folder_name: string, folder_config: FolderConfig) {
+	show_folder(selected_folder_path: string, selected_folder_name: string, folder_config: FolderConfig, breadcrumbs: string[]) {
 		this.selected_folder_path = selected_folder_path
 		this.selected_folder_name = selected_folder_name
+		this.breadcrumbs = breadcrumbs
 		this.update_explorer(folder_config)
 	}
 	update_explorer(folder_config: FolderConfig) {
+		this.deselect_widget()
 		this.selected_folder_config = folder_config
 	}
 

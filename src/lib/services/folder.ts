@@ -1,4 +1,4 @@
-import { join, dirname } from '@tauri-apps/api/path'
+import { join } from '@tauri-apps/api/path'
 import { exists, rename, remove } from '@tauri-apps/plugin-fs'
 import { Folder_config } from './folder_config'
 import { folder_explorer } from "../store"
@@ -34,20 +34,6 @@ export async function Remove_folder(folder_name: string) {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-export async function Show_folder(folder_absolute_path: string) {
-    const readed_folder_config: FolderConfig = await Folder_config(folder_absolute_path).read()
-	const folder_name = await dirname(folder_absolute_path)
-    folder_explorer.show_folder(folder_absolute_path, folder_name, readed_folder_config)
-}
-export async function Go_to_folder(crumbs_index: number) {
-	const folder_path = await join(folder_explorer.ROOT_FOLDER_PATH, ...folder_explorer.breadcrumbs.slice(1, crumbs_index))
-	Show_folder(folder_path)
-}
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-
 export async function Drag_widget(buffer: {
 	from_folder_path: string,
 	widget_name: string,
@@ -61,8 +47,6 @@ export async function Drag_widget(buffer: {
 	} else {
 		await rename(old_widget_path, new_widget_path)
 		const {to_config} = await Folder_config(buffer.from_folder_path).move_child(buffer.widget_name, buffer.to_folder_path)
-		console.log(to_config)
-		folder_explorer.deselect_widget()
 		folder_explorer.update_explorer(to_config)
 	}
 }
@@ -77,16 +61,14 @@ export async function Move_to_folder(from_folder_name: string, to_folder_name: s
 	} else {
 		await rename(old_folder_path, new_folder_path)
 		const {from_config} = await Folder_config(current_path).move_child(from_folder_name, move_to_folder_path)
-		folder_explorer.deselect_widget()
 		folder_explorer.update_explorer(from_config)
 	}
 }
 export async function Drop_to_folder(folder_index: number, widget_name: WidgetName) {
 	const from_folder_path = folder_explorer.selected_folder_path
 	const b = folder_explorer.breadcrumbs.slice(1, folder_index + 1)
-	console.log(b)
-	const to_folder_path = await join(folder_explorer.ROOT_FOLDER_PATH, ...folder_explorer.breadcrumbs.slice(1, folder_index + 1))
-	console.log(folder_index, to_folder_path)
+	const ROOT_FOLDER_PATH = localStorage.getItem("ROOT_FOLDER_PATH")
+	const to_folder_path = await join(ROOT_FOLDER_PATH, ...folder_explorer.breadcrumbs.slice(1, folder_index + 1))
 	const old_widget_path = await join(from_folder_path, widget_name)
 	const new_widget_path = await join(to_folder_path, widget_name)
 	const is_exists = await exists(new_widget_path)
@@ -95,8 +77,6 @@ export async function Drop_to_folder(folder_index: number, widget_name: WidgetNa
 	} else {
 		await rename(old_widget_path, new_widget_path)
 		const {from_config} = await Folder_config(from_folder_path).move_child(widget_name, to_folder_path)
-		console.log(from_config)
-		folder_explorer.deselect_widget()
 		folder_explorer.update_explorer(from_config)
 	}
 }

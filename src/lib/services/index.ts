@@ -9,6 +9,8 @@ export async function StartUp(folder_explorer: FolderExplorerStore) {
     const documentDirPath = await documentDir()
     const ROOT_FOLDER_NAME = "Pile Commander"
     const ROOT_FOLDER_PATH = await join(documentDirPath, ROOT_FOLDER_NAME)
+    localStorage.setItem("ROOT_FOLDER_PATH", ROOT_FOLDER_PATH)
+    localStorage.setItem("separator", sep())
 
     // check_root_folder
     const is_exists = await exists(ROOT_FOLDER_PATH)
@@ -23,7 +25,6 @@ export async function StartUp(folder_explorer: FolderExplorerStore) {
     }
 
     // explorer_store_init
-    folder_explorer.init(ROOT_FOLDER_PATH, sep())
-    folder_explorer.show_folder(ROOT_FOLDER_PATH, ROOT_FOLDER_NAME, config)
+    folder_explorer.show_folder(ROOT_FOLDER_PATH, ROOT_FOLDER_NAME, config, ["Home"])
 
 }
