@@ -23,8 +23,8 @@
             <p><span>Create folder</span>&emsp;Shift + double click mouse</p>
         </article>
     {/each}
-<Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} />
 </section>
+<Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} />
 
 <!-- <hr>
 Context menu
@@ -75,14 +75,14 @@ import { StartUp } from "$lib/services"
 import { folder_explorer } from "$lib/store"
 StartUp(folder_explorer)
 
-$inspect(folder_explorer.breadcrumbs)
-
 import Folder from "$lib/ui/Folder.svelte"
 import Note from "$lib/ui/Note.svelte"
 import "./interactable"
+import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 
 import { Create_folder, Rename_folder, Update_folder, Remove_folder, Move_to_folder, Drag_widget } from "$lib/services/folder"
 import { Create_note } from "$lib/services/note"
+
 async function onCreate() {
     try {
         let new_folder_name = prompt("Enter folder name", "New folder")
@@ -142,7 +142,6 @@ function paste() {
         to_folder_path: "",
     }
 }
-import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { onMount } from "svelte"
 onMount(() => {
 	document.addEventListener("keydown", e => {
