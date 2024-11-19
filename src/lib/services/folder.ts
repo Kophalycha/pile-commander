@@ -2,6 +2,7 @@ import { join } from '@tauri-apps/api/path'
 import { exists, rename, remove } from '@tauri-apps/plugin-fs'
 import { Folder_config } from './folder_config'
 import { folder_explorer } from "../store"
+import { get_crumb_path } from './navigator'
 
 export async function Rename_folder(old_folder_name: string, new_folder_name: string) {
 	const current_path = folder_explorer.selected_folder_path
@@ -66,11 +67,7 @@ export async function Move_to_folder(from_folder_name: string, to_folder_name: s
 }
 export async function Drop_to_folder(folder_crumb_index: number, widget_name: WidgetName) {
 	const from_folder_path = folder_explorer.selected_folder_path
-
-	// navigator.get_crumb_path
-	const ROOT_FOLDER_PATH = localStorage.getItem("ROOT_FOLDER_PATH")
-	const to_folder_path = await join(ROOT_FOLDER_PATH, ...folder_explorer.breadcrumbs.slice(1, folder_crumb_index + 1))
-
+	const to_folder_path = await get_crumb_path(folder_crumb_index)
 	const old_widget_path = await join(from_folder_path, widget_name)
 	const new_widget_path = await join(to_folder_path, widget_name)
 	const is_exists = await exists(new_widget_path)
