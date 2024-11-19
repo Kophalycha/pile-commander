@@ -1,33 +1,7 @@
-<section class="surface" {onclick} {ondblclick}>
-    {#each folder_explorer.selected_folder_config?.widgets as widget(widget.name)}
-        {#if widget.type === "folder"}
-            <Folder {widget} />
-        {:else if widget.type === "note"}
-            <Note {widget} />
-        {/if}
-    {:else}
-        <article>
-            <p><span>Create note</span>&emsp;&ensp;Double click mouse</p>
-            <p><span>Create folder</span>&emsp;Shift + double click mouse</p>
-        </article>
-    {/each}
-</section>
+<FolderEditor widgets={folder_explorer.selected_folder_config?.widgets} {onclick} {ondblclick} />
 <Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} onclick={(i: number) => Go_to_folder(i + 1)} />
 
 <style>
-section {
-    position: relative;
-    background: #f5f5f5;
-    width: 100%;
-    height: 100vh;
-    user-select: none;
-}
-article {
-    padding: 30px 40px;
-}
-article span {
-    opacity: .5;
-}
 :global(.drop-target) {
     outline: 5px solid yellowgreen;
 }
@@ -54,14 +28,13 @@ import { StartUp } from "$lib/services"
 import { folder_explorer } from "$lib/store"
 StartUp(folder_explorer)
 
-import Folder from "$lib/ui/Folder.svelte"
-import Note from "$lib/ui/Note.svelte"
 import "./interactable"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 
 import { Create_folder, Rename_folder, Update_folder, Remove_folder, Move_to_folder, Drag_widget, Go_to_folder } from "$lib/services/folder"
 import { Create_note } from "$lib/services/note"
 
+import FolderEditor from "$lib/ui/FolderEditor.svelte"
 function onclick() {
     folder_explorer.deselect_widget()
 }
@@ -72,6 +45,9 @@ function ondblclick(e: MouseEvent) {
         e.shiftKey ? onCreate(position) : Create_note(position)
     }
 }
+
+
+
 async function onCreate(position: Position) {
     try {
         let name = prompt("Enter folder name", "New folder")
