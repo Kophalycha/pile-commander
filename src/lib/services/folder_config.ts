@@ -20,21 +20,7 @@ export const Folder_config = (folder_path: string) => ({
         await writeTextFile(this.fcpath, YAML.stringify(config))
         return config
     },
-    async create_child(type: WidgetType, payload: Partial<Widget>) {
-        const new_widget: Widget = {
-            type,
-            name: `New ${type}`,
-            position: {x: 20, y: 20},
-            size: {
-                width: 120,
-                height: 80
-            },
-            ...payload
-        }
-        const config = await this.read()
-        config.widgets.push(new_widget)
-        return await this.write(config)
-    },
+
     async update_child(name: WidgetName, payload: Partial<Widget>) {
         const config = await this.read()
         let old_widget = config.widgets.filter((w: Widget) => w.name === name)[0]
@@ -65,6 +51,12 @@ export const Folder_config = (folder_path: string) => ({
         const config = await this.read()
         config.widgets = config.widgets.filter((w: Widget) => w.name !== name)
         return await this.write(config)
-    }
+    },
+
+    async create_widget(new_widget: Widget) {
+        const config = await this.read()
+        config.widgets.push(new_widget)
+        return await this.write(config)
+    },
 
 })

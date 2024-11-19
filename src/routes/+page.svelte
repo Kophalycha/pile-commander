@@ -10,20 +10,21 @@ import "./app.css"
 import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { Create_folder, Rename_folder, Remove_folder, Go_to_folder } from "$lib/services/folder"
-import { Create_note } from "$lib/services/note"
+import { Rename_folder, Remove_folder, Go_to_folder } from "$lib/services/folder"
+import { Create_widget } from "$lib/services/widget"
 
 function onclick() {
     folder_explorer.deselect_widget()
 }
-function ondblclick(e: MouseEvent) {
+async function ondblclick(e: MouseEvent) {
     //@ts-ignore
     if (e.target.classList.contains("surface")) {
+        const type = e.shiftKey ? "folder" : "note"
         const position = {x: e.x, y: e.y}
-        e.shiftKey ? Create_folder({position}) : Create_note(position)
+        const new_folder_config = await Create_widget(folder_explorer.selected_folder_path, {type, position})
+        folder_explorer.update_explorer(new_folder_config)
     }
 }
-
 async function onRename() {
     if (!folder_explorer.selected_widget) return
     try {
