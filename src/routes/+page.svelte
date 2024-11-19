@@ -11,6 +11,7 @@
     {onclick}
     {ondblclick}
     selected={widget_name => folder_explorer.selected_widget === widget_name}
+    cutted={widget_name => folder_explorer.buffer.widget_name === widget_name}
     {onselect}
 
 />

@@ -27,7 +27,7 @@ export class FolderExplorerStore {
 		this.selected_widget = null
 	}
 
-
+	// Extract to service
 	buffer = $state({
 		from_folder_path: "",
 		widget_name: "",

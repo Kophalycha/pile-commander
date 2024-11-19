@@ -1,6 +1,9 @@
 .selected {
     outline: 5px solid blue !important;
 }
+.cutted {
+    opacity: .3;
+}
 
 .drop-target {
     outline: 5px solid yellowgreen;

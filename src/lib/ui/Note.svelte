@@ -4,6 +4,7 @@
     background-color: {widget.bg_color || "white"};"
     class:widget={!is_edit}
     class:selected
+    class:cutted
     class:is_edit
     class="note"
     id={widget.name}
@@ -44,7 +45,7 @@ textarea {
 }
 </style>
 <script>
-let { widget, selected, onselect, onread, onwrite } = $props()
+let { widget, selected, cutted, onselect, onread, onwrite } = $props()
 
 let text = $state("")
 let is_edit = $state(false)
