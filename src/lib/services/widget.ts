@@ -1,7 +1,6 @@
-import { exists, mkdir, rename, remove } from '@tauri-apps/plugin-fs'
-import { join, dirname } from '@tauri-apps/api/path'
+import { exists, mkdir } from '@tauri-apps/plugin-fs'
+import { join } from '@tauri-apps/api/path'
 import { Folder_config } from './folder_config'
-import { Write_note } from "./note"
 
 function make(payload: Partial<Widget>) {
     const type = payload.type
@@ -30,7 +29,7 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
 	} else {
         switch (new_widget.type) {
             case "note":
-                await Write_note(new_widget.name, "")
+                await Write_widget(new_widget.name, "")
                 break
             case "folder":
                 await mkdir(new_widget_path)
@@ -39,4 +38,18 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
         }
         return await Folder_config(folder_path).create_widget(new_widget)
 	}
+}
+
+//////////////////////////////////////////////////////////////////
+
+import { folder_explorer } from "../store"
+import { writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
+export async function Read_widget(note_name: string) {
+	const note_path = await join(folder_explorer.selected_folder_path, note_name)
+	return await readTextFile(note_path)
+
+}
+export async function Write_widget(note_name: string, note_text: string) {
+	const note_path = await join(folder_explorer.selected_folder_path, note_name)
+	await writeTextFile(note_path, note_text)
 }

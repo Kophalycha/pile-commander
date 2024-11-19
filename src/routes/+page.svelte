@@ -1,7 +1,13 @@
-<FolderEditor widgets={folder_explorer.selected_folder_config?.widgets} {onclick} {ondblclick} />
-<Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} onclick={(i: number) => Go_to_folder(i + 1)} />
+<FolderEditor
+    widgets={folder_explorer.selected_folder_config?.widgets}
+    {onclick}
+    {ondblclick}
+    selected={widget_name => folder_explorer.selected_widget === widget_name}
+    {onselect}
+/>
+<Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} onclick={i => Go_to_folder(i + 1)} />
 
-<script lang="ts">
+<script>
 import { StartUp } from "$lib/services"
 import { folder_explorer } from "$lib/store"
 StartUp(folder_explorer)
@@ -16,7 +22,7 @@ import { Create_widget } from "$lib/services/widget"
 function onclick() {
     folder_explorer.deselect_widget()
 }
-async function ondblclick(e: MouseEvent) {
+async function ondblclick(e) {
     //@ts-ignore
     if (e.target.classList.contains("surface")) {
         const type = e.shiftKey ? "folder" : "note"
@@ -24,6 +30,10 @@ async function ondblclick(e: MouseEvent) {
         const new_folder_config = await Create_widget(folder_explorer.selected_folder_path, {type, position})
         folder_explorer.update_explorer(new_folder_config)
     }
+}
+function onselect(e, widget_name) {
+    e.preventDefault()
+    folder_explorer.select_widget(widget_name)
 }
 async function onRename() {
     if (!folder_explorer.selected_widget) return
