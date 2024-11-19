@@ -21,17 +21,16 @@
 />
 
 <script>
-import { StartUp } from "$lib/services"
-import { folder_explorer } from "$lib/store"
-StartUp(folder_explorer)
-
 import "./app.css"
 import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { Rename_folder, Remove_folder } from "$lib/services/folder"
 import { Create_widget, Read_widget, Write_widget } from "$lib/services/widget"
-import { Show_folder, Go_to_folder } from "$lib/services/navigator"
+import { StartUp, Show_folder, Go_to_folder } from "$lib/services/navigator"
+import { folder_explorer } from "$lib/store"
+import { onMount } from "svelte"
+onMount(async () => folder_explorer.show_folder(...await StartUp()))
 
 function onclick() {
     folder_explorer.deselect_widget()

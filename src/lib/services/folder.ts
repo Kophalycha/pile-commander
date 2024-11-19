@@ -64,11 +64,13 @@ export async function Move_to_folder(from_folder_name: string, to_folder_name: s
 		folder_explorer.update_explorer(from_config)
 	}
 }
-export async function Drop_to_folder(folder_index: number, widget_name: WidgetName) {
+export async function Drop_to_folder(folder_crumb_index: number, widget_name: WidgetName) {
 	const from_folder_path = folder_explorer.selected_folder_path
-	const b = folder_explorer.breadcrumbs.slice(1, folder_index + 1)
+
+	// navigator.get_crumb_path
 	const ROOT_FOLDER_PATH = localStorage.getItem("ROOT_FOLDER_PATH")
-	const to_folder_path = await join(ROOT_FOLDER_PATH, ...folder_explorer.breadcrumbs.slice(1, folder_index + 1))
+	const to_folder_path = await join(ROOT_FOLDER_PATH, ...folder_explorer.breadcrumbs.slice(1, folder_crumb_index + 1))
+
 	const old_widget_path = await join(from_folder_path, widget_name)
 	const new_widget_path = await join(to_folder_path, widget_name)
 	const is_exists = await exists(new_widget_path)
