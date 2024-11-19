@@ -1,16 +1,8 @@
 <section
     id="surface"
     onclick={() => folder_explorer.deselect_widget()}
-    ondblclick={(e) => {
-        //@ts-ignore
-        if (e.target.id && e.target.id === "surface") {
-            e.shiftKey ?
-                onCreate()
-                : Create_note({x: e.x, y: e.y})
-        }
-    }}
+    {ondblclick}
 >
-
     {#each folder_explorer.selected_folder_config?.widgets as widget(widget.name)}
         {#if widget.type === "folder"}
             <Folder {widget} />
@@ -25,15 +17,6 @@
     {/each}
 </section>
 <Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} onclick={(i: number) => Go_to_folder(i + 1)} />
-
-<!-- <hr>
-Context menu
-<button onclick={onCreate}>Create folder</button>
-{#if folder_explorer.selected_widget}
-    {folder_explorer.selected_widget} 
-    <button onclick={onRename}>Rename folder</button>
-    <button onclick={onRemove}>Remove folder</button>
-{/if} -->
 
 <style>
 section {
@@ -83,17 +66,30 @@ import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { Create_folder, Rename_folder, Update_folder, Remove_folder, Move_to_folder, Drag_widget, Go_to_folder } from "$lib/services/folder"
 import { Create_note } from "$lib/services/note"
 
-async function onCreate() {
+function ondblclick(e: MouseEvent) {
+    //@ts-ignore
+    if (e.target.id && e.target.id === "surface") {
+        const position = {x: e.x, y: e.y}
+
+
+        e.shiftKey ?
+            onCreate(position)
+            : Create_note(position)
+    }
+}
+async function onCreate(position: Position) {
     try {
-        let new_folder_name = prompt("Enter folder name", "New folder")
-        if (new_folder_name) await Create_folder(new_folder_name)
+        let name = prompt("Enter folder name", "New folder")
+        if (name) await Create_folder({name, position})
     } catch (error) {
         if (error instanceof Error) {
             alert(error.message)
-            onCreate()
+            onCreate(position)
         }
     }
 }
+
+
 async function onRename() {
     if (!folder_explorer.selected_widget) return
     try {
