@@ -4,13 +4,14 @@
             <Folder {widget}
                 selected={selected(widget.name)}
                 onselect={(e) => onselect(e, widget.name)}
-                onshow={() => Show_folder(widget.name)}
+                onshow={() => onshow(widget.path)}
             />
         {:else if widget.type === "note"}
             <Note {widget} 
                 selected={selected(widget.name)}
                 onselect={(e) => onselect(e, widget.name)}
-                onread={Read_widget} onwrite={Write_widget}
+                {onread}
+                {onwrite}
             />
         {/if}
     {:else}
@@ -38,10 +39,8 @@ article span {
 </style>
 
 <script>
-import { Read_widget, Write_widget } from "$lib/services/widget"
-import { Show_folder } from "$lib/services/folder"
 import Folder from "$lib/ui/Folder.svelte"
 import Note from "$lib/ui/Note.svelte"
 
-let { widgets, onclick, ondblclick, selected, onselect } = $props()
+let { widgets, onclick, ondblclick, selected, onselect, onread, onwrite, onshow } = $props()
 </script>

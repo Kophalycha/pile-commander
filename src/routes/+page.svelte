@@ -1,9 +1,16 @@
 <FolderEditor
+
     widgets={folder_explorer.selected_folder_config?.widgets}
+    onread={Read_widget}
+    onwrite={Write_widget}
+
+    onshow={folder_path => Show_folder(folder_path)}
+    
     {onclick}
     {ondblclick}
     selected={widget_name => folder_explorer.selected_widget === widget_name}
     {onselect}
+
 />
 <Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} onclick={i => Go_to_folder(i + 1)} />
 
@@ -17,7 +24,8 @@ import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { Rename_folder, Remove_folder, Go_to_folder } from "$lib/services/folder"
-import { Create_widget } from "$lib/services/widget"
+import { Create_widget, Read_widget, Write_widget } from "$lib/services/widget"
+import { Show_folder } from "$lib/services/folder"
 
 function onclick() {
     folder_explorer.deselect_widget()

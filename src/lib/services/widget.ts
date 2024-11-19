@@ -2,7 +2,7 @@ import { exists, mkdir } from '@tauri-apps/plugin-fs'
 import { join } from '@tauri-apps/api/path'
 import { Folder_config } from './folder_config'
 
-function make(payload: Partial<Widget>) {
+async function make(folder_path: WidgetName, payload: Partial<Widget>) {
     const type = payload.type
     const generic_widget = {
         type,
@@ -18,10 +18,11 @@ function make(payload: Partial<Widget>) {
             widgets: [],
         },
     }
-    return {...generic_widget, ...typed_records[type], ...payload}  
+    const path = await join(folder_path, typed_records[type].name)
+    return {...generic_widget, ...typed_records[type], ...payload, path}  
 }
 export async function Create_widget(folder_path: WidgetName, payload: Partial<Widget>) {
-    const new_widget = make(payload)
+    const new_widget = await make(folder_path, payload)
 	const new_widget_path = await join(folder_path, new_widget.name) // fc.join()
 	const is_exists = await exists(new_widget_path) // fc.exists()
 	if (is_exists) {

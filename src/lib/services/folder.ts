@@ -34,16 +34,14 @@ export async function Remove_folder(folder_name: string) {
 //////////////////////////////////////////////////////////////////////////////////////////
 
 
-export async function Show_folder(folder_name: string) {
-	const folder_path = await join(folder_explorer.selected_folder_path, folder_name)
-    const readed_folder_config: FolderConfig = await Folder_config(folder_path).read()
-    folder_explorer.show_folder(folder_path, folder_name, readed_folder_config)
+export async function Show_folder(folder_absolute_path: string) {
+    const readed_folder_config: FolderConfig = await Folder_config(folder_absolute_path).read()
+	const folder_name = await dirname(folder_absolute_path)
+    folder_explorer.show_folder(folder_absolute_path, folder_name, readed_folder_config)
 }
-export async function Go_to_folder(folder_index: number) {
-	const folder_path = await join(folder_explorer.ROOT_FOLDER_PATH, ...folder_explorer.breadcrumbs.slice(1, folder_index))
-	const folder_name = await dirname(folder_path)
-    const readed_folder_config: FolderConfig = await Folder_config(folder_path).read()
-    folder_explorer.show_folder(folder_path, folder_name, readed_folder_config)
+export async function Go_to_folder(crumbs_index: number) {
+	const folder_path = await join(folder_explorer.ROOT_FOLDER_PATH, ...folder_explorer.breadcrumbs.slice(1, crumbs_index))
+	Show_folder(folder_path)
 }
 
 
