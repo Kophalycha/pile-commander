@@ -8,7 +8,7 @@ export const Folder_config = (folder_path: string) => ({
     async init() {
         const init_folder_config: FolderConfig = {
             "view": "board",
-            "childs": []
+            "widgets": []
         }
         return await this.write(init_folder_config)
     },
@@ -32,17 +32,17 @@ export const Folder_config = (folder_path: string) => ({
             ...payload
         }
         const config = await this.read()
-        config.childs.push(new_widget)
+        config.widgets.push(new_widget)
         return await this.write(config)
     },
     async update_child(name: WidgetName, payload: Partial<Widget>) {
         const config = await this.read()
-        let old_widget = config.childs.filter((w: Widget) => w.name === name)[0]
+        let old_widget = config.widgets.filter((w: Widget) => w.name === name)[0]
         const new_widget: Widget = {
             ...old_widget,
             ...payload,
         }
-        config.childs = config.childs.map((w: Widget) => {
+        config.widgets = config.widgets.map((w: Widget) => {
             if (w.name === name) return new_widget
             return w
         })
@@ -50,11 +50,11 @@ export const Folder_config = (folder_path: string) => ({
     },
     async move_child(name: WidgetName, to: WidgetPath) {
         const from_config = await this.read()
-        let moved_widget = from_config.childs.filter((w: Widget) => w.name === name)[0]
-        from_config.childs = from_config.childs.filter((w: Widget) => w.name !== name)
+        let moved_widget = from_config.widgets.filter((w: Widget) => w.name === name)[0]
+        from_config.widgets = from_config.widgets.filter((w: Widget) => w.name !== name)
         const to_path = to + `/${FOLDER_CONFIG_FILE_NAME}`
         const to_config = await this.read(to_path)
-        to_config.childs.push(moved_widget)
+        to_config.widgets.push(moved_widget)
         await writeTextFile(to_path, YAML.stringify(to_config))
         await this.write(from_config)
         return {
@@ -63,7 +63,7 @@ export const Folder_config = (folder_path: string) => ({
     },
     async remove_child(name: WidgetName) {
         const config = await this.read()
-        config.childs = config.childs.filter((w: Widget) => w.name !== name)
+        config.widgets = config.widgets.filter((w: Widget) => w.name !== name)
         return await this.write(config)
     }
 

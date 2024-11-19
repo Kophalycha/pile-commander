@@ -11,7 +11,7 @@ interface Size {
 
 interface FolderConfig {
 	view: ViewType
-	childs: Widget[]
+	widgets: Widget[]
 }
 type ViewType = "stack" | "board" | "masonry"
 

@@ -11,7 +11,7 @@
     }}
 >
 
-    {#each folder_explorer.selected_folder_config?.childs as widget(widget.name)}
+    {#each folder_explorer.selected_folder_config?.widgets as widget(widget.name)}
         {#if widget.type === "folder"}
             <Folder {widget} />
         {:else if widget.type === "note"}
