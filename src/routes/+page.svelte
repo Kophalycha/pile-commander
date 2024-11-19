@@ -1,33 +1,12 @@
 <FolderEditor widgets={folder_explorer.selected_folder_config?.widgets} {onclick} {ondblclick} />
 <Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} onclick={(i: number) => Go_to_folder(i + 1)} />
 
-<style>
-:global(.drop-target) {
-    outline: 5px solid yellowgreen;
-}
-:global(.widget.can-drop) {
-    outline: 5px solid orange;
-    z-index: 999;
-}
-:global(.drop-active) {
-    opacity: .6;
-    z-index: 0;
-}
-:global(.drop-target) {
-    opacity: .6;
-    transition: 0.2s;
-    transition-property: scale;
-    transform: scale(1.2);
-}
-:global(.can-drop) {
-    z-index: 999;
-}
-</style>
 <script lang="ts">
 import { StartUp } from "$lib/services"
 import { folder_explorer } from "$lib/store"
 StartUp(folder_explorer)
 
+import "./app.css"
 import "./interactable"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 
