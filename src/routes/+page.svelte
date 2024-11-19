@@ -10,7 +10,7 @@ import "./app.css"
 import "./interactable"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 
-import { Create_folder, Rename_folder, Update_folder, Remove_folder, Move_to_folder, Drag_widget, Go_to_folder } from "$lib/services/folder"
+import { Create_folder, Rename_folder, Update_folder, Remove_folder, Go_to_folder } from "$lib/services/folder"
 import { Create_note } from "$lib/services/note"
 
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
@@ -24,9 +24,6 @@ function ondblclick(e: MouseEvent) {
         e.shiftKey ? onCreate(position) : Create_note(position)
     }
 }
-
-
-
 async function onCreate(position: Position) {
     try {
         let name = prompt("Enter folder name", "New folder")
@@ -56,44 +53,15 @@ async function onUpdate(payload: Partial<Widget>) {
     if (!folder_explorer.selected_widget) return
     Update_folder(folder_explorer.selected_widget, payload)
 }
-let move_toFolder_name = $state(null)
-async function onMove() {
-    if (!folder_explorer.selected_widget || !move_toFolder_name) return
-    Move_to_folder(folder_explorer.selected_widget, move_toFolder_name)
-}
 async function onRemove() {
     if (!folder_explorer.selected_widget) return
     let is_remove = confirm("Are you sure remove?")
     if (is_remove) await Remove_folder(folder_explorer.selected_widget)
 }
 
-let buffer = $state({
-        from_folder_path: "",
-        widget_name: "",
-        to_folder_path: "",
-})
-function cut() {
-    if (folder_explorer.selected_widget) {
-        buffer.from_folder_path = folder_explorer.selected_folder_path
-        buffer.widget_name = folder_explorer.selected_widget
-    }
-}
-function paste() {
-    buffer.to_folder_path = folder_explorer.selected_folder_path
-    console.log("paste", $state.snapshot(buffer))
-    Drag_widget($state.snapshot(buffer))
-    buffer = {
-        from_folder_path: "",
-        widget_name: "",
-        to_folder_path: "",
-    }
-}
-import { onMount } from "svelte"
-onMount(() => {
-	document.addEventListener("keydown", e => {
-		if (e.key === "Delete") onRemove()
-		if (e.code === "KeyX" && e.ctrlKey) cut()
-		if (e.code === "KeyV" && e.ctrlKey) paste()
-	})
+document.addEventListener("keydown", e => {
+    if (e.key === "Delete") onRemove()
+    if (e.code === "KeyX" && e.ctrlKey) folder_explorer.cut()
+    if (e.code === "KeyV" && e.ctrlKey) folder_explorer.paste()
 })
 </script>

@@ -1,3 +1,5 @@
+import { Drag_widget } from "$lib/services/folder"
+
 export class FolderExplorerStore {
 	
 	ROOT_FOLDER_PATH: string | null = null
@@ -30,5 +32,27 @@ export class FolderExplorerStore {
 		this.selected_widget = null
 	}
 
+
+	buffer = $state({
+		from_folder_path: "",
+		widget_name: "",
+		to_folder_path: "",
+	})
+	cut() {
+		if (this.selected_widget) {
+			this.buffer.from_folder_path = this.selected_folder_path
+			this.buffer.widget_name = this.selected_widget
+		}
+	}
+	paste() {
+		this.buffer.to_folder_path = this.selected_folder_path
+		console.log("paste", $state.snapshot(this.buffer))
+		Drag_widget($state.snapshot(this.buffer))
+		this.buffer = {
+			from_folder_path: "",
+			widget_name: "",
+			to_folder_path: "",
+		}
+	}
 
 }
