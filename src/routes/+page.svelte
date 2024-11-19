@@ -8,12 +8,11 @@ StartUp(folder_explorer)
 
 import "./app.css"
 import "./interactable"
+import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-
-import { Create_folder, Rename_folder, Update_folder, Remove_folder, Go_to_folder } from "$lib/services/folder"
+import { Create_folder, Rename_folder, Remove_folder, Go_to_folder } from "$lib/services/folder"
 import { Create_note } from "$lib/services/note"
 
-import FolderEditor from "$lib/ui/FolderEditor.svelte"
 function onclick() {
     folder_explorer.deselect_widget()
 }
@@ -21,21 +20,9 @@ function ondblclick(e: MouseEvent) {
     //@ts-ignore
     if (e.target.classList.contains("surface")) {
         const position = {x: e.x, y: e.y}
-        e.shiftKey ? onCreate(position) : Create_note(position)
+        e.shiftKey ? Create_folder({position}) : Create_note(position)
     }
 }
-async function onCreate(position: Position) {
-    try {
-        let name = prompt("Enter folder name", "New folder")
-        if (name) await Create_folder({name, position})
-    } catch (error) {
-        if (error instanceof Error) {
-            alert(error.message)
-            onCreate(position)
-        }
-    }
-}
-
 
 async function onRename() {
     if (!folder_explorer.selected_widget) return
@@ -49,10 +36,6 @@ async function onRename() {
         }
     }
 }
-async function onUpdate(payload: Partial<Widget>) {
-    if (!folder_explorer.selected_widget) return
-    Update_folder(folder_explorer.selected_widget, payload)
-}
 async function onRemove() {
     if (!folder_explorer.selected_widget) return
     let is_remove = confirm("Are you sure remove?")
@@ -61,6 +44,7 @@ async function onRemove() {
 
 document.addEventListener("keydown", e => {
     if (e.key === "Delete") onRemove()
+    if (e.key === "F2") onRename()
     if (e.code === "KeyX" && e.ctrlKey) folder_explorer.cut()
     if (e.code === "KeyV" && e.ctrlKey) folder_explorer.paste()
 })

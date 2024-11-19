@@ -4,12 +4,13 @@ import { Folder_config } from './folder_config'
 import { folder_explorer } from "../store"
 
 export async function Create_folder(payload: Partial<Widget>) {
-	const new_folder_path = await join(folder_explorer.selected_folder_path, payload.name ?? "New folder")
+	const default_folder_name = `New folder ${+new Date()}`
+	const new_folder_path = await join(folder_explorer.selected_folder_path, default_folder_name)
 	const is_exists = await exists(new_folder_path)
 	if (is_exists) throw new Error("Такое имя уже есть, дайте другое имя")
 	await mkdir(new_folder_path)
 	await Folder_config(new_folder_path).init()
-	const new_folder_config = await Folder_config(folder_explorer.selected_folder_path).create_child("folder", payload)
+	const new_folder_config = await Folder_config(folder_explorer.selected_folder_path).create_child("folder", {name: default_folder_name, ...payload})
 	folder_explorer.update_explorer(new_folder_config)
 }
 export async function Rename_folder(old_folder_name: string, new_folder_name: string) {
