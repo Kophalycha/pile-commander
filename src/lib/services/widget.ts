@@ -1,4 +1,4 @@
-import { exists, mkdir } from '@tauri-apps/plugin-fs'
+import { exists, mkdir, rename } from '@tauri-apps/plugin-fs'
 import { join } from '@tauri-apps/api/path'
 import { Folder_config } from './folder_config'
 
@@ -38,6 +38,22 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
                 break
         }
         return await Folder_config(folder_path).create_widget(new_widget)
+	}
+}
+
+export async function Move_widget(buffer: {
+	from_folder_path: string,
+	widget_name: string,
+	to_folder_path: string,
+}) {
+	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
+	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
+	const is_exists = await exists(new_widget_path)
+	if (is_exists) {
+		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
+	} else {
+		await rename(old_widget_path, new_widget_path)
+		return await Folder_config(buffer.from_folder_path).move_child(buffer.widget_name, buffer.to_folder_path)
 	}
 }
 

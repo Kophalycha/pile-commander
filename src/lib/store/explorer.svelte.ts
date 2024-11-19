@@ -1,4 +1,4 @@
-import { Move_widget } from "$lib/services/folder"
+import { Move_widget } from "$lib/services/widget"
 
 export class FolderExplorerStore {
 	

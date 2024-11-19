@@ -1,4 +1,5 @@
-import { Update_folder, Move_widget } from "$lib/services/folder"
+import { Update_folder } from "$lib/services/folder"
+import { Move_widget } from "$lib/services/widget"
 import { folder_explorer } from "$lib/store"
 import interact from 'interactjs'
 interact('.widget')

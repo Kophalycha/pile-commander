@@ -29,22 +29,3 @@ export async function Remove_folder(folder_name: string) {
 	folder_explorer.deselect_widget()
 	folder_explorer.update_explorer(new_folder_config)
 }
-
-
-//////////////////////////////////////////////////////////////////////////////////////////
-
-export async function Move_widget(buffer: {
-	from_folder_path: string,
-	widget_name: string,
-	to_folder_path: string,
-}) {
-	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
-	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
-	const is_exists = await exists(new_widget_path)
-	if (is_exists) {
-		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
-	} else {
-		await rename(old_widget_path, new_widget_path)
-		return await Folder_config(buffer.from_folder_path).move_child(buffer.widget_name, buffer.to_folder_path)
-	}
-}
