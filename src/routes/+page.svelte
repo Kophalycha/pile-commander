@@ -1,8 +1,4 @@
-<section
-    id="surface"
-    onclick={() => folder_explorer.deselect_widget()}
-    {ondblclick}
->
+<section class="surface" {onclick} {ondblclick}>
     {#each folder_explorer.selected_folder_config?.widgets as widget(widget.name)}
         {#if widget.type === "folder"}
             <Folder {widget} />
@@ -66,15 +62,14 @@ import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { Create_folder, Rename_folder, Update_folder, Remove_folder, Move_to_folder, Drag_widget, Go_to_folder } from "$lib/services/folder"
 import { Create_note } from "$lib/services/note"
 
+function onclick() {
+    folder_explorer.deselect_widget()
+}
 function ondblclick(e: MouseEvent) {
     //@ts-ignore
-    if (e.target.id && e.target.id === "surface") {
+    if (e.target.classList.contains("surface")) {
         const position = {x: e.x, y: e.y}
-
-
-        e.shiftKey ?
-            onCreate(position)
-            : Create_note(position)
+        e.shiftKey ? onCreate(position) : Create_note(position)
     }
 }
 async function onCreate(position: Position) {
