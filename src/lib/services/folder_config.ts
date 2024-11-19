@@ -1,4 +1,5 @@
 import { writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
+import { join, sep } from '@tauri-apps/api/path'
 import YAML from 'yaml'
 
 const FOLDER_CONFIG_FILE_NAME = "folder.pile"
@@ -38,14 +39,13 @@ export const Folder_config = (folder_path: string) => ({
         const from_config = await this.read()
         let moved_widget = from_config.widgets.filter((w: Widget) => w.name === name)[0]
         from_config.widgets = from_config.widgets.filter((w: Widget) => w.name !== name)
-        const to_path = to + `/${FOLDER_CONFIG_FILE_NAME}`
+        const to_path = to + `${sep()}${FOLDER_CONFIG_FILE_NAME}`
         const to_config = await this.read(to_path)
+        moved_widget.path = await join(to, moved_widget.name)
         to_config.widgets.push(moved_widget)
         await writeTextFile(to_path, YAML.stringify(to_config))
         await this.write(from_config)
-        return {
-            from_config, to_config
-        }
+        return { from_config, to_config }
     },
     async remove_child(name: WidgetName) {
         const config = await this.read()

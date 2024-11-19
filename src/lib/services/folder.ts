@@ -2,7 +2,6 @@ import { join } from '@tauri-apps/api/path'
 import { exists, rename, remove } from '@tauri-apps/plugin-fs'
 import { Folder_config } from './folder_config'
 import { folder_explorer } from "../store"
-import { get_crumb_path } from './navigator'
 
 export async function Rename_folder(old_folder_name: string, new_folder_name: string) {
 	const current_path = folder_explorer.selected_folder_path
@@ -65,17 +64,19 @@ export async function Move_to_folder(from_folder_name: string, to_folder_name: s
 		folder_explorer.update_explorer(from_config)
 	}
 }
-export async function Drop_to_folder(folder_crumb_index: number, widget_name: WidgetName) {
-	const from_folder_path = folder_explorer.selected_folder_path
-	const to_folder_path = await get_crumb_path(folder_crumb_index)
-	const old_widget_path = await join(from_folder_path, widget_name)
-	const new_widget_path = await join(to_folder_path, widget_name)
+
+export async function Move_widget(buffer: {
+	from_folder_path: string,
+	widget_name: string,
+	to_folder_path: string,
+}) {
+	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
+	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
 	const is_exists = await exists(new_widget_path)
 	if (is_exists) {
 		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
 	} else {
 		await rename(old_widget_path, new_widget_path)
-		const {from_config} = await Folder_config(from_folder_path).move_child(widget_name, to_folder_path)
-		folder_explorer.update_explorer(from_config)
+		return await Folder_config(buffer.from_folder_path).move_child(buffer.widget_name, buffer.to_folder_path)
 	}
 }

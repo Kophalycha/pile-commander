@@ -1,10 +1,12 @@
 <div
     id={widget.name}
+    data-path={widget.path}
     class="widget folder dropzone"
     style="top: {widget.position.y}px; left: {widget.position.x}px; 
     width: {widget.size.width}px; height: {widget.size.height}px;"
     ondblclick={onshow}
     class:selected
+    class:cutted
     oncontextmenu={onselect}
 >
 </div>
@@ -25,5 +27,5 @@ div::after {
 }
 </style>
 <script>
-let { widget, selected, onselect, onshow } = $props()
+let { widget, selected, cutted, onselect, onshow } = $props()
 </script>

@@ -8,12 +8,21 @@ let ROOT_FOLDER_PATH = localStorage.getItem("ROOT_FOLDER_PATH")
 let SEPARATOR = localStorage.getItem("SEPARATOR")
 let current_folder_path = ""
 
-function get_breadcrumbs(folder_absolute_path: string) {
-	return folder_absolute_path.replace(ROOT_FOLDER_PATH, "Home")?.split(SEPARATOR)
-}
-export async function get_crumb_path(crumbs_index: number) {
-	const breadcrumbs = get_breadcrumbs(current_folder_path)
-	return await join(ROOT_FOLDER_PATH, ...breadcrumbs.slice(1, crumbs_index))
+function set_breadcrumbs() {
+	const crumbs = current_folder_path.replace(ROOT_FOLDER_PATH, "").split(SEPARATOR)
+	crumbs.shift()
+	return crumbs.reduce(
+		(accumulator, folder_name) => {
+			return [...accumulator, {
+			name: folder_name,
+			path: accumulator.at(-1).path + SEPARATOR + folder_name
+			}]
+		},
+		[{
+			name: "Home",
+			path: ROOT_FOLDER_PATH
+		}]
+	)
 }
 
 export async function StartUp() {
@@ -33,10 +42,7 @@ export async function StartUp() {
 export async function Show_folder(folder_absolute_path: string) {
     const readed_folder_config: FolderConfig = await Folder_config(folder_absolute_path).read()
     const folder_name = folder_absolute_path.split(SEPARATOR).at(-1)
-	const breadcrumbs = get_breadcrumbs(folder_absolute_path)
 	current_folder_path = folder_absolute_path
+	const breadcrumbs = set_breadcrumbs()
     return [folder_absolute_path, folder_name, readed_folder_config, breadcrumbs]
-}
-export async function Go_to_folder(crumbs_index: number) {
-	return await Show_folder(await get_crumb_path(crumbs_index))
 }

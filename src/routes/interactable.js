@@ -1,4 +1,5 @@
-import { Update_folder, Move_to_folder, Drop_to_folder } from "$lib/services/folder"
+import { Update_folder, Move_to_folder, Move_widget } from "$lib/services/folder"
+import { folder_explorer } from "$lib/store"
 import interact from 'interactjs'
 interact('.widget')
 .draggable({
@@ -67,8 +68,13 @@ interact('.breadcrumb').dropzone({
         event.target.classList.remove('drop-target')
         event.relatedTarget.classList.remove('can-drop')
     },
-    ondrop: (event) => {
-        Drop_to_folder(+event.target.dataset.index, event.relatedTarget.id)
+    ondrop: async (event) => {
+        const {from_config} = await Move_widget({
+			from_folder_path: folder_explorer.selected_folder_path,
+			widget_name: event.relatedTarget.id,
+			to_folder_path: event.target.dataset.path,
+		})
+        folder_explorer.update_explorer(from_config)
     },
     ondropdeactivate: (event) => {
         event.target.classList.remove('drop-active')

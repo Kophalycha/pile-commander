@@ -1,4 +1,4 @@
-import { Drag_widget } from "$lib/services/folder"
+import { Move_widget } from "$lib/services/folder"
 
 export class FolderExplorerStore {
 	
@@ -39,10 +39,10 @@ export class FolderExplorerStore {
 			this.buffer.widget_name = this.selected_widget
 		}
 	}
-	paste() {
+	async paste() {
 		this.buffer.to_folder_path = this.selected_folder_path
-		console.log("paste", $state.snapshot(this.buffer))
-		Drag_widget($state.snapshot(this.buffer))
+		const {to_config} = await Move_widget($state.snapshot(this.buffer))
+		this.update_explorer(to_config)
 		this.buffer = {
 			from_folder_path: "",
 			widget_name: "",

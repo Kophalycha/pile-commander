@@ -1,10 +1,15 @@
 {#if breadcrumbs?.length > 1}
     <nav>
-        {#each breadcrumbs as folder_name, i(folder_name + i)}
-            {#if folder_name !== current_folder_name}
-                <button onclick={() => onclick(i)} data-index={i} class="breadcrumb" id="Home"><span>{folder_name}</span></button>
+        {#each breadcrumbs as {name, path}(path)}
+            {#if name !== current_folder_name}
+                <button
+                    onclick={() => onclick(path)}
+                    data-path={path}
+                    class="breadcrumb"
+                >
+                    <span>{name}</span></button>
             {:else}
-                {folder_name}
+                {name}
             {/if}
         {/each}
     </nav>
@@ -39,6 +44,6 @@ nav button {
 </style>
 
 <script>
-const {breadcrumbs, onclick} = $props()
-let current_folder_name = $derived(breadcrumbs?.at(-1))
+const { breadcrumbs, onclick } = $props()
+let current_folder_name = $derived(breadcrumbs?.at(-1).name)
 </script>
