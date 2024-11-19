@@ -6,24 +6,19 @@ import { Folder_config } from './folder_config'
 
 export async function StartUp() {
 
-	
 	// set_root_folder_path
-	// проверять только после первого запуска
-	console.log(localStorage.getItem("ROOT_FOLDER_PATH"))
-    const documentDirPath = await documentDir()
-    const ROOT_FOLDER_NAME = "Pile Commander"
-    const ROOT_FOLDER_PATH = await join(documentDirPath, ROOT_FOLDER_NAME)
-    localStorage.setItem("ROOT_FOLDER_PATH", ROOT_FOLDER_PATH)
-    localStorage.setItem("separator", sep())
-
+	let ROOT_FOLDER_PATH = localStorage.getItem("ROOT_FOLDER_PATH")
+	if (!ROOT_FOLDER_PATH || !localStorage.getItem("separator")) {
+		ROOT_FOLDER_PATH = await join(await documentDir(), "Pile Commander")
+		localStorage.setItem("ROOT_FOLDER_PATH", ROOT_FOLDER_PATH)
+		localStorage.setItem("separator", sep())	
+	}
+	
     // check_root_folder
-    const is_exists = await exists(ROOT_FOLDER_PATH)
-    if (!is_exists) {
+    if (!await exists(ROOT_FOLDER_PATH)) {
         await mkdir(ROOT_FOLDER_PATH)
         await Folder_config(ROOT_FOLDER_PATH).init()
         console.info("ROOT_FOLDER_PATH folder created")
-    } else {
-        console.info("ROOT_FOLDER_PATH exists")
     }
 
     return await Show_folder(ROOT_FOLDER_PATH)
