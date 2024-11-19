@@ -1,8 +1,8 @@
-{#if !is_root}
+{#if breadcrumbs?.length > 1}
     <nav>
-        {#each breadcrumbs as folder_name, i(folder_name)}
+        {#each breadcrumbs as folder_name, i(folder_name + i)}
             {#if folder_name !== current_folder_name}
-                <button onclick={() => Go_to_folder(i + 1)} data-index={i} class="breadcrumb" id="Home"><span>{folder_name}</span></button>
+                <button onclick={() => onclick(i)} data-index={i} class="breadcrumb" id="Home"><span>{folder_name}</span></button>
             {:else}
                 {folder_name}
             {/if}
@@ -39,8 +39,6 @@ nav button {
 </style>
 
 <script>
-import { Go_to_folder } from "$lib/services/folder"
-const {breadcrumbs} = $props()
+const {breadcrumbs, onclick} = $props()
 let current_folder_name = $derived(breadcrumbs?.at(-1))
-let is_root = $derived(current_folder_name === "Home")
 </script>

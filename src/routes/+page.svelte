@@ -24,7 +24,7 @@
         </article>
     {/each}
 </section>
-<Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} />
+<Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} onclick={(i: number) => Go_to_folder(i + 1)} />
 
 <!-- <hr>
 Context menu
@@ -80,7 +80,7 @@ import Note from "$lib/ui/Note.svelte"
 import "./interactable"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 
-import { Create_folder, Rename_folder, Update_folder, Remove_folder, Move_to_folder, Drag_widget } from "$lib/services/folder"
+import { Create_folder, Rename_folder, Update_folder, Remove_folder, Move_to_folder, Drag_widget, Go_to_folder } from "$lib/services/folder"
 import { Create_note } from "$lib/services/note"
 
 async function onCreate() {
