@@ -33,38 +33,6 @@ export async function Remove_folder(folder_name: string) {
 
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
-export async function Drag_widget(buffer: {
-	from_folder_path: string,
-	widget_name: string,
-	to_folder_path: string,
-}) {
-	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
-	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
-	const is_exists = await exists(new_widget_path)
-	if (is_exists) {
-		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
-	} else {
-		await rename(old_widget_path, new_widget_path)
-		const {to_config} = await Folder_config(buffer.from_folder_path).move_child(buffer.widget_name, buffer.to_folder_path)
-		folder_explorer.update_explorer(to_config)
-	}
-}
-export async function Move_to_folder(from_folder_name: string, to_folder_name: string) {
-	const current_path = folder_explorer.selected_folder_path
-	const old_folder_path = await join(current_path, from_folder_name)
-	const new_folder_path = await join(current_path, to_folder_name, from_folder_name)
-	const move_to_folder_path = await join(current_path, to_folder_name)
-	const is_exists = await exists(new_folder_path)
-	if (is_exists) {
-		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
-	} else {
-		await rename(old_folder_path, new_folder_path)
-		const {from_config} = await Folder_config(current_path).move_child(from_folder_name, move_to_folder_path)
-		folder_explorer.update_explorer(from_config)
-	}
-}
-
 export async function Move_widget(buffer: {
 	from_folder_path: string,
 	widget_name: string,
