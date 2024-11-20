@@ -7,7 +7,7 @@
     class:cutted
     class:is_edit
     class="note"
-    id={widget.name}
+    data-name={widget.name}
     {ondblclick}
     oncontextmenu={onselect}
 >

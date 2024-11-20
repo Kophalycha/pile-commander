@@ -1,5 +1,4 @@
-import { Update_folder } from "$lib/services/folder"
-import { Move_widget } from "$lib/services/widget"
+import { Update_widget, Move_widget } from "$lib/services/widget"
 import { folder_explorer } from "$lib/store"
 import interact from 'interactjs'
 interact('.widget')
@@ -10,7 +9,7 @@ interact('.widget')
             event.target.style.top = event.rect.top + "px"
 		},
 		end(event) {
-            Update_folder(event.currentTarget.id, {position: {x: event.rect.left, y: event.rect.top}})
+            Update_widget(folder_explorer.selected_folder_path, event.currentTarget.dataset.name, {position: {x: event.rect.left, y: event.rect.top}})
 		}
 	},
     modifiers: [
@@ -25,7 +24,7 @@ interact('.widget')
             event.target.style.height = event.rect.height + "px"
 		},
 		end(event) {
-            Update_folder(event.currentTarget.id, {size: {width: event.rect.width, height: event.rect.height}})
+            Update_widget(folder_explorer.selected_folder_path, event.currentTarget.dataset.name, {size: {width: event.rect.width, height: event.rect.height}})
         }
     },
     modifiers: [
@@ -50,7 +49,7 @@ interact('.dropzone').dropzone({
     ondrop: async (event) => {
         const {from_config} = await Move_widget({
 			from_folder_path: folder_explorer.selected_folder_path,
-			widget_name: event.relatedTarget.id,
+			widget_name: event.relatedTarget.dataset.name,
 			to_folder_path: event.target.dataset.path,
 		})
         folder_explorer.update_explorer(from_config)

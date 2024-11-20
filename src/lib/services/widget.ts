@@ -41,11 +41,11 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
 	}
 }
 
-export async function Move_widget(buffer: {
-	from_folder_path: string,
-	widget_name: string,
-	to_folder_path: string,
-}) {
+export async function Update_widget(folder_path: WidgetPath, widget_name: WidgetName, payload: Partial<Widget>) {
+	await Folder_config(folder_path).update_child(widget_name, payload)
+}
+
+export async function Move_widget(buffer: Buffer) {
 	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
 	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
 	const is_exists = await exists(new_widget_path)

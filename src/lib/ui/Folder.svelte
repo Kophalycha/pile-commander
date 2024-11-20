@@ -1,5 +1,5 @@
 <div
-    id={widget.name}
+    data-name={widget.name}
     data-path={widget.path}
     class="widget folder dropzone"
     style="top: {widget.position.y}px; left: {widget.position.x}px; 
@@ -18,7 +18,7 @@ div {
     border-radius: 10px;
 }
 div::after {
-    content: attr(id);
+    content: attr(data-name);
     position: relative;
     height: 100%;
     font-size: 18px;

@@ -27,3 +27,9 @@ type Widget = {
 	size: Size
     bg_color?: string
 }
+
+type Buffer = {
+	from_folder_path: string,
+	widget_name: string,
+	to_folder_path: string,
+}
