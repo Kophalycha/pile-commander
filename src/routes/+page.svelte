@@ -70,6 +70,7 @@ document.addEventListener("keydown", async e => {
 	if (e.key === "F2") onRename()
 	if (e.code === "KeyX" && e.ctrlKey) folder_explorer.cut()
 	if (e.code === "KeyV" && e.ctrlKey) {
+		if (!folder_explorer.selected_widget) return
 		folder_explorer.paste()
 		const {to_pile} = await Move_widget(folder_explorer.buffer)
 		folder_explorer.update_explorer(to_pile)
