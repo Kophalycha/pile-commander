@@ -9,7 +9,7 @@ interface Size {
 
 //////////////////////////////////////////
 
-interface FolderConfig {
+interface FolderPile {
 	view: ViewType
 	widgets: Widget[]
 }

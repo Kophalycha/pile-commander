@@ -47,12 +47,12 @@ interact('.dropzone').dropzone({
         event.relatedTarget.classList.remove('can-drop')
     },
     ondrop: async (event) => {
-        const {from_config} = await Move_widget({
+        const {from_pile} = await Move_widget({
 			from_folder_path: folder_explorer.selected_folder_path,
 			widget_name: event.relatedTarget.dataset.name,
 			to_folder_path: event.target.dataset.path,
 		})
-        folder_explorer.update_explorer(from_config)
+        folder_explorer.update_explorer(from_pile)
     },
     ondropdeactivate: (event) => {
         event.target.classList.remove('drop-active')

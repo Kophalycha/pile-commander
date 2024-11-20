@@ -1,6 +1,6 @@
 import { exists, mkdir } from '@tauri-apps/plugin-fs'
 import { join, documentDir, sep } from '@tauri-apps/api/path'
-import { Folder_config } from './folder_config'
+import { Folder_pile } from './folder_pile'
 
 /////////////////////////////////// Navigator //////////////////////////////////////
 
@@ -32,15 +32,15 @@ export async function StartUp() {
 	}
     if (!await exists(ROOT_FOLDER_PATH)) {
         await mkdir(ROOT_FOLDER_PATH)
-        await Folder_config(ROOT_FOLDER_PATH).init()
+        await Folder_pile(ROOT_FOLDER_PATH).init()
     }
     return await Show_folder(ROOT_FOLDER_PATH)
 }
 
 export async function Show_folder(folder_absolute_path: string) {
-    const readed_folder_config: FolderConfig = await Folder_config(folder_absolute_path).read()
-    const folder_name = folder_absolute_path.split(SEPARATOR).at(-1)
+    const readed_folder_pile: FolderPile = await Folder_pile(folder_absolute_path).read()
+    const folder_name = folder_absolute_path.split(SEPARATOR).at(-1) // derived
 	current_folder_path = folder_absolute_path
 	const breadcrumbs = set_breadcrumbs()
-    return [folder_absolute_path, folder_name, readed_folder_config, breadcrumbs]
+    return [folder_absolute_path, folder_name, readed_folder_pile, breadcrumbs]
 }

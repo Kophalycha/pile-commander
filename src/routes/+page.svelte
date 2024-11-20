@@ -1,6 +1,6 @@
 <FolderEditor
 
-    widgets={folder_explorer.selected_folder_config?.widgets}
+    widgets={folder_explorer.selected_folder_pile?.widgets}
     onread={Read_widget}
     onwrite={Write_widget}
 
@@ -37,8 +37,8 @@ async function ondblclick(e) {
     if (e.target.classList.contains("surface")) {
         const type = e.shiftKey ? "folder" : "note"
         const position = {x: e.x, y: e.y}
-        const new_folder_config = await Create_widget(folder_explorer.selected_folder_path, {type, position})
-        folder_explorer.update_explorer(new_folder_config)
+        const new_folder_pile = await Create_widget(folder_explorer.selected_folder_path, {type, position})
+        folder_explorer.update_explorer(new_folder_pile)
     }
 }
 function onselect(e, widget_name) {
@@ -50,8 +50,8 @@ async function onRename() {
     try {
         let new_folder_name = prompt("Enter new folder name", folder_explorer.selected_widget)
         if (new_folder_name) {
-            const new_folder_config = await Rename_widget(folder_explorer.selected_folder_path, folder_explorer.selected_widget, new_folder_name)
-            folder_explorer.update_explorer(new_folder_config)
+            const new_folder_pile = await Rename_widget(folder_explorer.selected_folder_path, folder_explorer.selected_widget, new_folder_name)
+            folder_explorer.update_explorer(new_folder_pile)
         }
     } catch (error) {
         if (error instanceof Error) {
@@ -64,8 +64,8 @@ async function onRemove() {
     if (!folder_explorer.selected_widget) return
     let is_remove = confirm("Are you sure remove?")
     if (is_remove) {
-        const new_folder_config = await Remove_widget(folder_explorer.selected_folder_path, folder_explorer.selected_widget)
-        folder_explorer.update_explorer(new_folder_config)
+        const new_folder_pile = await Remove_widget(folder_explorer.selected_folder_path, folder_explorer.selected_widget)
+        folder_explorer.update_explorer(new_folder_pile)
     }
 }
 

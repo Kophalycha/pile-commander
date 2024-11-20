@@ -1,6 +1,6 @@
 import { exists, mkdir, rename, remove } from '@tauri-apps/plugin-fs'
 import { join } from '@tauri-apps/api/path'
-import { Folder_config } from './folder_config'
+import { Folder_pile } from './folder_pile'
 
 async function make(folder_path: WidgetName, payload: Partial<Widget>) {
     const type = payload.type
@@ -34,10 +34,10 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
                 break
             case "folder":
                 await mkdir(new_widget_path)
-            	await Folder_config(new_widget_path).init()
+            	await Folder_pile(new_widget_path).init()
                 break
         }
-        return await Folder_config(folder_path).create_widget(new_widget)
+        return await Folder_pile(folder_path).create_widget(new_widget)
 	}
 }
 
@@ -49,11 +49,11 @@ export async function Rename_widget(current_path: string, old_widget_name: strin
 		throw new Error("Такое имя уже есть, дайте другое имя")
 	} else {
 		await rename(old_widget_path, new_widget_path)
-		return await Folder_config(current_path).update_child(old_widget_name, { name: new_widget_name, path: new_widget_path})
+		return await Folder_pile(current_path).update_child(old_widget_name, { name: new_widget_name, path: new_widget_path})
 	}
 }
 export async function Update_widget(folder_path: WidgetPath, widget_name: WidgetName, payload: Partial<Widget>) {
-	await Folder_config(folder_path).update_child(widget_name, payload)
+	await Folder_pile(folder_path).update_child(widget_name, payload)
 }
 
 export async function Move_widget(buffer: Buffer) {
@@ -64,14 +64,14 @@ export async function Move_widget(buffer: Buffer) {
 		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
 	} else {
 		await rename(old_widget_path, new_widget_path)
-		return await Folder_config(buffer.from_folder_path).move_child(buffer.widget_name, buffer.to_folder_path)
+		return await Folder_pile(buffer.from_folder_path).move_child(buffer.widget_name, buffer.to_folder_path)
 	}
 }
 
 export async function Remove_widget(folder_path: WidgetPath, widget_name: string) {
 	const widget_path = await join(folder_path, widget_name)
 	await remove(widget_path, { recursive: true })
-	return await Folder_config(folder_path).remove_child(widget_name)
+	return await Folder_pile(folder_path).remove_child(widget_name)
 }
 
 //////////////////////////////////////////////////////////////////

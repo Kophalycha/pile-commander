@@ -6,17 +6,17 @@ export class FolderExplorerStore {
 
 	selected_folder_path = <WidgetPath>$state()
 	selected_folder_name = <WidgetName>$state()
-	selected_folder_config = <FolderConfig>$state()
+	selected_folder_pile = <FolderPile>$state()
 
-	show_folder(selected_folder_path: string, selected_folder_name: string, folder_config: FolderConfig, breadcrumbs: string[]) {
+	show_folder(selected_folder_path: string, selected_folder_name: string, folder_pile: FolderPile, breadcrumbs: string[]) {
 		this.selected_folder_path = selected_folder_path
 		this.selected_folder_name = selected_folder_name
 		this.breadcrumbs = breadcrumbs
-		this.update_explorer(folder_config)
+		this.update_explorer(folder_pile)
 	}
-	update_explorer(folder_config: FolderConfig) {
+	update_explorer(folder_pile: FolderPile) {
 		this.deselect_widget()
-		this.selected_folder_config = folder_config
+		this.selected_folder_pile = folder_pile
 	}
 
 	selected_widget: null | WidgetName = $state(null)
@@ -41,8 +41,8 @@ export class FolderExplorerStore {
 	}
 	async paste() {
 		this.buffer.to_folder_path = this.selected_folder_path
-		const {to_config} = await Move_widget($state.snapshot(this.buffer))
-		this.update_explorer(to_config)
+		const {to_pile} = await Move_widget($state.snapshot(this.buffer))
+		this.update_explorer(to_pile)
 		this.buffer = {
 			from_folder_path: "",
 			widget_name: "",
