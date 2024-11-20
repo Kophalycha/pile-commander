@@ -1,4 +1,4 @@
-import { exists, mkdir, rename } from '@tauri-apps/plugin-fs'
+import { exists, mkdir, rename, remove } from '@tauri-apps/plugin-fs'
 import { join } from '@tauri-apps/api/path'
 import { Folder_config } from './folder_config'
 
@@ -66,6 +66,12 @@ export async function Move_widget(buffer: Buffer) {
 		await rename(old_widget_path, new_widget_path)
 		return await Folder_config(buffer.from_folder_path).move_child(buffer.widget_name, buffer.to_folder_path)
 	}
+}
+
+export async function Remove_widget(folder_path: WidgetPath, widget_name: string) {
+	const widget_path = await join(folder_path, widget_name)
+	await remove(widget_path, { recursive: true })
+	return await Folder_config(folder_path).remove_child(widget_name)
 }
 
 //////////////////////////////////////////////////////////////////

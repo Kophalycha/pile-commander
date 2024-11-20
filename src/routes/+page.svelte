@@ -23,8 +23,7 @@ import "./app.css"
 import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { Remove_folder } from "$lib/services/folder"
-import { Create_widget, Rename_widget, Read_widget, Write_widget } from "$lib/services/widget"
+import { Create_widget, Rename_widget, Remove_widget, Read_widget, Write_widget } from "$lib/services/widget"
 import { StartUp, Show_folder } from "$lib/services/navigator"
 import { folder_explorer } from "$lib/store"
 import { onMount } from "svelte"
@@ -64,7 +63,10 @@ async function onRename() {
 async function onRemove() {
     if (!folder_explorer.selected_widget) return
     let is_remove = confirm("Are you sure remove?")
-    if (is_remove) await Remove_folder(folder_explorer.selected_widget)
+    if (is_remove) {
+        const new_folder_config = await Remove_widget(folder_explorer.selected_folder_path, folder_explorer.selected_widget)
+        folder_explorer.update_explorer(new_folder_config)
+    }
 }
 
 document.addEventListener("keydown", e => {
