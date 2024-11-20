@@ -1,20 +1,18 @@
-{#if folder_explorer}
-	<FolderEditor
-		widgets={folder_explorer.selected_folder_pile?.widgets}
-		onread={readTextFile}
-		onwrite={writeTextFile}
-		onshow={folder_path => folder_explorer.show_folder(folder_path)}
-		{onclick}
-		{ondblclick}
-		selected={widget_name => folder_explorer.selected_widget === widget_name}
-		cutted={widget_name => folder_explorer.buffer.widget_name === widget_name}
-		{onselect}
-	/>
-	<Breadcrumbs
-		breadcrumbs={folder_explorer.breadcrumbs}
-		onclick={folder_path => folder_explorer.show_folder(folder_path)}
-	/>
-{/if}
+<FolderEditor
+	widgets={folder_explorer.selected_folder_pile?.widgets}
+	onread={readTextFile}
+	onwrite={writeTextFile}
+	onshow={folder_path => folder_explorer.show_folder(folder_path)}
+	{onclick}
+	{ondblclick}
+	selected={widget_name => folder_explorer.selected_widget === widget_name}
+	cutted={widget_name => folder_explorer.buffer.widget_name === widget_name}
+	{onselect}
+/>
+<Breadcrumbs
+	breadcrumbs={folder_explorer.breadcrumbs}
+	onclick={folder_path => folder_explorer.show_folder(folder_path)}
+/>
 
 <script lang="ts">
 import "./app.css"
@@ -25,7 +23,7 @@ import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget
 import { FolderExplorerStore } from "$lib/store/explorer.svelte"
 
 let { data } = $props()
-let folder_explorer: FolderExplorerStore = new FolderExplorerStore(data.ROOT_FOLDER_PATH, data.SEPARATOR)
+let folder_explorer = new FolderExplorerStore(data.ROOT_FOLDER_PATH, data.SEPARATOR)
 
 function onclick() {
 	folder_explorer.deselect_widget()
@@ -36,7 +34,6 @@ async function ondblclick(e) {
 		const type = e.shiftKey ? "folder" : "note"
 		const position = {x: e.x, y: e.y}
 		const new_folder_pile = await Create_widget(folder_explorer.selected_folder_path, {type, position})
-		console.log(new_folder_pile)
 		folder_explorer.update_explorer(new_folder_pile)
 	}
 }
@@ -79,7 +76,6 @@ document.addEventListener("keydown", async e => {
 		folder_explorer.clean()
 	}
 })
-
 
 
 import interact from 'interactjs'

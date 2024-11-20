@@ -7,7 +7,8 @@
                     data-path={path}
                     class="dropzone"
                 >
-                    <span>{name}</span></button>
+                    <span>{name}</span>
+                </button>
             {:else}
                 {name}
             {/if}
