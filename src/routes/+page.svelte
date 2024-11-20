@@ -1,34 +1,52 @@
-<FolderEditor
+{#if folder_explorer}
+    <FolderEditor
 
-    widgets={folder_explorer.selected_folder_pile?.widgets}
-    onread={readTextFile}
-    onwrite={writeTextFile}
+        widgets={folder_explorer.selected_folder_pile?.widgets}
+        onread={readTextFile}
+        onwrite={writeTextFile}
 
-    onshow={async folder_path => folder_explorer.show_folder(...await Show_folder(folder_path))}
-    
-    {onclick}
-    {ondblclick}
-    selected={widget_name => folder_explorer.selected_widget === widget_name}
-    cutted={widget_name => folder_explorer.buffer.widget_name === widget_name}
-    {onselect}
+        onshow={folder_path => folder_explorer.show_folder(folder_path)}
+        
+        {onclick}
+        {ondblclick}
+        selected={widget_name => folder_explorer.selected_widget === widget_name}
+        cutted={widget_name => folder_explorer.buffer.widget_name === widget_name}
+        {onselect}
 
-/>
-<Breadcrumbs
-    breadcrumbs={folder_explorer.breadcrumbs}
-    onclick={async folder_path => folder_explorer.show_folder(...await Show_folder(folder_path))}
-/>
+    />
+    <Breadcrumbs
+        breadcrumbs={folder_explorer.breadcrumbs}
+        onclick={folder_path => folder_explorer.show_folder(folder_path)}
+    />
+{/if}
 
-<script>
+<script lang="ts">
 import "./app.css"
-import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
-import { Create_widget, Rename_widget, Remove_widget, Move_widget } from "$lib/services/widget"
-import { StartUp, Show_folder } from "$lib/services/navigator"
-import { folder_explorer } from "$lib/store"
+import { exists, mkdir, writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
+import { join, documentDir, sep } from '@tauri-apps/api/path'
+import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
+import { FolderExplorerStore } from "$lib/store/explorer.svelte"
+import { Folder_pile } from '$lib/services/folder_pile'
+
+let folder_explorer: FolderExplorerStore
 import { onMount } from "svelte"
-onMount(async () => folder_explorer.show_folder(...await StartUp()))
+onMount(async () => {
+    let ROOT_FOLDER_PATH = localStorage.getItem("ROOT_FOLDER_PATH")
+    let SEPARATOR = localStorage.getItem("SEPARATOR")
+    if (!ROOT_FOLDER_PATH || !SEPARATOR) {
+        ROOT_FOLDER_PATH = await join(await documentDir(), "Pile Commander")
+        localStorage.setItem("ROOT_FOLDER_PATH", ROOT_FOLDER_PATH)
+        SEPARATOR = sep()
+        localStorage.setItem("SEPARATOR", SEPARATOR)
+    }
+    if (!await exists(ROOT_FOLDER_PATH)) {
+        await mkdir(ROOT_FOLDER_PATH)
+        await Folder_pile(ROOT_FOLDER_PATH).init()
+    }
+    folder_explorer = new FolderExplorerStore(ROOT_FOLDER_PATH, SEPARATOR)
+})
 
 function onclick() {
     folder_explorer.deselect_widget()
@@ -39,6 +57,7 @@ async function ondblclick(e) {
         const type = e.shiftKey ? "folder" : "note"
         const position = {x: e.x, y: e.y}
         const new_folder_pile = await Create_widget(folder_explorer.selected_folder_path, {type, position})
+        console.log(new_folder_pile)
         folder_explorer.update_explorer(new_folder_pile)
     }
 }
@@ -79,6 +98,69 @@ document.addEventListener("keydown", async e => {
         const {to_pile} = await Move_widget(folder_explorer.buffer)
         folder_explorer.update_explorer(to_pile)
         folder_explorer.clean()
+    }
+})
+
+
+
+import interact from 'interactjs'
+interact('.widget')
+.draggable({
+	listeners: {
+		move(event) {
+            event.target.style.left = event.rect.left + "px"
+            event.target.style.top = event.rect.top + "px"
+		},
+		end(event) {
+            Update_widget(folder_explorer.selected_folder_path, event.currentTarget.dataset.name, {position: {x: event.rect.left, y: event.rect.top}})
+		}
+	},
+    modifiers: [
+        interact.modifiers.restrictEdges({ outer: 'parent' }),
+    ],
+})
+.resizable({
+    edges: { left: false, right: true, bottom: true, top: false },
+    listeners: {
+		move (event) {
+            event.target.style.width = event.rect.width + "px"
+            event.target.style.height = event.rect.height + "px"
+		},
+		end(event) {
+            Update_widget(folder_explorer.selected_folder_path, event.currentTarget.dataset.name, {size: {width: event.rect.width, height: event.rect.height}})
+        }
+    },
+    modifiers: [
+        interact.modifiers.restrictEdges({ outer: 'parent' }),
+        interact.modifiers.restrictSize({ min: { width: 100, height: 50 } })
+    ],
+})
+interact('.dropzone').dropzone({
+    accept: '.widget',
+    overlap: 0.10,
+    ondropactivate: (event) => {
+        event.target.classList.add('drop-active')
+    },
+    ondragenter: (event) => {
+        event.target.classList.add('drop-target')
+        event.relatedTarget.classList.add('can-drop')
+    },
+    ondragleave: (event) => {
+        event.target.classList.remove('drop-target')
+        event.relatedTarget.classList.remove('can-drop')
+    },
+    ondrop: async (event) => {
+        const {from_pile} = await Move_widget({
+			from_folder_path: folder_explorer.selected_folder_path,
+			widget_name: event.relatedTarget.dataset.name,
+			to_folder_path: event.target.dataset.path,
+		})
+        folder_explorer.update_explorer(from_pile)
+    },
+    ondropdeactivate: (event) => {
+        event.target.classList.remove('drop-active')
+        event.target.classList.remove('drop-target')
+        event.relatedTarget.classList.remove('can-drop')
     }
 })
 </script>

@@ -4,7 +4,7 @@ import { Folder_pile } from './folder_pile'
 import { writeTextFile } from '@tauri-apps/plugin-fs'
 
 async function make(folder_path: WidgetName, payload: Partial<Widget>) {
-    const type = payload.type
+    const type = payload.type || "note"
     const generic_widget = {
         type,
         position: {x: 30, y: 30},
@@ -24,18 +24,17 @@ async function make(folder_path: WidgetName, payload: Partial<Widget>) {
 }
 export async function Create_widget(folder_path: WidgetName, payload: Partial<Widget>) {
     const new_widget = await make(folder_path, payload)
-	const new_widget_path = await join(folder_path, new_widget.name) // fc.join()
-	const is_exists = await exists(new_widget_path) // fc.exists()
+	const is_exists = await exists(new_widget.path)
 	if (is_exists) {
 		throw new Error("Такое имя уже есть, дайте другое имя")
 	} else {
         switch (new_widget.type) {
             case "note":
-                await writeTextFile(new_widget.name, "")
+                await writeTextFile(new_widget.path, "")
                 break
             case "folder":
-                await mkdir(new_widget_path)
-            	await Folder_pile(new_widget_path).init()
+                await mkdir(new_widget.path)
+            	await Folder_pile(new_widget.path).init()
                 break
         }
         return await Folder_pile(folder_path).create_widget(new_widget)
