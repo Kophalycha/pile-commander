@@ -24,7 +24,7 @@ import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
-import { Create_widget, Rename_widget, Remove_widget } from "$lib/services/widget"
+import { Create_widget, Rename_widget, Remove_widget, Move_widget } from "$lib/services/widget"
 import { StartUp, Show_folder } from "$lib/services/navigator"
 import { folder_explorer } from "$lib/store"
 import { onMount } from "svelte"
@@ -70,10 +70,15 @@ async function onRemove() {
     }
 }
 
-document.addEventListener("keydown", e => {
+document.addEventListener("keydown", async e => {
     if (e.key === "Delete") onRemove()
     if (e.key === "F2") onRename()
     if (e.code === "KeyX" && e.ctrlKey) folder_explorer.cut()
-    if (e.code === "KeyV" && e.ctrlKey) folder_explorer.paste()
+    if (e.code === "KeyV" && e.ctrlKey) {
+        folder_explorer.paste()
+        const {to_pile} = await Move_widget(folder_explorer.buffer)
+        folder_explorer.update_explorer(to_pile)
+        folder_explorer.clean()
+    }
 })
 </script>

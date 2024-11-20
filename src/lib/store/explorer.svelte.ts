@@ -1,5 +1,3 @@
-import { Move_widget } from "$lib/services/widget"
-
 export class FolderExplorerStore {
 	
 	breadcrumbs: string[] = $state([])
@@ -39,10 +37,10 @@ export class FolderExplorerStore {
 			this.buffer.widget_name = this.selected_widget
 		}
 	}
-	async paste() {
+	paste() {
 		this.buffer.to_folder_path = this.selected_folder_path
-		const {to_pile} = await Move_widget($state.snapshot(this.buffer))
-		this.update_explorer(to_pile)
+	}
+	clean() {
 		this.buffer = {
 			from_folder_path: "",
 			widget_name: "",
