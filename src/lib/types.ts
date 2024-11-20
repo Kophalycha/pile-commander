@@ -3,8 +3,8 @@ interface Position {
 	y: number
 }
 interface Size {
-    width: number
-    height: number
+	width: number
+	height: number
 }
 
 //////////////////////////////////////////
@@ -25,8 +25,8 @@ type Widget = {
 	name: WidgetName
 	position: Position
 	size: Size
-    bg_color?: string
-    path?: string
+	bg_color?: string
+	path?: string
 }
 
 type Buffer = {

@@ -21,7 +21,6 @@ export class FolderExplorerStore {
 	})
 
 	selected_folder_path = <WidgetPath>$state()
-	// selected_folder_name = <WidgetName>$state()
 	selected_folder_pile = <FolderPile>$state()
 
 	constructor(ROOT_FOLDER_PATH: string, SEPARATOR: string) {
@@ -33,7 +32,6 @@ export class FolderExplorerStore {
 	async show_folder(selected_folder_path: string) {
 		const readed_folder_pile: FolderPile = await Folder_pile(selected_folder_path).read()
 		this.selected_folder_path = selected_folder_path
-		// this.selected_folder_name = selected_folder_path.split(this.SEPARATOR).at(-1) || ""
 		this.update_explorer(readed_folder_pile)
 	}
 	update_explorer(folder_pile: FolderPile) {
