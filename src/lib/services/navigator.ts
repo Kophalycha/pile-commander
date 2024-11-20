@@ -6,18 +6,16 @@ import { Folder_config } from './folder_config'
 
 let ROOT_FOLDER_PATH = localStorage.getItem("ROOT_FOLDER_PATH")
 let SEPARATOR = localStorage.getItem("SEPARATOR")
-let current_folder_path = ""
 
+let current_folder_path = ""
 function set_breadcrumbs() {
 	const crumbs = current_folder_path.replace(ROOT_FOLDER_PATH, "").split(SEPARATOR)
 	crumbs.shift()
 	return crumbs.reduce(
-		(accumulator, folder_name) => {
-			return [...accumulator, {
+		(accumulator, folder_name) => [...accumulator, {
 			name: folder_name,
 			path: accumulator.at(-1).path + SEPARATOR + folder_name
-			}]
-		},
+		}],
 		[{
 			name: "Home",
 			path: ROOT_FOLDER_PATH

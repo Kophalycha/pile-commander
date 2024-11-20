@@ -23,8 +23,8 @@ import "./app.css"
 import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { Rename_folder, Remove_folder } from "$lib/services/folder"
-import { Create_widget, Read_widget, Write_widget } from "$lib/services/widget"
+import { Remove_folder } from "$lib/services/folder"
+import { Create_widget, Rename_widget, Read_widget, Write_widget } from "$lib/services/widget"
 import { StartUp, Show_folder } from "$lib/services/navigator"
 import { folder_explorer } from "$lib/store"
 import { onMount } from "svelte"
@@ -50,7 +50,10 @@ async function onRename() {
     if (!folder_explorer.selected_widget) return
     try {
         let new_folder_name = prompt("Enter new folder name", folder_explorer.selected_widget)
-        if (new_folder_name) await Rename_folder(folder_explorer.selected_widget, new_folder_name)
+        if (new_folder_name) {
+            const new_folder_config = await Rename_widget(folder_explorer.selected_folder_path, folder_explorer.selected_widget, new_folder_name)
+            folder_explorer.update_explorer(new_folder_config)
+        }
     } catch (error) {
         if (error instanceof Error) {
             alert(error.message)

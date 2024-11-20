@@ -41,6 +41,17 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
 	}
 }
 
+export async function Rename_widget(current_path: string, old_widget_name: string, new_widget_name: string) {
+	const old_widget_path = await join(current_path, old_widget_name)
+	const new_widget_path = await join(current_path, new_widget_name)
+	const is_exists = await exists(new_widget_path)
+	if (is_exists) {
+		throw new Error("Такое имя уже есть, дайте другое имя")
+	} else {
+		await rename(old_widget_path, new_widget_path)
+		return await Folder_config(current_path).update_child(old_widget_name, { name: new_widget_name, path: new_widget_path})
+	}
+}
 export async function Update_widget(folder_path: WidgetPath, widget_name: WidgetName, payload: Partial<Widget>) {
 	await Folder_config(folder_path).update_child(widget_name, payload)
 }

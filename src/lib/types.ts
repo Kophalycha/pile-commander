@@ -26,6 +26,7 @@ type Widget = {
 	position: Position
 	size: Size
     bg_color?: string
+    path?: string
 }
 
 type Buffer = {
