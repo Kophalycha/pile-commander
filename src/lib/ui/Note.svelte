@@ -52,7 +52,7 @@ let is_edit = $state(false)
 let textarea = $state(null)
 
 import { onMount } from "svelte"
-onMount(async () => text = await onread(widget.name))
+onMount(async () => text = await onread(widget.path))
 
 function ondblclick() {
     is_edit = true
@@ -61,6 +61,6 @@ function ondblclick() {
 }
 function onblur() {
     is_edit = false
-    onwrite(widget.name, text)
+    onwrite(widget.path, text)
 }
 </script>

@@ -1,8 +1,8 @@
 <FolderEditor
 
     widgets={folder_explorer.selected_folder_pile?.widgets}
-    onread={Read_widget}
-    onwrite={Write_widget}
+    onread={readTextFile}
+    onwrite={writeTextFile}
 
     onshow={async folder_path => folder_explorer.show_folder(...await Show_folder(folder_path))}
     
@@ -23,7 +23,8 @@ import "./app.css"
 import "./interactable"
 import FolderEditor from "$lib/ui/FolderEditor.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { Create_widget, Rename_widget, Remove_widget, Read_widget, Write_widget } from "$lib/services/widget"
+import { writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
+import { Create_widget, Rename_widget, Remove_widget } from "$lib/services/widget"
 import { StartUp, Show_folder } from "$lib/services/navigator"
 import { folder_explorer } from "$lib/store"
 import { onMount } from "svelte"
