@@ -2,10 +2,8 @@ name: "Release"
 
 on:
   push:
-    tags:
-      - 'v**'
-    branches-ignore:
-      - '**'
+    branches:
+      - main
 
 jobs:
   publish-tauri:
