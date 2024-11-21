@@ -3,33 +3,35 @@
     width: {widget.size.width}px; height: {widget.size.height}px; 
     background-color: {widget.bg_color || "white"};"
     class:widget={!is_edit}
-    class:selected={folder_explorer.selected_widget === widget.name}
+    class:selected
+    class:cutted
     class:is_edit
     class="note"
-    id={widget.name}
-    ondblclick={onfocus}
-    oncontextmenu={(e) => {
-        e.preventDefault()
-        folder_explorer.select_widget(widget.name)
-    }}
+    data-name={widget.name}
+    {ondblclick}
+    oncontextmenu={onselect}
 >
 {#if !is_edit}
     {text}
 {:else}
     <textarea
-    bind:this={textarea}
-    style="width: {widget.size.width - 40}px; height: {widget.size.height - 40}px;"
-    bind:value={text} onblur={onEdit}></textarea>
+        style="width: {widget.size.width - 40}px; height: {widget.size.height - 40}px;"
+        bind:this={textarea}
+        bind:value={text}
+        {onblur}
+    >
+    </textarea>
 {/if}
-
 </div>
-
 
 <style>
 div {
     padding: 20px;
     box-sizing: border-box;
     user-select: none;
+}
+div.is_edit {    
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 textarea {
     font-size: 16px;
@@ -40,37 +42,24 @@ textarea {
     background-color: initial;
     padding: 0;
 }
-div.is_edit {    
-    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
-}
-.selected {
-    outline: 2px solid blue;
-}
 </style>
-<script lang="ts">
-let { widget , group_name}: {widget: Widget, group_name?: string} = $props()
-import { Read_note, Write_note } from "$lib/services/note"
-import { folder_explorer } from "$lib/store"
-import { onMount } from "svelte"
+<script>
+let { widget, selected, cutted, onselect, onread, onwrite } = $props()
 
 let text = $state("")
 let is_edit = $state(false)
 let textarea = $state(null)
 
-function is_unnamed(): boolean {
-	return widget.name.includes("unnamed_note_")
-}
+import { onMount } from "svelte"
+onMount(async () => text = await onread(widget.path))
 
-onMount(async () => {
-    text = await Read_note(widget.name, group_name)
-})
-function onfocus() {
+function ondblclick() {
     is_edit = true
     textarea?.select()
     setTimeout(() => textarea.selectionEnd = text.length, 0)
 }
-function onEdit() {
+function onblur() {
     is_edit = false
-    Write_note(widget.name, text)
+    onwrite(widget.path, text)
 }
 </script>

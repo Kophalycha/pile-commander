@@ -1,154 +1,141 @@
-<section
-    id="surface"
-    onclick={() => folder_explorer.deselect_widget()}
-    ondblclick={(e) => {
-        //@ts-ignore
-        if (e.target.id && e.target.id === "surface") {
-            e.shiftKey ?
-                onCreate()
-                : Create_note({x: e.x, y: e.y})
-        }
-    }}
->
+<FolderEditor
+	widgets={explorer.selected_folder_pile?.widgets}
+	onread={readTextFile}
+	onwrite={writeTextFile}
+	onshow={folder_path => explorer.show_folder(folder_path)}
+	{onclick}
+	{ondblclick}
+	selected={widget_name => explorer.selected_widget === widget_name}
+	cutted={widget_name => explorer.buffer.widget_name === widget_name}
+	{onselect}
+/>
+<Breadcrumbs
+	breadcrumbs={explorer.breadcrumbs}
+	onclick={folder_path => explorer.show_folder(folder_path)}
+/>
 
-    {#each folder_explorer.selected_folder_config?.childs as widget(widget.name)}
-        {#if widget.type === "folder"}
-            <Folder {widget} />
-        {:else if widget.type === "note"}
-            <Note {widget} />
-        {/if}
-    {:else}
-        <article>
-            <p><span>Create note</span>&emsp;&ensp;Double click mouse</p>
-            <p><span>Create folder</span>&emsp;Shift + double click mouse</p>
-        </article>
-    {/each}
-<Breadcrumbs breadcrumbs={folder_explorer.breadcrumbs} />
-</section>
-
-<!-- <hr>
-Context menu
-<button onclick={onCreate}>Create folder</button>
-{#if folder_explorer.selected_widget}
-    {folder_explorer.selected_widget} 
-    <button onclick={onRename}>Rename folder</button>
-    <button onclick={onRemove}>Remove folder</button>
-{/if} -->
-
-<style>
-section {
-    position: relative;
-    background: #f5f5f5;
-    width: 100%;
-    height: 100vh;
-    user-select: none;
-}
-article {
-    padding: 30px 40px;
-}
-article span {
-    opacity: .5;
-}
-:global(.drop-target) {
-    outline: 5px solid yellowgreen;
-}
-:global(.widget.can-drop) {
-    outline: 5px solid orange;
-    z-index: 999;
-}
-:global(.drop-active) {
-    opacity: .6;
-    z-index: 0;
-}
-:global(.drop-target) {
-    opacity: .6;
-    transition: 0.2s;
-    transition-property: scale;
-    transform: scale(1.2);
-}
-:global(.can-drop) {
-    z-index: 999;
-}
-</style>
 <script lang="ts">
-import { StartUp } from "$lib/services"
-import { folder_explorer } from "$lib/store"
-StartUp(folder_explorer)
+import "./app.css"
+import FolderEditor from "$lib/ui/FolderEditor.svelte"
+import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
+import { writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
+import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
+import { ExplorerStore } from "$lib/store/explorer.svelte"
+let { data } = $props()
+let explorer = new ExplorerStore(data.ROOT_FOLDER_PATH, data.SEPARATOR)
 
-$inspect(folder_explorer.breadcrumbs)
-
-import Folder from "$lib/ui/Folder.svelte"
-import Note from "$lib/ui/Note.svelte"
-import "./interactable"
-
-import { Create_folder, Rename_folder, Update_folder, Remove_folder, Move_to_folder, Drag_widget } from "$lib/services/folder"
-import { Create_note } from "$lib/services/note"
-async function onCreate() {
-    try {
-        let new_folder_name = prompt("Enter folder name", "New folder")
-        if (new_folder_name) await Create_folder(new_folder_name)
-    } catch (error) {
-        if (error instanceof Error) {
-            alert(error.message)
-            onCreate()
-        }
-    }
+function onclick() {
+	explorer.deselect_widget()
+}
+async function ondblclick(e) {
+	//@ts-ignore
+	if (e.target.classList.contains("surface")) {
+		const type = e.shiftKey ? "folder" : "note"
+		const position = {x: e.x, y: e.y}
+		const new_folder_pile = await Create_widget(explorer.selected_folder_path, {type, position})
+		explorer.update_explorer(new_folder_pile)
+	}
+}
+function onselect(e, widget_name) {
+	e.preventDefault()
+	explorer.select_widget(widget_name)
 }
 async function onRename() {
-    if (!folder_explorer.selected_widget) return
-    try {
-        let new_folder_name = prompt("Enter new folder name", folder_explorer.selected_widget)
-        if (new_folder_name) await Rename_folder(folder_explorer.selected_widget, new_folder_name)
-    } catch (error) {
-        if (error instanceof Error) {
-            alert(error.message)
-            onRename()
-        }
-    }
-}
-async function onUpdate(payload: Partial<Widget>) {
-    if (!folder_explorer.selected_widget) return
-    Update_folder(folder_explorer.selected_widget, payload)
-}
-let move_toFolder_name = $state(null)
-async function onMove() {
-    if (!folder_explorer.selected_widget || !move_toFolder_name) return
-    Move_to_folder(folder_explorer.selected_widget, move_toFolder_name)
+	if (!explorer.selected_widget) return
+	try {
+		let new_folder_name = prompt("Enter new folder name", explorer.selected_widget)
+		if (new_folder_name) {
+			const new_folder_pile = await Rename_widget(explorer.selected_folder_path, explorer.selected_widget, new_folder_name)
+			explorer.update_explorer(new_folder_pile)
+		}
+	} catch (error) {
+		if (error instanceof Error) {
+			alert(error.message)
+			onRename()
+		}
+	}
 }
 async function onRemove() {
-    if (!folder_explorer.selected_widget) return
-    let is_remove = confirm("Are you sure remove?")
-    if (is_remove) await Remove_folder(folder_explorer.selected_widget)
+	if (!explorer.selected_widget) return
+	let is_remove = confirm("Are you sure remove?")
+	if (is_remove) {
+		const new_folder_pile = await Remove_widget(explorer.selected_folder_path, explorer.selected_widget)
+		explorer.update_explorer(new_folder_pile)
+	}
 }
 
-let buffer = $state({
-        from_folder_path: "",
-        widget_name: "",
-        to_folder_path: "",
+document.addEventListener("keydown", async e => {
+	if (e.key === "F2") onRename()
+	if (e.key === "Delete") onRemove()
+	if (e.code === "KeyX" && e.ctrlKey) explorer.cut()
+	if (e.code === "KeyV" && e.ctrlKey) {
+		explorer.paste()
+		const {to_pile} = await Move_widget(explorer.buffer)
+		explorer.update_explorer(to_pile)
+		explorer.clean()
+	}
 })
-function cut() {
-    if (folder_explorer.selected_widget) {
-        buffer.from_folder_path = folder_explorer.selected_folder_path
-        buffer.widget_name = folder_explorer.selected_widget
-    }
-}
-function paste() {
-    buffer.to_folder_path = folder_explorer.selected_folder_path
-    console.log("paste", $state.snapshot(buffer))
-    Drag_widget($state.snapshot(buffer))
-    buffer = {
-        from_folder_path: "",
-        widget_name: "",
-        to_folder_path: "",
-    }
-}
-import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { onMount } from "svelte"
-onMount(() => {
-	document.addEventListener("keydown", e => {
-		if (e.key === "Delete") onRemove()
-		if (e.code === "KeyX" && e.ctrlKey) cut()
-		if (e.code === "KeyV" && e.ctrlKey) paste()
-	})
+
+
+import interact from 'interactjs'
+interact('.widget')
+.draggable({
+	listeners: {
+		move(event) {
+			event.target.style.left = event.rect.left + "px"
+			event.target.style.top = event.rect.top + "px"
+		},
+		end(event) {
+			Update_widget(explorer.selected_folder_path, event.currentTarget.dataset.name, {position: {x: event.rect.left, y: event.rect.top}})
+		}
+	},
+	modifiers: [
+		interact.modifiers.restrictEdges({ outer: 'parent' }),
+	],
+})
+.resizable({
+	edges: { left: false, right: true, bottom: true, top: false },
+	listeners: {
+		move (event) {
+			event.target.style.width = event.rect.width + "px"
+			event.target.style.height = event.rect.height + "px"
+		},
+		async end(event) {
+			const pile = await Update_widget(explorer.selected_folder_path, event.currentTarget.dataset.name, {size: {width: event.rect.width, height: event.rect.height}})
+			explorer.update_explorer(pile)
+		}
+	},
+	modifiers: [
+		interact.modifiers.restrictEdges({ outer: 'parent' }),
+		interact.modifiers.restrictSize({ min: { width: 100, height: 50 } })
+	],
+})
+interact('.dropzone').dropzone({
+	accept: '.widget',
+	overlap: 0.10,
+	ondropactivate: (event) => {
+		event.target.classList.add('drop-active')
+	},
+	ondragenter: (event) => {
+		event.target.classList.add('drop-target')
+		event.relatedTarget.classList.add('can-drop')
+	},
+	ondragleave: (event) => {
+		event.target.classList.remove('drop-target')
+		event.relatedTarget.classList.remove('can-drop')
+	},
+	ondrop: async (event) => {
+		const {from_pile} = await Move_widget({
+			from_folder_path: explorer.selected_folder_path,
+			widget_name: event.relatedTarget.dataset.name,
+			to_folder_path: event.target.dataset.path,
+		})
+		explorer.update_explorer(from_pile)
+	},
+	ondropdeactivate: (event) => {
+		event.target.classList.remove('drop-active')
+		event.target.classList.remove('drop-target')
+		event.relatedTarget.classList.remove('can-drop')
+	}
 })
 </script>
