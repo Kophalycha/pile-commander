@@ -100,8 +100,9 @@ interact('.widget')
 			event.target.style.width = event.rect.width + "px"
 			event.target.style.height = event.rect.height + "px"
 		},
-		end(event) {
-			Update_widget(explorer.selected_folder_path, event.currentTarget.dataset.name, {size: {width: event.rect.width, height: event.rect.height}})
+		async end(event) {
+			const pile = await Update_widget(explorer.selected_folder_path, event.currentTarget.dataset.name, {size: {width: event.rect.width, height: event.rect.height}})
+			explorer.update_explorer(pile)
 		}
 	},
 	modifiers: [

@@ -17,7 +17,7 @@
     <textarea
         style="width: {widget.size.width - 40}px; height: {widget.size.height - 40}px;"
         bind:this={textarea}
-        bind:value={text} 
+        bind:value={text}
         {onblur}
     >
     </textarea>

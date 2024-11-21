@@ -18,8 +18,8 @@ type ViewType = "stack" | "board" | "masonry"
 
 // Всё есть Widget. Папка, файл и заметка являются Виджетами 
 type WidgetType = "folder" | "group" | "file" | "note" | "audio" | "video" | "image" | "sketch"
-type WidgetPath = string // путь файла + идентификатор
-type WidgetName = string // имя файла + идентификатор
+type WidgetPath = string // file path + identifier
+type WidgetName = string // file name + identifier
 type Widget = {
 	type: WidgetType
 	name: WidgetName
@@ -28,6 +28,8 @@ type Widget = {
 	bg_color?: string
 	path?: string
 }
+
+//////////////////////////////////////////
 
 type Buffer = {
 	from_folder_path: string,

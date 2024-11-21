@@ -16,11 +16,10 @@ async function make(folder_path: WidgetName, payload: Partial<Widget>) {
 		},
 		"folder": {
 			name: `New folder ${+new Date()}`,
-			widgets: [],
 		},
 	}
 	const path = await join(folder_path, typed_records[type].name)
-	return {...generic_widget, ...typed_records[type], ...payload, path}  
+	return {...generic_widget, ...typed_records[type], ...payload, path}
 }
 export async function Create_widget(folder_path: WidgetName, payload: Partial<Widget>) {
 	const new_widget = await make(folder_path, payload)
@@ -53,7 +52,7 @@ export async function Rename_widget(current_path: string, old_widget_name: strin
 	}
 }
 export async function Update_widget(folder_path: WidgetPath, widget_name: WidgetName, payload: Partial<Widget>) {
-	await Folder_pile(folder_path).update_widget(widget_name, payload)
+	return await Folder_pile(folder_path).update_widget(widget_name, payload)
 }
 
 export async function Move_widget(buffer: Buffer) {
