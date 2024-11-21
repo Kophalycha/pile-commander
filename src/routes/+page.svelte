@@ -69,7 +69,6 @@ document.addEventListener("keydown", async e => {
 	if (e.key === "Delete") onRemove()
 	if (e.code === "KeyX" && e.ctrlKey) explorer.cut()
 	if (e.code === "KeyV" && e.ctrlKey) {
-		if (!explorer.selected_widget) return
 		explorer.paste()
 		const {to_pile} = await Move_widget(explorer.buffer)
 		explorer.update_explorer(to_pile)
