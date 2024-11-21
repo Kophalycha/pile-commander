@@ -1,6 +1,6 @@
 import { Folder_pile } from '../services/folder_pile'
 
-export class FolderExplorerStore {
+export class ExplorerStore {
 	
 	ROOT_FOLDER_PATH: string
 	SEPARATOR: string
@@ -47,7 +47,6 @@ export class FolderExplorerStore {
 		this.selected_widget = null
 	}
 
-	// Extract to service
 	buffer = $state({
 		from_folder_path: "",
 		widget_name: "",
