@@ -1,4 +1,4 @@
-import { exists, mkdir, writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
+import { exists, mkdir } from '@tauri-apps/plugin-fs'
 import { join, documentDir, sep } from '@tauri-apps/api/path'
 import { Folder_pile } from '$lib/services/folder_pile'
 

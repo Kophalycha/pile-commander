@@ -29,8 +29,8 @@
 </div>
 
 <script>
-import Container from "./Container.svelte"
-import Note from "./widgets/Note.svelte"
-import Folder from "./widgets/Folder.svelte"
+import Container from "$lib/ui/Container.svelte"
+import Note from "$lib/ui/widgets/Note.svelte"
+import Folder from "$lib/ui/widgets/Folder.svelte"
 const { view, widget, selected_slide, selected_widget, cutted } = $props()
 </script>

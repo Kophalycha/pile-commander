@@ -37,7 +37,7 @@ article span {
 }
 </style>
 <script>
-import Cell from "./Cell.svelte"
+import Cell from "$lib/ui/Cell.svelte"
 let {fullscreen = false, path, selected_widget, ondeselect, explorer} = $props()
 let pile = $state()
 let container_element = $state()
@@ -47,7 +47,7 @@ import { onMount } from "svelte"
 import { Folder_pile } from '$lib/services/folder_pile'
 import Sortable from 'sortablejs'
 onMount(async () => {
-    pile = await Folder_pile(path).read() // : FolderPile
+    pile = await Folder_pile(path).read()
     if (["masonry","stack"].includes(pile.view)) {
         setTimeout(() => Sortable.create(container_element), 100)
     }

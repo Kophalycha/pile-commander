@@ -18,7 +18,7 @@
 
 <script>
 import "./app.css"
-import Container from "./Container.svelte"
+import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { join } from '@tauri-apps/api/path'
 import { Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
@@ -127,7 +127,6 @@ interact('.dropzone').dropzone({
 		event.target.classList.add('drop-active')
 	},
 	ondragenter: (event) => {
-		console.log(event.target === event.relatedTarget)
 		event.target.classList.add('drop-target')
 		event.relatedTarget.classList.add('can-drop')
 	},

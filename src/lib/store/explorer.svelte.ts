@@ -39,9 +39,9 @@ export class ExplorerStore {
 		this.selected_folder_pile = folder_pile
 	}
 
-	selected_widget: null | WidgetName = $state(null)
-	select_widget(widget_name: WidgetName) {
-		this.selected_widget = widget_name
+	selected_widget: null | Widget = $state(null)
+	select_widget(widget: Widget) {
+		this.selected_widget = widget
 	}
 	deselect_widget() {
 		this.selected_widget = null
