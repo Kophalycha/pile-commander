@@ -1,5 +1,5 @@
 <div
-    class="cell widget {view}"
+    class="cell widget {widget.type} {view}"
     style="
         top: {widget.position.y}px;
         left: {widget.position.x}px;
@@ -22,7 +22,7 @@
     {#if widget.type === "note"}
         <Note {widget} />
     {:else if widget.type === "folder"}
-        <Folder {view} {widget} />
+        <Folder {widget} />
     {:else if widget.type === "container"}
         <Container path={widget.path} />
     {/if}
