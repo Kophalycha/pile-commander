@@ -30,7 +30,7 @@ div {
     box-sizing: border-box;
     user-select: none;
 }
-div.is_edit {    
+div.is_edit {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
 }
 textarea {
