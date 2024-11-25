@@ -1,7 +1,6 @@
 <div
     style="background-color: {widget.bg_color || "white"};"
     class:is_edit
-    class="note"
     {ondblclick}
 >
 {#if !is_edit}
@@ -16,13 +15,13 @@
 </div>
 
 <style>
-div.note {
+div {
     padding: 20px;
     box-sizing: border-box;
     height: 100%;
     user-select: none;
 }
-div.note.is_edit {
+div.is_edit {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     height: 100%;
 }
