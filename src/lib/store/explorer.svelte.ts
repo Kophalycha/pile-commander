@@ -55,7 +55,7 @@ export class ExplorerStore {
 	cut() {
 		if (this.selected_widget) {
 			this.buffer.from_folder_path = this.selected_folder_path
-			this.buffer.widget_name = this.selected_widget
+			this.buffer.widget_name = this.selected_widget.name
 		}
 	}
 	paste() {

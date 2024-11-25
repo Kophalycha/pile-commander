@@ -1,0 +1,27 @@
+.selected {
+	outline: 5px solid blue !important;
+}
+.cutted {
+	opacity: .3;
+}
+
+.drop-target {
+	outline: 5px solid yellowgreen;
+}
+.widget.can-drop {
+	outline: 5px solid orange;
+	z-index: 999;
+}
+.drop-active {
+	opacity: .6;
+	z-index: 0;
+}
+.drop-target {
+	opacity: .6;
+	transition: 0.2s;
+	transition-property: scale;
+	transform: scale(1.2);
+}
+.can-drop {
+	z-index: 999;
+}

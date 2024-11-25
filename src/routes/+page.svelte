@@ -1,52 +1,51 @@
-<FolderEditor
-	widgets={explorer.selected_folder_pile?.widgets}
-	onread={readTextFile}
-	onwrite={writeTextFile}
-	onshow={folder_path => explorer.show_folder(folder_path)}
-	{onclick}
-	{ondblclick}
-	selected={widget_name => explorer.selected_widget === widget_name}
-	cutted={widget_name => explorer.buffer.widget_name === widget_name}
-	{onselect}
-/>
-<Breadcrumbs
-	breadcrumbs={explorer.breadcrumbs}
-	onclick={folder_path => explorer.show_folder(folder_path)}
-/>
+{#if explorer.selected_folder_path}
+	<Container
+		fullscreen
+		path={explorer.selected_folder_path}
+		selected_widget={explorer.selected_widget}
+		{ondeselect}
+		{explorer}
+	/>
+	<Breadcrumbs
+		breadcrumbs={explorer.breadcrumbs}
+		onclick={folder_path => {
+			document.dispatchEvent(new CustomEvent("show_folder", { detail: {
+				folder_path
+			}}))
+		}}
+	/>
+{/if}
 
-<script lang="ts">
+<script>
 import "./app.css"
-import FolderEditor from "$lib/ui/FolderEditor.svelte"
+import Container from "./Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { writeTextFile, readTextFile } from '@tauri-apps/plugin-fs'
-import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
-import { ExplorerStore } from "$lib/store/explorer.svelte"
+import { join } from '@tauri-apps/api/path'
+import { Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
+
+
 let { data } = $props()
+import { ExplorerStore } from "$lib/store/explorer.svelte"
 let explorer = new ExplorerStore(data.ROOT_FOLDER_PATH, data.SEPARATOR)
 
-function onclick() {
+document.addEventListener("select_widget", (e) => {
+    //@ts-ignore
+	explorer.select_widget(e.detail.widget)
+})
+function ondeselect() {
 	explorer.deselect_widget()
-}
-async function ondblclick(e) {
-	//@ts-ignore
-	if (e.target.classList.contains("surface")) {
-		const type = e.shiftKey ? "folder" : "note"
-		const position = {x: e.x, y: e.y}
-		const new_folder_pile = await Create_widget(explorer.selected_folder_path, {type, position})
-		explorer.update_explorer(new_folder_pile)
-	}
-}
-function onselect(e, widget_name) {
-	e.preventDefault()
-	explorer.select_widget(widget_name)
 }
 async function onRename() {
 	if (!explorer.selected_widget) return
 	try {
-		let new_folder_name = prompt("Enter new folder name", explorer.selected_widget)
+		let new_folder_name = prompt("Enter new folder name", explorer.selected_widget.name)
 		if (new_folder_name) {
-			const new_folder_pile = await Rename_widget(explorer.selected_folder_path, explorer.selected_widget, new_folder_name)
-			explorer.update_explorer(new_folder_pile)
+			const pile = await Rename_widget(explorer.selected_folder_path, explorer.selected_widget.name, new_folder_name)
+			explorer.update_explorer(pile)
+			document.dispatchEvent(new CustomEvent("update_pile", { detail: {
+				folder_path: explorer.selected_folder_path,
+				pile
+			}}))
 		}
 	} catch (error) {
 		if (error instanceof Error) {
@@ -59,8 +58,12 @@ async function onRemove() {
 	if (!explorer.selected_widget) return
 	let is_remove = confirm("Are you sure remove?")
 	if (is_remove) {
-		const new_folder_pile = await Remove_widget(explorer.selected_folder_path, explorer.selected_widget)
-		explorer.update_explorer(new_folder_pile)
+		const pile = await Remove_widget(explorer.selected_folder_path, explorer.selected_widget.name)
+		explorer.update_explorer(pile)
+		document.dispatchEvent(new CustomEvent("update_pile", { detail: {
+			folder_path: explorer.selected_folder_path,
+			pile
+		}}))
 	}
 }
 
@@ -72,6 +75,10 @@ document.addEventListener("keydown", async e => {
 		explorer.paste()
 		const {to_pile} = await Move_widget(explorer.buffer)
 		explorer.update_explorer(to_pile)
+		document.dispatchEvent(new CustomEvent("update_pile", { detail: {
+			folder_path: explorer.selected_folder_path,
+			pile: to_pile
+		}}))
 		explorer.clean()
 	}
 })
@@ -82,11 +89,13 @@ interact('.widget')
 .draggable({
 	listeners: {
 		move(event) {
-			event.target.style.left = event.rect.left + "px"
-			event.target.style.top = event.rect.top + "px"
+			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
+			event.target.style.top = +event.target.style.top.replace("px", "") + event.delta.y + "px"
 		},
 		end(event) {
-			Update_widget(explorer.selected_folder_path, event.currentTarget.dataset.name, {position: {x: event.rect.left, y: event.rect.top}})
+			const widget_name = event.currentTarget.dataset.name
+			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
+			Update_widget(folder_path, widget_name, {position: {x: event.rect.left, y: event.rect.top}})
 		}
 	},
 	modifiers: [
@@ -101,8 +110,9 @@ interact('.widget')
 			event.target.style.height = event.rect.height + "px"
 		},
 		async end(event) {
-			const pile = await Update_widget(explorer.selected_folder_path, event.currentTarget.dataset.name, {size: {width: event.rect.width, height: event.rect.height}})
-			explorer.update_explorer(pile)
+			const widget_name = event.currentTarget.dataset.name
+			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
+			Update_widget(folder_path, widget_name, {size: {width: event.rect.width, height: event.rect.height}})
 		}
 	},
 	modifiers: [
@@ -117,6 +127,7 @@ interact('.dropzone').dropzone({
 		event.target.classList.add('drop-active')
 	},
 	ondragenter: (event) => {
+		console.log(event.target === event.relatedTarget)
 		event.target.classList.add('drop-target')
 		event.relatedTarget.classList.add('can-drop')
 	},
@@ -125,12 +136,18 @@ interact('.dropzone').dropzone({
 		event.relatedTarget.classList.remove('can-drop')
 	},
 	ondrop: async (event) => {
+		const widget_name = event.relatedTarget.dataset.name
+		const from_folder_path = await join(event.relatedTarget.dataset.path.replace(widget_name, ""))
+		const to_folder_path = event.target.dataset.path
 		const {from_pile} = await Move_widget({
-			from_folder_path: explorer.selected_folder_path,
-			widget_name: event.relatedTarget.dataset.name,
-			to_folder_path: event.target.dataset.path,
+			from_folder_path,
+			widget_name,
+			to_folder_path,
 		})
-		explorer.update_explorer(from_pile)
+		document.dispatchEvent(new CustomEvent("update_pile", { detail: {
+			folder_path: from_folder_path,
+			pile: from_pile
+		}}))
 	},
 	ondropdeactivate: (event) => {
 		event.target.classList.remove('drop-active')

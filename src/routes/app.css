@@ -1,4 +1,64 @@
-.selected {
+.container {
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+.container.fullscreen {
+    height: 100vh;
+}
+.container-title {
+    background-color: aqua;
+    margin: 0;
+    padding: 20px;
+}
+.container.board {
+    position: absolute;
+}
+.container.masonry {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(auto, auto));
+    grid-auto-rows: 17px;
+    gap: 5px;
+    padding: 10px;
+    box-sizing: border-box;    
+}
+
+.cell {
+    /* background-color: yellow; */
+}
+.cell.board {
+    position: absolute;
+}
+.cell.stack {
+    display: block;
+    width: 100% !important;
+    margin-bottom: 10px;
+}
+.cell.slides {
+    display: none;
+    width: 100% !important;
+}
+.cell.slides.selected_slide {
+    display: block;
+    /* background-color: aquamarine !important; */
+}
+.cell.masonry {
+    width: 100% !important;
+}
+.cell.masonry:hover {
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.folder.stack {
+    margin: 10px;
+}
+
+
+/* /////// */
+
+
+.selected_widget {
 	outline: 5px solid blue !important;
 }
 .cutted {

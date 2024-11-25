@@ -15,7 +15,14 @@ export const Folder_pile = (folder_path: string) => ({
 	},
 	async read(path?: WidgetPath) {
 		const contents = await readTextFile(path || this.fcpath)
-		return YAML.parse(contents)
+		const json = YAML.parse(contents)
+		const aggregated_widgets = []
+		for await (const widget of json.widgets) {
+			widget.path = await join(folder_path, widget.name)
+			aggregated_widgets.push(widget)
+		}
+		json.widgets = aggregated_widgets
+		return json
 	},
 	async write(pile: FolderPile) {
 		await writeTextFile(this.fcpath, YAML.stringify(pile))
