@@ -11,6 +11,15 @@
         {widget.name}    
     </p>
     <p>
+        <button onclick={async () => {
+            const folder_path = widget.path.replace(widget.name, "")
+            await Update_widget(folder_path, widget.name, {type: "folder"})
+            setTimeout(() => {
+                document.dispatchEvent(new CustomEvent("show_folder", { detail: {
+                    folder_path
+                }}))
+            }, 10)
+        }}>Change to folder</button>
         <select bind:value={selected_view} onchange={async () => {
             pile = await Change_view(path, selected_view)
 

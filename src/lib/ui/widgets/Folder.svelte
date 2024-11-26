@@ -9,6 +9,15 @@
 		}}))
     }}
 >
+<button onclick={async () => {
+    const folder_path = widget.path.replace(widget.name, "")
+    await Update_widget(folder_path, widget.name, {type: "container"})
+    setTimeout(() => {
+        document.dispatchEvent(new CustomEvent("show_folder", { detail: {
+            folder_path
+        }}))
+    }, 10)
+}}>Change to container</button>
 </div>
 
 <style>
@@ -28,4 +37,5 @@ div::after {
 </style>
 <script>
 let { view, widget } = $props()
+import { Update_widget } from "$lib/services/widget"
 </script>
