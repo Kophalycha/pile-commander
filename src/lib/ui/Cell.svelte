@@ -27,8 +27,26 @@
     {:else if widget.type === "container"}
         <Container path={widget.path} />
     {/if}
+    <span class="resize-handle"></span>
 </div>
 
+<style>
+.resize-handle {
+    visibility: hidden;
+    width: 10px;
+    height: 10px;
+    float: right;
+    background-color: #ccc;
+    padding: 15px;
+    box-sizing: border-box;
+    position: relative;
+    bottom: 30px;
+    opacity: .2;
+}
+.cell:hover .resize-handle {
+    visibility: visible;
+}
+</style>
 <script>
 import Container from "$lib/ui/Container.svelte"
 import Note from "$lib/ui/widgets/Note.svelte"

@@ -9,19 +9,25 @@
 .container-title {
     background-color: aqua;
     margin: 0;
-    /* padding: 20px; */
-    height: 40px;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 60px;
     position: absolute;
-    top: -40px;
+    top: -60px;
 }
 .container.board {
     position: absolute;
 }
 .container.stack {
+    /* margin: 10px; */
     padding: 20px;
     box-sizing: border-box;
-    overflow: hidden !important;
-    outline: 1px solid gray;
+    /* overflow: hidden !important; */
+    overflow: auto;
+    /* resize: both; */
+    outline-offset: -1px;
+    outline: 1px solid #ccc;
 }
 .container.masonry {
     display: grid !important;
@@ -32,9 +38,14 @@
     box-sizing: border-box;    
 }
 
-/* .cell {
-    background-color: yellow;
-} */
+.cell {
+    /* position: relative; */
+    /* background-color: yellow; */
+    /* resize: both; */
+    /* overflow: auto; */
+    /* resize: both; */
+
+}
 .cell.board {
     position: absolute;
 }
@@ -57,10 +68,6 @@
 .cell.masonry:hover {
     background-color: #ffffff;
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-}
-
-.folder.stack {
-    margin: 10px;
 }
 
 

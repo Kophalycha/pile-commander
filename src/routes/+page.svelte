@@ -105,6 +105,7 @@ interact('.draggable')
 })
 interact('.resizable')
 .resizable({
+	allowFrom: '.resize-handle',
 	edges: { left: false, right: true, bottom: true, top: false },
 	listeners: {
 		move (event) {
