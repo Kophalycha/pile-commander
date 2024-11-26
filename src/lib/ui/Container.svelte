@@ -41,7 +41,6 @@ import Cell from "$lib/ui/Cell.svelte"
 let {fullscreen = false, path, selected_widget, ondeselect, explorer} = $props()
 let pile = $state()
 let container_element = $state()
-$inspect(pile)
 
 import { onMount } from "svelte"
 import { Folder_pile } from '$lib/services/folder_pile'
@@ -71,8 +70,6 @@ document.addEventListener("show_folder", async (e) => {
     if (fullscreen) {
         //@ts-ignore
         pile = {...await Folder_pile(e.detail.folder_path).read()}
-        console.log(path)
-        console.log(e.detail.folder_path)
         //@ts-ignore
         explorer.show_folder(e.detail.folder_path)
 

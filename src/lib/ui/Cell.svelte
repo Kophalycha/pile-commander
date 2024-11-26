@@ -12,7 +12,7 @@
     class:selected_slide
     class:selected_widget
     class:draggable={view === "board"}
-    class:dropzone={["folder", "container"].includes(widget.type)}
+    class:dropzone={["folder", "container"].includes(widget.type) && view === "board"}
     class:cutted
     onclick={() => {
 		document.dispatchEvent(new CustomEvent("select_widget", { detail: {
