@@ -1,6 +1,12 @@
 {#if pile}
     {#if !fullscreen} 
-        <p class="container-title drag-handle">{path}</p>
+        <p class="container-title drag-handle"
+        ondblclick={() => {
+            document.dispatchEvent(new CustomEvent("show_folder", { detail: {
+                folder_path: path
+            }}))
+        }}
+        >{path}</p>
     {/if}
     <section
         style="background: {pile.background || "#f5f5f5"};"
