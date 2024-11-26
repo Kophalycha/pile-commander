@@ -1,11 +1,11 @@
 {#if pile}
     {#if !fullscreen} 
         <p class="container-title drag-handle"
-        ondblclick={() => {
-            document.dispatchEvent(new CustomEvent("show_folder", { detail: {
-                folder_path: path
-            }}))
-        }}
+            ondblclick={() => {
+                document.dispatchEvent(new CustomEvent("show_folder", { detail: {
+                    folder_path: path
+                }}))
+            }}
         >{path}</p>
     {/if}
     <section
@@ -53,12 +53,10 @@ import { Folder_pile } from '$lib/services/folder_pile'
 import Sortable from 'sortablejs'
 onMount(async () => {
     pile = await Folder_pile(path).read()
-    if (["masonry","stack"].includes(pile.view)) {
-        setTimeout(() => Sortable.create(container_element), 100)
-    }
+    if_sortable()
 })
 
-import { Create_widget } from "$lib/services/widget"
+import { Create_widget, Reorder_widgets } from "$lib/services/widget"
 async function onCreate(e) {
 	//@ts-ignore
 	if (e.target.classList.contains("surface")) {
@@ -75,17 +73,22 @@ document.addEventListener("update_pile", (e) => {
 document.addEventListener("show_folder", async (e) => {
     if (fullscreen) {
         //@ts-ignore
-        pile = {...await Folder_pile(e.detail.folder_path).read()}
+        pile = await Folder_pile(e.detail.folder_path).read()
         //@ts-ignore
         explorer.show_folder(e.detail.folder_path)
 
-        if (["masonry","stack"].includes(pile.view)) {
-            setTimeout(() => Sortable.create(container_element), 100)
-        }
+        if_sortable()
+
     }
 })
 
-function make_sortable() {
-    
+function if_sortable() {
+    if (["masonry","stack"].includes(pile.view)) {
+        setTimeout(() => {
+            new Sortable(container_element, {
+                onUpdate: async e => pile = await Reorder_widgets(path, e.oldIndex, e.newIndex)
+            })
+        }, 100)
+    }
 }
 </script>

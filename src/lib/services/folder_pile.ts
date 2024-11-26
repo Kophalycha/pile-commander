@@ -59,6 +59,14 @@ export const Folder_pile = (folder_path: string) => ({
 		await this.write(from_pile)
 		return { from_pile, to_pile }
 	},
+	async reorder_widgets(from_index: number, to_index: number) {
+		const pile = await this.read()
+		const moving_widget = pile.widgets[from_index]
+		pile.widgets.splice(from_index, 1)
+		pile.widgets.splice(to_index, 0, moving_widget)
+		return await this.write(pile)
+
+	},
 	async remove_widget(name: WidgetName) {
 		const pile = await this.read()
 		pile.widgets = pile.widgets.filter((w: Widget) => w.name !== name)

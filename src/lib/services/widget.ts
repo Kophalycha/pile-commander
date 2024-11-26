@@ -55,6 +55,10 @@ export async function Update_widget(folder_path: WidgetPath, widget_name: Widget
 	return await Folder_pile(folder_path).update_widget(widget_name, payload)
 }
 
+export async function Reorder_widgets(folder_path: WidgetPath, from_index: number, to_index: number) {
+	return await Folder_pile(folder_path).reorder_widgets(from_index, to_index)
+}
+
 export async function Move_widget(buffer: Buffer) {
 	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
 	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
