@@ -14,6 +14,7 @@
         class="container {pile.view}"
         class:fullscreen
         class:surface={pile.view === "board"}
+        data-path={path}
         bind:this={container_element}
         ondblclick={onCreate}
     >
@@ -55,11 +56,8 @@ onMount(async () => {
     if_sortable()
 })
 
-// class:dropzone={["folder", "container"].includes(widget.type) && widget.view === "board"}
-
-import { Create_widget, Reorder_widgets } from "$lib/services/widget"
+import { Create_widget, Update_widget, Reorder_widgets, Move_widget } from "$lib/services/widget"
 async function onCreate(e) {
-	//@ts-ignore
 	if (e.target.classList.contains("surface")) {
 		const type = e.shiftKey ? "folder" : "note"
 		const position = {x: e.x, y: e.y}
@@ -68,73 +66,57 @@ async function onCreate(e) {
 }
 
 document.addEventListener("update_pile", (e) => {
-    //@ts-ignore
     if (e.detail.folder_path === path) pile = e.detail.pile
 })
 document.addEventListener("show_folder", async (e) => {
     if (fullscreen) {
-        //@ts-ignore
         pile = await Folder_pile(e.detail.folder_path).read()
         path = e.detail.folder_path
-        //@ts-ignore
         explorer.show_folder(e.detail.folder_path)
-
         if_sortable()
-
     }
 })
 
+
+let started_drop_target = null
+let finished_drop_target = null
+let dropped_position = null
+const seek_drop_target = e => {
+    finished_drop_target = e.target.closest("section")
+    dropped_position = {x: e.x, y: e.y}
+}
 function if_sortable() {
     if (["masonry","stack"].includes(pile.view)) {
         setTimeout(() => {
             new Sortable(container_element, {
-                // forceFallback: true,
                 group: {name: 'shared'},
-                // group: {
-                //     name: "inner_sortable_container",
-                //     // pull: true,
-                //     put: ["parent_folder"],
-                // },
-                onAdd: function (e) {
-                    console.log(e)
+                onStart: e => {
+                    started_drop_target = e.from
+                    document.addEventListener("mousemove", seek_drop_target)
+                },
+                onEnd: async e => {
+                    document.removeEventListener("mousemove", seek_drop_target)
+                    if (started_drop_target === finished_drop_target) return
+                    const from_folder_path = e.from.dataset.path
+                    const widget_name = e.item.dataset.name
+                    const to_folder_path = finished_drop_target.dataset.path
+                    await Update_widget(from_folder_path, widget_name, {position: dropped_position})
+                    const {from_pile, to_pile} = await Move_widget({
+                        from_folder_path,
+                        widget_name,
+                        to_folder_path,
+                    })
+                    pile = from_pile
+                    setTimeout(() => {
+                        document.dispatchEvent(new CustomEvent("update_pile", { detail: {
+                            folder_path: to_folder_path,
+                            pile: to_pile
+                        }}))
+                    }, 100);
                 },
                 onUpdate: async e => pile = await Reorder_widgets(path, e.oldIndex, e.newIndex),
-                onRemove: function (e) {
-                    console.log(e)
-                },
             })
         }, 100)
     }
-    //  else {
-    //     console.log(path)
-    //     setTimeout(() => {
-    //         new Sortable(container_element, {
-    //             // forceFallback: true,
-    //             group: {name: 'shared'},
-    //             // group: {
-    //             //     name: "parent_folder",
-    //             //     pull: true,
-    //             //     // put: true,
-    //             // },
-    //             // sort: false,
-    //             // onAdd: function (e) {
-    //             //     console.log(e)
-    //             // },
-    //             // onUpdate: async e => pile = await Reorder_widgets(path, e.oldIndex, e.newIndex),
-    //             // onRemove: function (e) {
-    //             //     console.log(e)
-    //             // },
-    //             onAdd: function (e) {
-    //                 console.log(e)
-    //             },
-    //             onUpdate: function (e) {
-    //                 console.log(e)
-    //             },
-    //             onRemove: function (e) {
-    //                 console.log(e)
-    //             },
-    //         })
-    //     }, 100)
-    // }
 }
 </script>

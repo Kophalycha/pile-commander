@@ -15,7 +15,6 @@
 {/if}
 
 <script>
-import { setContext } from 'svelte'
 import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
@@ -135,18 +134,14 @@ interact('.dropzone').dropzone({
 		event.relatedTarget.classList.remove('can-drop')
 	},
 	ondrop: async (event) => {
-		console.log(event)
 		const widget_name = event.relatedTarget.dataset.name
 		const from_folder_path = await join(event.relatedTarget.dataset.path.replace(widget_name, ""))
 		const to_folder_path = event.target.dataset.path
-		console.log(widget_name, from_folder_path, to_folder_path)
 		const {from_pile, to_pile} = await Move_widget({
 			from_folder_path,
 			widget_name,
 			to_folder_path,
 		})
-		console.log(from_pile, to_pile)
-
 		document.dispatchEvent(new CustomEvent("update_pile", { detail: {
 			folder_path: from_folder_path,
 			pile: from_pile
