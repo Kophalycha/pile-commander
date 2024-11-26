@@ -16,12 +16,14 @@ export const Folder_pile = (folder_path: string) => ({
 	async read(path?: WidgetPath) {
 		const contents = await readTextFile(path || this.fcpath)
 		const json = YAML.parse(contents)
+		//
 		const aggregated_widgets = []
 		for await (const widget of json.widgets) {
 			widget.path = await join(folder_path, widget.name)
 			aggregated_widgets.push(widget)
 		}
 		json.widgets = aggregated_widgets
+		//
 		return json
 	},
 	async write(pile: FolderPile) {
@@ -48,13 +50,28 @@ export const Folder_pile = (folder_path: string) => ({
 		return await this.write(pile)
 	},
 	async move_widget(name: WidgetName, to: WidgetPath) {
-		const from_pile = await this.read()
+		let from_pile = await this.read()
+		
 		let moved_widget = from_pile.widgets.filter((w: Widget) => w.name === name)[0]
 		from_pile.widgets = from_pile.widgets.filter((w: Widget) => w.name !== name)
 		const to_path = await join(to, FOLDER_PILE_FILE_NAME)
-		const to_pile = await this.read(to_path)
+		let to_pile = await this.read(to_path)
 		moved_widget.path = await join(to, moved_widget.name)
 		to_pile.widgets.push(moved_widget)
+
+		console.log(from_pile)
+
+		async function update_widgets_path(pile, parent_path) {
+			const aggregated_widgets = []
+			for await (const widget of pile.widgets) {
+				widget.path = await join(parent_path, widget.name)
+				aggregated_widgets.push(widget)
+			}
+			pile.widgets = aggregated_widgets
+			return pile
+		}
+		to_pile = await update_widgets_path(to_pile, to)
+
 		await writeTextFile(to_path, YAML.stringify(to_pile))
 		await this.write(from_pile)
 		return { from_pile, to_pile }

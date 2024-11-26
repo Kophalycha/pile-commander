@@ -138,18 +138,28 @@ interact('.dropzone').dropzone({
 		event.relatedTarget.classList.remove('can-drop')
 	},
 	ondrop: async (event) => {
+		console.log(event)
 		const widget_name = event.relatedTarget.dataset.name
 		const from_folder_path = await join(event.relatedTarget.dataset.path.replace(widget_name, ""))
 		const to_folder_path = event.target.dataset.path
-		const {from_pile} = await Move_widget({
+		console.log(widget_name, from_folder_path, to_folder_path)
+		const {from_pile, to_pile} = await Move_widget({
 			from_folder_path,
 			widget_name,
 			to_folder_path,
 		})
+		console.log(from_pile, to_pile)
+
 		document.dispatchEvent(new CustomEvent("update_pile", { detail: {
 			folder_path: from_folder_path,
 			pile: from_pile
 		}}))
+		if (event.target.classList.contains("container")) {
+			document.dispatchEvent(new CustomEvent("update_pile", { detail: {
+				folder_path: to_folder_path,
+				pile: to_pile
+			}}))
+		}
 	},
 	ondropdeactivate: (event) => {
 		event.target.classList.remove('drop-active')

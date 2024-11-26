@@ -56,6 +56,8 @@ onMount(async () => {
     if_sortable()
 })
 
+// class:dropzone={["folder", "container"].includes(widget.type) && widget.view === "board"}
+
 import { Create_widget, Reorder_widgets } from "$lib/services/widget"
 async function onCreate(e) {
 	//@ts-ignore
@@ -74,6 +76,7 @@ document.addEventListener("show_folder", async (e) => {
     if (fullscreen) {
         //@ts-ignore
         pile = await Folder_pile(e.detail.folder_path).read()
+        path = e.detail.folder_path
         //@ts-ignore
         explorer.show_folder(e.detail.folder_path)
 
@@ -86,9 +89,53 @@ function if_sortable() {
     if (["masonry","stack"].includes(pile.view)) {
         setTimeout(() => {
             new Sortable(container_element, {
-                onUpdate: async e => pile = await Reorder_widgets(path, e.oldIndex, e.newIndex)
+                // forceFallback: true,
+                group: {name: 'shared'},
+                // group: {
+                //     name: "inner_sortable_container",
+                //     // pull: true,
+                //     put: ["parent_folder"],
+                // },
+                onAdd: function (e) {
+                    console.log(e)
+                },
+                onUpdate: async e => pile = await Reorder_widgets(path, e.oldIndex, e.newIndex),
+                onRemove: function (e) {
+                    console.log(e)
+                },
             })
         }, 100)
     }
+    //  else {
+    //     console.log(path)
+    //     setTimeout(() => {
+    //         new Sortable(container_element, {
+    //             // forceFallback: true,
+    //             group: {name: 'shared'},
+    //             // group: {
+    //             //     name: "parent_folder",
+    //             //     pull: true,
+    //             //     // put: true,
+    //             // },
+    //             // sort: false,
+    //             // onAdd: function (e) {
+    //             //     console.log(e)
+    //             // },
+    //             // onUpdate: async e => pile = await Reorder_widgets(path, e.oldIndex, e.newIndex),
+    //             // onRemove: function (e) {
+    //             //     console.log(e)
+    //             // },
+    //             onAdd: function (e) {
+    //                 console.log(e)
+    //             },
+    //             onUpdate: function (e) {
+    //                 console.log(e)
+    //             },
+    //             onRemove: function (e) {
+    //                 console.log(e)
+    //             },
+    //         })
+    //     }, 100)
+    // }
 }
 </script>
