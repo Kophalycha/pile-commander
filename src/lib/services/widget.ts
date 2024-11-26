@@ -76,3 +76,9 @@ export async function Remove_widget(folder_path: WidgetPath, widget_name: string
 	await remove(widget_path, { recursive: true })
 	return await Folder_pile(folder_path).remove_widget(widget_name)
 }
+
+
+export async function Change_view(folder_path: WidgetPath, view: ViewType) {
+	console.log(folder_path, view)
+	return await Folder_pile(folder_path).change_view(view)
+}

@@ -90,4 +90,13 @@ export const Folder_pile = (folder_path: string) => ({
 		return await this.write(pile)
 	},
 
+	async change_view(view: ViewType) {
+		const pile = await this.read()
+		pile.view = view
+		if (view === "slides" && !pile.selected_widget_index) {
+			pile.selected_widget_index = 0
+		}
+		return await this.write(pile)
+	}
+
 })

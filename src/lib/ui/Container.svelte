@@ -7,7 +7,20 @@
                     folder_path: path
                 }}))
             }}
-        >{path}</p>
+        >
+        {widget.name}    
+    </p>
+    <p>
+        <select bind:value={selected_view} onchange={async () => {
+            pile = await Change_view(path, selected_view)
+
+        }}>
+            <!-- <option value="board">board</option> -->
+            <option value="stack">stack</option>
+            <option value="masonry">masonry</option>
+            <option value="slides">slides</option>
+        </select>
+    </p>
     {/if}
     <section
         style="background: {pile.background || "#f5f5f5"};"
@@ -44,8 +57,9 @@ article span {
 </style>
 <script>
 import Cell from "$lib/ui/Cell.svelte"
-let {fullscreen = false, path, explorer} = $props()
+let {fullscreen = false, path, explorer, widget} = $props()
 let pile = $state()
+let selected_view = $state()
 let container_element = $state()
 
 import { onMount } from "svelte"
@@ -53,10 +67,11 @@ import { Folder_pile } from '$lib/services/folder_pile'
 import Sortable from 'sortablejs'
 onMount(async () => {
     pile = await Folder_pile(path).read()
+    selected_view = pile.view
     if_sortable()
 })
 
-import { Create_widget, Update_widget, Reorder_widgets, Move_widget } from "$lib/services/widget"
+import { Create_widget, Update_widget, Reorder_widgets, Move_widget, Change_view } from "$lib/services/widget"
 async function onCreate(e) {
 	if (e.target.classList.contains("surface")) {
 		const type = e.shiftKey ? "folder" : "note"
@@ -72,6 +87,7 @@ document.addEventListener("show_folder", async (e) => {
     if (fullscreen) {
         pile = await Folder_pile(e.detail.folder_path).read()
         path = e.detail.folder_path
+        selected_view = pile.view
         explorer.show_folder(e.detail.folder_path)
         if_sortable()
     }

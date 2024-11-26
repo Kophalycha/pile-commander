@@ -20,7 +20,7 @@
     {:else if widget.type === "folder"}
         <Folder {view} {widget} />
     {:else if widget.type === "container"}
-        <Container path={widget.path} />
+        <Container path={widget.path} {widget} />
     {/if}
     <span class="resize-handle"></span>
 </div>
