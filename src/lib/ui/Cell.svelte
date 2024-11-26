@@ -48,7 +48,7 @@ import Note from "$lib/ui/widgets/Note.svelte"
 import Folder from "$lib/ui/widgets/Folder.svelte"
 const { view, widget, selected_slide, cutted } = $props()
 let selected_widget = $state(false)
-document.addEventListener("widget_selected", (e) => {
+document.addEventListener("select_widget", (e) => {
     if (e.detail.widget_path === widget.path) {
         selected_widget = true
     } else {

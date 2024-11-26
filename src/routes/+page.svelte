@@ -26,20 +26,23 @@ import { ExplorerStore } from "$lib/store/explorer.svelte"
 let explorer = new ExplorerStore(data.ROOT_FOLDER_PATH, data.SEPARATOR)
 
 document.addEventListener("click", e => {
-	document.dispatchEvent(new CustomEvent("widget_selected", { detail: {
+	document.dispatchEvent(new CustomEvent("select_widget", { detail: {
 		widget_path: e.target.dataset.path
 	}}))
 })
 
 async function onRename() {
-	if (!explorer.selected_widget) return
+	const selected_widget = document.querySelector(".selected_widget")
+	if (!selected_widget) return
+	console.log(selected_widget)
 	try {
-		let new_folder_name = prompt("Enter new folder name", explorer.selected_widget.name)
+		const folder_path = selected_widget.parentElement.closest(".container").dataset.path
+		let new_folder_name = prompt("Enter new folder name", selected_widget.dataset.name)
 		if (new_folder_name) {
-			const pile = await Rename_widget(explorer.selected_folder_path, explorer.selected_widget.name, new_folder_name)
+			const pile = await Rename_widget(folder_path, selected_widget.dataset.name, new_folder_name)
 			explorer.update_explorer(pile)
 			document.dispatchEvent(new CustomEvent("update_pile", { detail: {
-				folder_path: explorer.selected_folder_path,
+				folder_path,
 				pile
 			}}))
 		}
@@ -51,13 +54,17 @@ async function onRename() {
 	}
 }
 async function onRemove() {
-	if (!explorer.selected_widget) return
+	const selected_widget = document.querySelector(".selected_widget")
+	if (!selected_widget) return
 	let is_remove = confirm("Are you sure remove?")
 	if (is_remove) {
-		const pile = await Remove_widget(explorer.selected_folder_path, explorer.selected_widget.name)
+		const folder_path = selected_widget.parentElement.closest(".container").dataset.path
+		const pile = await Remove_widget(folder_path, selected_widget.dataset.name)
+		console.log(pile)
+		console.log(folder_path)
 		explorer.update_explorer(pile)
 		document.dispatchEvent(new CustomEvent("update_pile", { detail: {
-			folder_path: explorer.selected_folder_path,
+			folder_path,
 			pile
 		}}))
 	}
