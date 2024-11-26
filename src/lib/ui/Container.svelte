@@ -83,7 +83,8 @@ onMount(async () => {
 import { Create_widget, Update_widget, Reorder_widgets, Move_widget, Change_view } from "$lib/services/widget"
 async function onCreate(e) {
 	if (e.target.classList.contains("surface")) {
-		const type = e.shiftKey ? "folder" : "note"
+		let type = "note"
+        if (e.shiftKey) type = e.ctrlKey ? "container" : "folder"
 		const position = {x: e.x, y: e.y}
 		pile = await Create_widget(path, {type, position})
 	}

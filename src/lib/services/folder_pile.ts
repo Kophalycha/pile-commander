@@ -6,9 +6,9 @@ const FOLDER_PILE_FILE_NAME = "folder.pile"
 
 export const Folder_pile = (folder_path: string) => ({
 	fcpath: `${folder_path}/${FOLDER_PILE_FILE_NAME}`,
-	async init() {
+	async init(view: ViewType = "board") {
 		const init_folder_pile: FolderPile = {
-			"view": "board",
+			"view": view,
 			"widgets": []
 		}
 		return await this.write(init_folder_pile)

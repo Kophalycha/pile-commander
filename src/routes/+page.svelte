@@ -34,7 +34,6 @@ document.addEventListener("click", e => {
 async function onRename() {
 	const selected_widget = document.querySelector(".selected_widget")
 	if (!selected_widget) return
-	console.log(selected_widget)
 	try {
 		const folder_path = selected_widget.parentElement.closest(".container").dataset.path
 		let new_folder_name = prompt("Enter new folder name", selected_widget.dataset.name)
@@ -60,8 +59,6 @@ async function onRemove() {
 	if (is_remove) {
 		const folder_path = selected_widget.parentElement.closest(".container").dataset.path
 		const pile = await Remove_widget(folder_path, selected_widget.dataset.name)
-		console.log(pile)
-		console.log(folder_path)
 		explorer.update_explorer(pile)
 		document.dispatchEvent(new CustomEvent("update_pile", { detail: {
 			folder_path,

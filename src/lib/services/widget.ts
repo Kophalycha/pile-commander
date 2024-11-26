@@ -17,6 +17,9 @@ async function make(folder_path: WidgetName, payload: Partial<Widget>) {
 		"folder": {
 			name: `New folder ${+new Date()}`,
 		},
+		"container": {
+			name: `New container ${+new Date()}`,
+		},
 	}
 	const path = await join(folder_path, typed_records[type].name)
 	return {...generic_widget, ...typed_records[type], ...payload, path}
@@ -32,8 +35,10 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
 				await writeTextFile(new_widget.path, "")
 				break
 			case "folder":
+			case "container":
 				await mkdir(new_widget.path)
-				await Folder_pile(new_widget.path).init()
+				const view = new_widget.type === "container" ? "stack" : "board"
+				await Folder_pile(new_widget.path).init(view)
 				break
 		}
 		return await Folder_pile(folder_path).create_widget(new_widget)
