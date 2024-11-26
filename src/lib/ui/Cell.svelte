@@ -14,11 +14,6 @@
     class:draggable={view === "board"}
     class:dropzone={["folder", "container"].includes(widget.type) && view === "board"}
     class:cutted
-    onclick={() => {
-		document.dispatchEvent(new CustomEvent("select_widget", { detail: {
-			widget: widget
-		}}))
-    }}
 >
     {#if widget.type === "note"}
         <Note {view} {widget} />
@@ -51,5 +46,13 @@
 import Container from "$lib/ui/Container.svelte"
 import Note from "$lib/ui/widgets/Note.svelte"
 import Folder from "$lib/ui/widgets/Folder.svelte"
-const { view, widget, selected_slide, selected_widget, cutted } = $props()
+const { view, widget, selected_slide, cutted } = $props()
+let selected_widget = $state(false)
+document.addEventListener("widget_selected", (e) => {
+    if (e.detail.widget_path === widget.path) {
+        selected_widget = true
+    } else {
+        selected_widget = false
+    }
+})
 </script>

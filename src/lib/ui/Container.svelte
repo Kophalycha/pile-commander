@@ -1,6 +1,7 @@
 {#if pile}
     {#if !fullscreen} 
         <p class="container-title drag-handle"
+            data-path={path}
             ondblclick={() => {
                 document.dispatchEvent(new CustomEvent("show_folder", { detail: {
                     folder_path: path
@@ -14,7 +15,6 @@
         class:fullscreen
         class:surface={pile.view === "board"}
         bind:this={container_element}
-        onclickcapture={ondeselect}
         ondblclick={onCreate}
     >
         {#each pile.widgets as widget, i(widget.path)}
@@ -22,7 +22,6 @@
                 view={pile.view}
                 {widget}
                 selected_slide={i === pile.selected_widget_index}
-                selected_widget={selected_widget?.path === widget.path}
                 cutted={explorer?.buffer?.widget_name === widget.name}
             />
         {:else}
@@ -44,7 +43,7 @@ article span {
 </style>
 <script>
 import Cell from "$lib/ui/Cell.svelte"
-let {fullscreen = false, path, selected_widget, ondeselect, explorer} = $props()
+let {fullscreen = false, path, explorer} = $props()
 let pile = $state()
 let container_element = $state()
 

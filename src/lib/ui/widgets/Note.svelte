@@ -1,4 +1,5 @@
 <div
+    data-path={widget.path}
     style="background-color: {widget.bg_color || "white"};"
     class:is_edit
     class:drag-handle={view === "board"}

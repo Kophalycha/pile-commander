@@ -2,6 +2,7 @@
     style="background-color: {widget.bg_color || "initial"};"
     class:drag-handle={view === "board"}
     data-name={widget.name}
+    data-path={widget.path}
     ondblclick={() => {
         document.dispatchEvent(new CustomEvent("show_folder", { detail: {
 			folder_path: widget.path

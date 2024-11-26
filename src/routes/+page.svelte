@@ -2,8 +2,6 @@
 	<Container
 		fullscreen
 		path={explorer.selected_folder_path}
-		selected_widget={explorer.selected_widget}
-		{ondeselect}
 		{explorer}
 	/>
 	<Breadcrumbs
@@ -17,24 +15,23 @@
 {/if}
 
 <script>
+import { setContext } from 'svelte'
 import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { join } from '@tauri-apps/api/path'
 import { Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
 
-
 let { data } = $props()
 import { ExplorerStore } from "$lib/store/explorer.svelte"
 let explorer = new ExplorerStore(data.ROOT_FOLDER_PATH, data.SEPARATOR)
 
-document.addEventListener("select_widget", (e) => {
-    //@ts-ignore
-	explorer.select_widget(e.detail.widget)
+document.addEventListener("click", e => {
+	document.dispatchEvent(new CustomEvent("widget_selected", { detail: {
+		widget_path: e.target.dataset.path
+	}}))
 })
-function ondeselect() {
-	explorer.deselect_widget()
-}
+
 async function onRename() {
 	if (!explorer.selected_widget) return
 	try {
