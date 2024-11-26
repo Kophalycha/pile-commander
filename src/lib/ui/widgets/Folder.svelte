@@ -1,5 +1,6 @@
 <div
     style="background-color: {widget.bg_color || "initial"};"
+    class:drag-handle={view === "board"}
     data-name={widget.name}
     ondblclick={() => {
         document.dispatchEvent(new CustomEvent("show_folder", { detail: {
@@ -25,5 +26,5 @@ div::after {
 }
 </style>
 <script>
-let { widget } = $props()
+let { view, widget } = $props()
 </script>

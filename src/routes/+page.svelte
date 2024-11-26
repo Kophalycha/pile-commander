@@ -85,8 +85,9 @@ document.addEventListener("keydown", async e => {
 
 
 import interact from 'interactjs'
-interact('.widget')
+interact('.draggable')
 .draggable({
+	allowFrom: '.drag-handle',
 	listeners: {
 		move(event) {
 			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
@@ -102,6 +103,7 @@ interact('.widget')
 		interact.modifiers.restrictEdges({ outer: 'parent' }),
 	],
 })
+interact('.resizable')
 .resizable({
 	edges: { left: false, right: true, bottom: true, top: false },
 	listeners: {

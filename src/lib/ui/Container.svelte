@@ -1,6 +1,6 @@
 {#if pile}
     {#if !fullscreen} 
-        <p class="container-title">cell name</p>
+        <p class="container-title drag-handle">{path}</p>
     {/if}
     <section
         style="background: {pile.background || "#f5f5f5"};"
@@ -17,7 +17,7 @@
                 {widget}
                 selected_slide={i === pile.selected_widget_index}
                 selected_widget={selected_widget?.path === widget.path}
-                cutted={explorer.buffer.widget_name === widget.name}
+                cutted={explorer?.buffer?.widget_name === widget.name}
             />
         {:else}
             <article>
@@ -57,7 +57,6 @@ import { Create_widget } from "$lib/services/widget"
 async function onCreate(e) {
 	//@ts-ignore
 	if (e.target.classList.contains("surface")) {
-		console.log(e.target.classList)
 		const type = e.shiftKey ? "folder" : "note"
 		const position = {x: e.x, y: e.y}
 		pile = await Create_widget(path, {type, position})
@@ -72,9 +71,18 @@ document.addEventListener("show_folder", async (e) => {
     if (fullscreen) {
         //@ts-ignore
         pile = {...await Folder_pile(e.detail.folder_path).read()}
-        console.log(pile)
+        console.log(path)
+        console.log(e.detail.folder_path)
         //@ts-ignore
         explorer.show_folder(e.detail.folder_path)
+
+        if (["masonry","stack"].includes(pile.view)) {
+            setTimeout(() => Sortable.create(container_element), 100)
+        }
     }
 })
+
+function make_sortable() {
+    
+}
 </script>

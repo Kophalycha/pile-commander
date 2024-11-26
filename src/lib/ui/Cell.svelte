@@ -1,5 +1,5 @@
 <div
-    class="cell widget {widget.type} {view}"
+    class="cell widget resizable {widget.type} {view}"
     style="
         top: {widget.position.y}px;
         left: {widget.position.x}px;
@@ -11,6 +11,7 @@
     data-name={widget.name}
     class:selected_slide
     class:selected_widget
+    class:draggable={view === "board"}
     class:dropzone={["folder", "container"].includes(widget.type)}
     class:cutted
     onclick={() => {
@@ -20,9 +21,9 @@
     }}
 >
     {#if widget.type === "note"}
-        <Note {widget} />
+        <Note {view} {widget} />
     {:else if widget.type === "folder"}
-        <Folder {widget} />
+        <Folder {view} {widget} />
     {:else if widget.type === "container"}
         <Container path={widget.path} />
     {/if}

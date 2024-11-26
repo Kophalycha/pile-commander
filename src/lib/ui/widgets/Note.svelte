@@ -1,6 +1,7 @@
 <div
     style="background-color: {widget.bg_color || "white"};"
     class:is_edit
+    class:drag-handle={view === "board"}
     {ondblclick}
 >
 {#if !is_edit}
@@ -38,7 +39,7 @@ textarea {
 }
 </style>
 <script>
-let { widget } = $props()
+let { view, widget } = $props()
 
 let text = $state("")
 let is_edit = $state(false)
