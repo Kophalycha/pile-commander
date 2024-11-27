@@ -135,44 +135,38 @@ interact('.resizable')
 		interact.modifiers.restrictSize({ min: { width: 100, height: 50 } })
 	],
 })
-// interact('.dropzone').dropzone({
-// 	accept: '.widget',
-// 	overlap: 0.10,
-// 	ondropactivate: (event) => {
-// 		event.target.classList.add('drop-active')
-// 	},
-// 	ondragenter: (event) => {
-// 		event.target.classList.add('drop-target')
-// 		event.relatedTarget.classList.add('can-drop')
-// 	},
-// 	ondragleave: (event) => {
-// 		event.target.classList.remove('drop-target')
-// 		event.relatedTarget.classList.remove('can-drop')
-// 	},
-// 	ondrop: async (event) => {
-// 		const widget_name = event.relatedTarget.dataset.name
-// 		const from_folder_path = await join(event.relatedTarget.dataset.path.replace(widget_name, ""))
-// 		const to_folder_path = event.target.dataset.path
-// 		const {from_pile, to_pile} = await Move_widget({
-// 			from_folder_path,
-// 			widget_name,
-// 			to_folder_path,
-// 		})
-// 		document.dispatchEvent(new CustomEvent("update_pile", { detail: {
-// 			folder_path: from_folder_path,
-// 			pile: from_pile
-// 		}}))
-// 		if (event.target.classList.contains("container")) {
-// 			document.dispatchEvent(new CustomEvent("update_pile", { detail: {
-// 				folder_path: to_folder_path,
-// 				pile: to_pile
-// 			}}))
-// 		}
-// 	},
-// 	ondropdeactivate: (event) => {
-// 		event.target.classList.remove('drop-active')
-// 		event.target.classList.remove('drop-target')
-// 		event.relatedTarget.classList.remove('can-drop')
-// 	}
-// })
+interact('.dropzone').dropzone({
+	accept: '.widget',
+	overlap: 0.10,
+	ondropactivate: (event) => {
+		event.target.classList.add('drop-active')
+	},
+	ondragenter: (event) => {
+		event.target.classList.add('drop-target')
+		event.relatedTarget.classList.add('can-drop')
+	},
+	ondragleave: (event) => {
+		event.target.classList.remove('drop-target')
+		event.relatedTarget.classList.remove('can-drop')
+	},
+	ondrop: async (event) => {
+		const widget_name = event.relatedTarget.dataset.name
+		const from_folder_path = await join(event.relatedTarget.dataset.path.replace(widget_name, ""))
+		const to_folder_path = event.target.dataset.path
+		const {from_pile, to_pile} = await Move_widget({
+			from_folder_path,
+			widget_name,
+			to_folder_path,
+		})
+		emit("Update_folder", {folder_path: from_folder_path, pile: from_pile})
+		if (event.target.classList.contains("container")) {
+			emit("Update_folder", {folder_path: to_folder_path, pile: to_pile})
+		}
+	},
+	ondropdeactivate: (event) => {
+		event.target.classList.remove('drop-active')
+		event.target.classList.remove('drop-target')
+		event.relatedTarget.classList.remove('can-drop')
+	}
+})
 </script>

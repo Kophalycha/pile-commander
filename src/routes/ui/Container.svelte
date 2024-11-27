@@ -34,7 +34,6 @@
         ondblclick={onCreate}
         bind:this={container_element}
     >
-    {folder_path}
         {#each pile.widgets as widget, i(widget.path)}
             <Cell
                 {widget}
