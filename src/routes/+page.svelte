@@ -1,18 +1,21 @@
-<Container fullscreen folder_path={selected_folder_path} />
-<!-- <Breadcrumbs
-data.SEPARATOR
-{selected_folder_path}
-/> -->
+<Container
+	fullscreen
+	folder_path={selected_folder_path}
+/>
+<Breadcrumbs
+	root_folder_path={data.ROOT_FOLDER_PATH}
+	separator={data.SEPARATOR}
+	{selected_folder_path}
+/>
 <script>
 import "./app.css"
 import Container from "./ui/Container.svelte"
-// import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
+import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
 import { join } from '@tauri-apps/api/path'
 import { emit, listen } from "@tauri-apps/api/event"
 window.emit = emit
 window.listen = listen
-
 
 
 let { data } = $props()
@@ -24,12 +27,8 @@ listen('Show_folder', ({payload}) => {
 
 
 
-
-
-
 document.addEventListener("click", e => 
     emit("Select_widget", {widget_path: e.target.dataset.path}))
-
 
 async function onRename() {
 	const selected_widget = document.querySelector(".selected_widget")
@@ -74,6 +73,28 @@ document.addEventListener("keydown", async e => {
 	// 	explorer.clean()
 	// }
 })
+
+// buffer = $state({
+// 		from_folder_path: "",
+// 		widget_name: "",
+// 		to_folder_path: "",
+// 	})
+// 	cut() {
+// 		if (this.selected_widget) {
+// 			this.buffer.from_folder_path = this.selected_folder_path
+// 			this.buffer.widget_name = this.selected_widget.name
+// 		}
+// 	}
+// 	paste() {
+// 		this.buffer.to_folder_path = this.selected_folder_path
+// 	}
+// 	clean() {
+// 		this.buffer = {
+// 			from_folder_path: "",
+// 			widget_name: "",
+// 			to_folder_path: "",
+// 		}
+// 	}
 
 import interact from 'interactjs'
 interact('.draggable')

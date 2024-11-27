@@ -1,9 +1,9 @@
-{#if breadcrumbs?.length > 1}
+<!-- {#if breadcrumbs?.length > 1} -->
     <nav>
         {#each breadcrumbs as {name, path}(path)}
             {#if name !== current_folder_name}
                 <button
-                    onclick={() => onclick(path)}
+                    onclick={() => emit("Show_folder", {folder_path: path})}
                     data-path={path}
                     class="dropzone"
                 >
@@ -14,7 +14,7 @@
             {/if}
         {/each}
     </nav>
-{/if}
+<!-- {/if} -->
 
 <style>
 nav {
@@ -45,6 +45,23 @@ nav button {
 </style>
 
 <script>
-const { breadcrumbs, onclick } = $props()
+const { root_folder_path, separator, selected_folder_path } = $props()
+
+// : { name: string, path: string }[]
+const breadcrumbs = $derived.by(() => {
+    const crumbs = selected_folder_path?.replace(root_folder_path, "").split(separator)
+    crumbs?.shift()
+    return crumbs?.reduce(
+        (accumulator, folder_name) => [...accumulator, {
+            name: folder_name,
+            path: accumulator.at(-1)?.path + separator + folder_name
+        }],
+        [{
+            name: "Home",
+            path: root_folder_path
+        }]
+    ) || []
+})
+
 let current_folder_name = $derived(breadcrumbs?.at(-1).name)
 </script>
