@@ -72,6 +72,7 @@ let container_element = $state()
 $effect(async () => {
     console.log("effect: ")
     pile = await load_container(folder_path)
+    selected_view = pile.view
 })
 listen('Update_folder', ({payload}) => {
     if (payload.folder_path === folder_path) {

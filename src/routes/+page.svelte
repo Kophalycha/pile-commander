@@ -9,7 +9,7 @@
 />
 <script>
 import "./app.css"
-import Container from "./ui/Container.svelte"
+import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import { Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
 import { join } from '@tauri-apps/api/path'
