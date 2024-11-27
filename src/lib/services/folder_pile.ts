@@ -5,7 +5,6 @@ import YAML from 'yaml'
 const FOLDER_PILE_FILE_NAME = "folder.pile"
 
 export const Folder_pile = (folder_path: string) => ({
-	fcpath: `${folder_path}/${FOLDER_PILE_FILE_NAME}`,
 	async init(view: ViewType = "board") {
 		const init_folder_pile: FolderPile = {
 			"view": view,
@@ -14,7 +13,8 @@ export const Folder_pile = (folder_path: string) => ({
 		return await this.write(init_folder_pile)
 	},
 	async read(path?: WidgetPath) {
-		const contents = await readTextFile(path || this.fcpath)
+		const fp_path = await join(folder_path, FOLDER_PILE_FILE_NAME)
+		const contents = await readTextFile(path || fp_path)
 		let json = YAML.parse(contents)
 		return await this.update_widgets_path(json, folder_path)
 	},
@@ -28,7 +28,8 @@ export const Folder_pile = (folder_path: string) => ({
 		return pile
 	},
 	async write(pile: FolderPile) {
-		await writeTextFile(this.fcpath, YAML.stringify(pile))
+		const fp_path = await join(folder_path, FOLDER_PILE_FILE_NAME)
+		await writeTextFile(fp_path, YAML.stringify(pile))
 		return pile
 	},
 

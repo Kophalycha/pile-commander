@@ -75,6 +75,7 @@ import { onMount } from "svelte"
 import { Folder_pile } from '$lib/services/folder_pile'
 import Sortable from 'sortablejs'
 onMount(async () => {
+    // console.log(Folder_pile(path))
     pile = await Folder_pile(path).read()
     selected_view = pile.view
     if_sortable()
