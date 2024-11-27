@@ -26,7 +26,6 @@ listen('Show_folder', ({payload}) => {
 })
 
 
-
 document.addEventListener("click", e => 
     emit("Select_widget", {widget_path: e.target.dataset.path}))
 
@@ -61,40 +60,41 @@ async function onRemove() {
 document.addEventListener("keydown", async e => {
 	if (e.key === "F2") onRename()
 	if (e.key === "Delete") onRemove()
-    // if (e.code === "KeyX" && e.ctrlKey) explorer.cut()
-	// if (e.code === "KeyV" && e.ctrlKey) {
-	// 	explorer.paste()
-	// 	const {to_pile} = await Move_widget(explorer.buffer)
-	// 	explorer.update_explorer(to_pile)
-	// 	document.dispatchEvent(new CustomEvent("update_pile", { detail: {
-	// 		folder_path: explorer.selected_folder_path,
-	// 		pile: to_pile
-	// 	}}))
-	// 	explorer.clean()
-	// }
+    if (e.code === "KeyX" && e.ctrlKey) Buffer.cut()
+	if (e.code === "KeyV" && e.ctrlKey) Buffer.paste()
 })
 
-// buffer = $state({
-// 		from_folder_path: "",
-// 		widget_name: "",
-// 		to_folder_path: "",
-// 	})
-// 	cut() {
-// 		if (this.selected_widget) {
-// 			this.buffer.from_folder_path = this.selected_folder_path
-// 			this.buffer.widget_name = this.selected_widget.name
-// 		}
-// 	}
-// 	paste() {
-// 		this.buffer.to_folder_path = this.selected_folder_path
-// 	}
-// 	clean() {
-// 		this.buffer = {
-// 			from_folder_path: "",
-// 			widget_name: "",
-// 			to_folder_path: "",
-// 		}
-// 	}
+let Buffer = {
+	_status: "empty",
+	_buffer: {
+		from_folder_path: "",
+		widget_name: "",
+		to_folder_path: ""
+	},
+	cut() {
+		const selected_widget = document.querySelector(".selected_widget")
+		if (!selected_widget) return
+		this._buffer.from_folder_path = selected_folder_path
+		this._buffer.widget_name = selected_widget.dataset.name
+		selected_widget.classList.add("cutted_widget")
+		this._status = "cutted"
+	},
+	async paste() {
+		if (this._status !== "cutted") return
+		this._buffer.to_folder_path = selected_folder_path
+		const {to_pile} = await Move_widget(this._buffer)
+		emit("Update_folder", {folder_path: selected_folder_path, pile: to_pile})
+		this.clean()
+	},
+	clean() {
+		this._buffer = {
+			from_folder_path: "",
+			widget_name: "",
+			to_folder_path: ""
+		}
+		this._status = "empty"
+	}
+}
 
 import interact from 'interactjs'
 interact('.draggable')
