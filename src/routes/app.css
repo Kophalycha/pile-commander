@@ -34,8 +34,7 @@
     box-sizing: border-box;    
 }
 
-/* .cell {
-} */
+
 .cell.board {
     position: absolute;
 }
@@ -61,14 +60,6 @@
 
 
 /* /////// */
-
-
-.selected_widget {
-	outline: 5px solid blue !important;
-}
-.cutted {
-	opacity: .3;
-}
 
 .drop-target {
 	outline: 5px solid yellowgreen;

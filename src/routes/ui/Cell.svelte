@@ -9,18 +9,17 @@
     "
     data-path={widget.path}
     data-name={widget.name}
-    class:selected_slide
-    class:selected_widget
     class:draggable={view === "board"}
     class:dropzone={["folder", "container"].includes(widget.type) && view === "board"}
-    class:cutted
+    class:selected_widget
+    class:selected_slide
 >
     {#if widget.type === "note"}
         <Note {view} {widget} />
     {:else if widget.type === "folder"}
         <Folder {view} {widget} />
     {:else if widget.type === "container"}
-        <Container path={widget.path} {widget} />
+        <Container folder_path={widget.path} {widget} />
     {/if}
     <span class="resize-handle"></span>
 </div>
@@ -41,18 +40,22 @@
 .cell:hover .resize-handle {
     visibility: visible;
 }
+
+.selected_widget {
+	outline: 5px solid blue !important;
+}
+.cutted_widget {
+	opacity: .3;
+}
 </style>
 <script>
-import Container from "$lib/ui/Container.svelte"
 import Note from "$lib/ui/widgets/Note.svelte"
 import Folder from "$lib/ui/widgets/Folder.svelte"
-const { view, widget, selected_slide, cutted } = $props()
+import Container from "./Container.svelte"
+const { view, widget, selected_slide } = $props()
+
 let selected_widget = $state(false)
-document.addEventListener("select_widget", (e) => {
-    if (e.detail.widget_path === widget.path) {
-        selected_widget = true
-    } else {
-        selected_widget = false
-    }
+listen('Select_widget', ({payload}) => {
+    selected_widget = payload.widget_path === widget.path ? true : false
 })
 </script>

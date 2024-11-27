@@ -1,51 +1,45 @@
 {#if pile}
     {#if !fullscreen} 
-        <p class="container-title drag-handle"
-            data-path={path}
-            ondblclick={() => {
-                document.dispatchEvent(new CustomEvent("show_folder", { detail: {
-                    folder_path: path
-                }}))
-            }}
+        <p
+            class="container-title drag-handle"
+            data-path={folder_path}
+            ondblclick={() => emit("Show_folder", {folder_path})}
         >
-        {widget.name}    
-    </p>
-    <p>
-        <button onclick={async () => {
-            const folder_path = widget.path.replace(widget.name, "")
-            await Update_widget(folder_path, widget.name, {type: "folder"})
-            setTimeout(() => {
-                document.dispatchEvent(new CustomEvent("show_folder", { detail: {
-                    folder_path
-                }}))
-            }, 10)
-        }}>Change to folder</button>
-        <select bind:value={selected_view} onchange={async () => {
-            pile = await Change_view(path, selected_view)
-
-        }}>
-            <!-- <option value="board">board</option> -->
-            <option value="stack">stack</option>
-            <option value="masonry">masonry</option>
-            <option value="slides">slides</option>
-        </select>
-    </p>
+            {widget.name}
+        </p>
+        <p>
+            <button onclick={async () => {
+                const folder_path = widget.path.replace(widget.name, "")
+                console.log("есть ли символ вконце?", folder_path)
+                await Update_widget(folder_path, widget.name, {type: "folder"})
+                emit("Show_folder", {folder_path})
+                // или просто апдейт?
+            }}>Change to folder</button>
+            <select bind:value={selected_view} onchange={async () => {
+                pile = await Change_view(path, selected_view)
+            }}>
+                <!-- <option value="board">board</option> -->
+                <option value="stack">stack</option>
+                <option value="masonry">masonry</option>
+                <option value="slides">slides</option>
+            </select>
+        </p>
     {/if}
     <section
         style="background: {pile.background || "#f5f5f5"};"
         class="container {pile.view}"
         class:fullscreen
         class:surface={pile.view === "board"}
-        data-path={path}
-        bind:this={container_element}
+        data-path={folder_path}
         ondblclick={onCreate}
+        bind:this={container_element}
     >
+    {folder_path}
         {#each pile.widgets as widget, i(widget.path)}
             <Cell
-                view={pile.view}
                 {widget}
+                view={pile.view}
                 selected_slide={i === pile.selected_widget_index}
-                cutted={explorer?.buffer?.widget_name === widget.name}
             />
         {:else}
             <article>
@@ -65,46 +59,45 @@ article span {
 }
 </style>
 <script>
-import Cell from "$lib/ui/Cell.svelte"
-let {fullscreen = false, path, explorer, widget} = $props()
+import Cell from "./Cell.svelte"
+import { Folder_pile } from '$lib/services/folder_pile'
+import { Create_widget, Update_widget, Reorder_widgets, Move_widget, Change_view } from "$lib/services/widget"
+
+let { fullscreen = false, folder_path, widget } = $props()
 let pile = $state()
+$inspect(pile)
 let selected_view = $state()
 let container_element = $state()
 
-import { onMount } from "svelte"
-import { Folder_pile } from '$lib/services/folder_pile'
-import Sortable from 'sortablejs'
-onMount(async () => {
-    // console.log(Folder_pile(path))
-    pile = await Folder_pile(path).read()
-    selected_view = pile.view
-    if_sortable()
+// это при изменении корневого стейта патча, чтобы показывать обозреваемую папку
+$effect(async () => {
+    console.log("effect: ")
+    pile = await load_container(folder_path)
+})
+listen('Update_folder', ({payload}) => {
+    if (payload.folder_path === folder_path) {
+        pile = payload.pile
+        console.log(`Update_folder:`, payload.folder_path)
+    }
 })
 
-import { Create_widget, Update_widget, Reorder_widgets, Move_widget, Change_view } from "$lib/services/widget"
-async function onCreate(e) {
+async function load_container(folder_path) {
+    console.log("load_container: ", folder_path)
+    return await Folder_pile(folder_path).read()
+}
+
+async function onCreate(e) { // может это в корень?
 	if (e.target.classList.contains("surface")) {
 		let type = "note"
         if (e.shiftKey) type = e.ctrlKey ? "container" : "folder"
 		const position = {x: e.x, y: e.y}
-		pile = await Create_widget(path, {type, position})
+		pile = await Create_widget(folder_path, {type, position})
 	}
 }
 
-document.addEventListener("update_pile", (e) => {
-    if (e.detail.folder_path === path) pile = e.detail.pile
-})
-document.addEventListener("show_folder", async (e) => {
-    if (fullscreen) {
-        pile = await Folder_pile(e.detail.folder_path).read()
-        path = e.detail.folder_path
-        selected_view = pile.view
-        explorer.show_folder(e.detail.folder_path)
-        if_sortable()
-    }
-})
 
-
+// effect: if pile.view === d => if_sortable()
+import Sortable from 'sortablejs'
 let started_drop_target = null
 let finished_drop_target = null
 let dropped_position = null

@@ -3,13 +3,9 @@
     class:drag-handle={view === "board"}
     data-name={widget.name}
     data-path={widget.path}
-    ondblclick={() => {
-        document.dispatchEvent(new CustomEvent("show_folder", { detail: {
-			folder_path: widget.path
-		}}))
-    }}
+    ondblclick={() => emit("Show_folder", {folder_path: widget.path})}
 >
-<button onclick={async () => {
+<!-- <button onclick={async () => {
     const folder_path = widget.path.replace(widget.name, "")
     await Update_widget(folder_path, widget.name, {type: "container"})
     setTimeout(() => {
@@ -17,7 +13,7 @@
             folder_path
         }}))
     }, 10)
-}}>Change to container</button>
+}}>Change to container</button> -->
 </div>
 
 <style>
