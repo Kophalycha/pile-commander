@@ -45,7 +45,8 @@
 }
 .cell.masonry:hover {
     background-color: #ffffff;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+    z-index: 1;
 }
 
 .resize-handle {
