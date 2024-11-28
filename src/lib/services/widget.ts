@@ -8,17 +8,19 @@ async function make(folder_path: WidgetName, payload: Partial<Widget>) {
 	const generic_widget = {
 		type,
 		position: {x: 30, y: 30},
-		size: {width: 100, height: 80},
 	}
 	const typed_records = {
 		"note": {
 			name: `unnamed_note_${+new Date()}.md`,
+			size: {width: 200, height: 120},
 		},
 		"folder": {
 			name: `New folder ${+new Date()}`,
+			size: {width: 200, height: 260}
 		},
 		"container": {
 			name: `New container ${+new Date()}`,
+			size: {width: 420, height: 380}
 		},
 	}
 	const path = await join(folder_path, typed_records[type].name)

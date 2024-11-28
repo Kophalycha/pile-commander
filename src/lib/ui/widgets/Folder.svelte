@@ -29,6 +29,7 @@ div::after {
     font-size: 18px;
     display: grid;
     place-content: center center;
+    text-align: center;
 }
 </style>
 <script>

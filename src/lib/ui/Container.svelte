@@ -7,23 +7,6 @@
         >
             {widget.name}
         </p>
-        <p>
-            <button onclick={async () => {
-                const folder_path = widget.path.replace(widget.name, "")
-                console.log("есть ли символ вконце?", folder_path)
-                await Update_widget(folder_path, widget.name, {type: "folder"})
-                emit("Show_folder", {folder_path})
-                // или просто апдейт?
-            }}>Change to folder</button>
-            <select bind:value={selected_view} onchange={async () => {
-                pile = await Change_view(path, selected_view)
-            }}>
-                <!-- <option value="board">board</option> -->
-                <option value="stack">stack</option>
-                <option value="masonry">masonry</option>
-                <option value="slides">slides</option>
-            </select>
-        </p>
     {/if}
     <section
         style="background: {pile.background || "#f5f5f5"};"
@@ -47,6 +30,25 @@
             </article>
         {/each}
     </section>
+    {#if !fullscreen}
+        <footer>
+            <button onclick={async () => {
+                const folder_path = widget.path.replace(widget.name, "")
+                console.log("есть ли символ вконце?", folder_path)
+                await Update_widget(folder_path, widget.name, {type: "folder"})
+                emit("Show_folder", {folder_path})
+                // или просто апдейт?
+            }}>Change to folder</button>
+            <select bind:value={selected_view} onchange={async () => {
+                pile = await Change_view(path, selected_view)
+            }}>
+                <!-- <option value="board">board</option> -->
+                <option value="stack">stack</option>
+                <option value="masonry">masonry</option>
+                <option value="slides">slides</option>
+            </select>
+        </footer>
+    {/if}
 {/if}
 
 <style>
@@ -55,6 +57,49 @@ article {
 }
 article span {
     opacity: .5;
+}
+
+.container {
+    width: 100%;
+    height: 100%;
+}
+.container.fullscreen {
+    height: 100vh;
+}
+
+.container.board {
+    position: absolute;
+}
+.container.stack {
+    padding: 20px;
+    box-sizing: border-box;
+    overflow: auto;
+    outline-offset: -1px;
+    outline: 1px solid #ccc;
+}
+.container.masonry {
+    display: grid !important;
+    grid-template-columns: repeat(4, minmax(auto, auto));
+    grid-auto-rows: 17px;
+    gap: 5px;
+    padding: 10px;
+    box-sizing: border-box;    
+}
+
+.container-title {
+    background-color: #eee;
+    margin: 0;
+    padding: 20px;
+    box-sizing: border-box;
+    width: 100%;
+    height: 60px;
+    position: absolute;
+    top: -60px;
+}
+footer {
+    background-color: #eee;
+    padding: 20px;
+    box-sizing: border-box;
 }
 </style>
 <script>
