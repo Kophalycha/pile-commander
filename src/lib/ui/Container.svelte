@@ -114,7 +114,6 @@ $inspect(pile)
 let selected_view = $state()
 let container_element = $state()
 
-// это при изменении корневого стейта патча, чтобы показывать обозреваемую папку
 $effect(async () => {
     console.log("effect: ")
     pile = await load_container(folder_path)
@@ -132,8 +131,13 @@ async function load_container(folder_path) {
     return await Folder_pile(folder_path).read()
 }
 
+$effect(() => {
+    if (container_element && ["stack","masonry"].includes(pile.view)) {
+        console.log("sort!")
+        make_sortable()
+    }
+})
 
-// effect: if pile.view === d => if_sortable()
 import Sortable from 'sortablejs'
 let started_drop_target = null
 let finished_drop_target = null
@@ -142,38 +146,29 @@ const seek_drop_target = e => {
     finished_drop_target = e.target.closest("section")
     dropped_position = {x: e.x, y: e.y}
 }
-function if_sortable() {
-    if (["masonry","stack"].includes(pile.view)) {
-        setTimeout(() => {
-            new Sortable(container_element, {
-                group: {name: 'shared'},
-                onStart: e => {
-                    started_drop_target = e.from
-                    document.addEventListener("mousemove", seek_drop_target)
-                },
-                onEnd: async e => {
-                    document.removeEventListener("mousemove", seek_drop_target)
-                    if (started_drop_target === finished_drop_target) return
-                    const from_folder_path = e.from.dataset.path
-                    const widget_name = e.item.dataset.name
-                    const to_folder_path = finished_drop_target.dataset.path
-                    await Update_widget(from_folder_path, widget_name, {position: dropped_position})
-                    const {from_pile, to_pile} = await Move_widget({
-                        from_folder_path,
-                        widget_name,
-                        to_folder_path,
-                    })
-                    pile = from_pile
-                    setTimeout(() => {
-                        document.dispatchEvent(new CustomEvent("update_pile", { detail: {
-                            folder_path: to_folder_path,
-                            pile: to_pile
-                        }}))
-                    }, 100);
-                },
-                onUpdate: async e => pile = await Reorder_widgets(path, e.oldIndex, e.newIndex),
+function make_sortable() {
+    new Sortable(container_element, {
+        group: {name: 'shared'},
+        onStart: e => {
+            started_drop_target = e.from
+            document.addEventListener("mousemove", seek_drop_target)
+        },
+        onEnd: async e => {
+            document.removeEventListener("mousemove", seek_drop_target)
+            if (started_drop_target === finished_drop_target) return
+            const from_folder_path = e.from.dataset.path
+            const widget_name = e.item.dataset.name
+            const to_folder_path = finished_drop_target.dataset.path
+            await Update_widget(from_folder_path, widget_name, {position: dropped_position})
+            const {from_pile, to_pile} = await Move_widget({
+                from_folder_path,
+                widget_name,
+                to_folder_path,
             })
-        }, 100)
-    }
+            pile = from_pile
+            emit("Update_folder", {folder_path: to_folder_path, pile: to_pile})
+        },
+        onUpdate: async e => pile = await Reorder_widgets(folder_path, e.oldIndex, e.newIndex),
+    })
 }
 </script>
