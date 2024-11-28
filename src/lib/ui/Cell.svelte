@@ -64,7 +64,12 @@
     visibility: visible;
 }
 .resize-handle.board {
+    position: absolute;
     bottom: 0;
+    right: 0;
+}
+.resize-handle.stack, .resize-handle.masonry, .resize-handle.slides {
+    cursor: ns-resize;
 }
 
 .selected_widget {
