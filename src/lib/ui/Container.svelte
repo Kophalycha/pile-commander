@@ -19,6 +19,9 @@
             {#if pile.view === "masonry"}
             - <input type="number" min="2" max="10" bind:value={pile_masonry_column} onchange={set_masonry_column}>
             {/if}
+            {#if pile.view === "slides"}
+            - <input type="number" min="0" max={pile.widgets.length - 1} bind:value={pile_selected_widget_index} onchange={set_selected_widget_index}>
+            {/if}
 
             <button onclick={async () => {
                 const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
@@ -39,7 +42,7 @@
             <Cell
                 {widget}
                 view={pile.view}
-                selected_slide={i === pile.selected_widget_index}
+                selected_slide={i === pile_selected_widget_index}
             />
         {:else}
             <article>
@@ -105,6 +108,7 @@ let pile = $state()
 $inspect(pile)
 let selected_view = $state()
 let pile_masonry_column = $state()
+let pile_selected_widget_index = $state()
 let container_element = $state()
 
 $effect(async () => {
@@ -112,6 +116,7 @@ $effect(async () => {
     pile = await load_container(folder_path)
     selected_view = pile.view
     pile_masonry_column = pile.masonry_column || 3
+    pile_selected_widget_index = pile.selected_widget_index || 0
 })
 listen('Update_folder', ({payload}) => {
     if (payload.folder_path === folder_path) {
@@ -124,8 +129,11 @@ async function load_container(folder_path) {
     console.log("load_container: ", folder_path)
     return await Folder_pile(folder_path).read()
 }
-function set_masonry_column(e) {
+function set_masonry_column() {
     Set_folder_option(folder_path, {masonry_column: pile_masonry_column})
+}
+function set_selected_widget_index() {
+    Set_folder_option(folder_path, {selected_widget_index: pile_selected_widget_index})
 }
 
 $effect(() => {
