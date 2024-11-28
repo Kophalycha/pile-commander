@@ -57,12 +57,11 @@ article span {
 .container {
     width: 100%;
     height: 100%;
-
+    overflow: auto;
     outline-offset: -1px;
     outline: 1px solid #ccc;
     padding: 20px;
     box-sizing: border-box;
-
 }
 .container.fullscreen {
     height: 100vh;
@@ -70,11 +69,9 @@ article span {
 
 .container.board {
     position: absolute;
-    overflow: auto;
 }
-.container.stack {
-    overflow: auto;
-}
+/* .container.stack {
+} */
 .container.masonry {
     display: grid !important;
     grid-template-columns: repeat(4, minmax(auto, auto));
