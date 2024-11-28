@@ -5,21 +5,11 @@
     data-path={widget.path}
     ondblclick={() => emit("Show_folder", {folder_path: widget.path})}
 >
-<!-- <button onclick={async () => {
-    const folder_path = widget.path.replace(widget.name, "")
-    await Update_widget(folder_path, widget.name, {type: "container"})
-    setTimeout(() => {
-        document.dispatchEvent(new CustomEvent("show_folder", { detail: {
-            folder_path
-        }}))
-    }, 10)
-}}>Change to container</button> -->
 <button onclick={async () => {
     const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
     const pile = await Update_widget(folder_path, widget.name, {type: "container"})
     emit("Update_folder", {folder_path, pile})
 }}>Change to container</button>
-
 </div>
 
 <style>

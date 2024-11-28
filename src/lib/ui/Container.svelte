@@ -14,7 +14,6 @@
         class:fullscreen
         class:surface={["board","stack"].includes(pile.view)}
         data-path={folder_path}
-        ondblclick={onCreate}
         bind:this={container_element}
     >
         {#each pile.widgets as widget, i(widget.path)}
@@ -60,6 +59,12 @@ article span {
 .container {
     width: 100%;
     height: 100%;
+
+    outline-offset: -1px;
+    outline: 1px solid #ccc;
+    padding: 20px;
+    box-sizing: border-box;
+
 }
 .container.fullscreen {
     height: 100vh;
@@ -67,13 +72,10 @@ article span {
 
 .container.board {
     position: absolute;
+    overflow: auto;
 }
 .container.stack {
-    padding: 20px;
-    box-sizing: border-box;
     overflow: auto;
-    outline-offset: -1px;
-    outline: 1px solid #ccc;
 }
 .container.masonry {
     display: grid !important;
@@ -103,7 +105,7 @@ footer {
 <script>
 import Cell from "./Cell.svelte"
 import { Folder_pile } from '$lib/services/folder_pile'
-import { Create_widget, Update_widget, Reorder_widgets, Move_widget, Change_view } from "$lib/services/widget"
+import { Update_widget, Reorder_widgets, Move_widget, Change_view } from "$lib/services/widget"
 
 let { fullscreen = false, folder_path, widget } = $props()
 let pile = $state()
@@ -127,15 +129,6 @@ listen('Update_folder', ({payload}) => {
 async function load_container(folder_path) {
     console.log("load_container: ", folder_path)
     return await Folder_pile(folder_path).read()
-}
-
-async function onCreate(e) { // может это в корень?
-	if (e.target.classList.contains("surface")) {
-		let type = "note"
-        if (e.shiftKey) type = e.ctrlKey ? "container" : "folder"
-		const position = {x: e.x, y: e.y}
-		pile = await Create_widget(folder_path, {type, position})
-	}
 }
 
 

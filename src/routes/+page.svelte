@@ -11,7 +11,7 @@
 import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
+import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
 import { join } from '@tauri-apps/api/path'
 import { emit, listen } from "@tauri-apps/api/event"
 window.emit = emit
@@ -25,6 +25,17 @@ listen('Show_folder', ({payload}) => {
     selected_folder_path = payload.folder_path
 })
 
+
+document.addEventListener("dblclick", async e => {
+	if (e.target.classList.contains("surface")) {
+		let type = "note"
+        if (e.shiftKey) type = e.ctrlKey ? "container" : "folder"
+		const position = {x: e.x, y: e.y}
+		const folder_path = e.target.dataset.path
+		const pile = await Create_widget(folder_path, {type, position})
+		emit("Update_folder", {folder_path, pile})
+	}
+})
 
 document.addEventListener("click", e => 
     emit("Select_widget", {widget_path: e.target.dataset.path}))
