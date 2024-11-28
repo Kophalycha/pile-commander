@@ -1,11 +1,20 @@
 {#if pile}
     {#if !fullscreen} 
         <p
-            class="container-title drag-handle"
+            class="container-title"
             data-path={folder_path}
             ondblclick={() => emit("Show_folder", {folder_path})}
         >
-            {widget.name}
+            <span class="drag-handle">{widget.name}</span>
+
+            <select bind:value={selected_view} onchange={async () => {
+                pile = await Change_view(folder_path, selected_view)
+            }}>
+                <option value="board">board</option>
+                <option value="stack">stack</option>
+                <option value="masonry">masonry</option>
+                <option value="slides">slides</option>
+            </select>
         </p>
     {/if}
     <section
@@ -36,14 +45,6 @@
                 const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
                 emit("Update_folder", {folder_path, pile})
             }}>Change to folder</button>
-            <select bind:value={selected_view} onchange={async () => {
-                pile = await Change_view(folder_path, selected_view)
-            }}>
-                <option value="board">board</option>
-                <option value="stack">stack</option>
-                <option value="masonry">masonry</option>
-                <option value="slides">slides</option>
-            </select>
         </footer>
     {/if}
 {/if}

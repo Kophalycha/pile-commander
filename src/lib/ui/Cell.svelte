@@ -21,7 +21,7 @@
     {:else if widget.type === "container"}
         <Container folder_path={widget.path} {widget} />
     {/if}
-    <span class="resize-handle"></span>
+    <span class="resize-handle {view}"></span>
 </div>
 
 <style>
@@ -62,6 +62,9 @@
 }
 .cell:hover .resize-handle {
     visibility: visible;
+}
+.resize-handle.board {
+    bottom: 0;
 }
 
 .selected_widget {
