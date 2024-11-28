@@ -29,7 +29,7 @@
         style="background: {pile.background || "#f5f5f5"};"
         class="container {pile.view}"
         class:fullscreen
-        class:surface={pile.view === "board"}
+        class:surface={["board","stack"].includes(pile.view)}
         data-path={folder_path}
         ondblclick={onCreate}
         bind:this={container_element}
