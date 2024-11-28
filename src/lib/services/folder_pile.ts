@@ -85,6 +85,11 @@ export const Folder_pile = (folder_path: string) => ({
 			pile.selected_widget_index = 0
 		}
 		return await this.write(pile)
+	},
+	async set_option(options: {}) {
+		const pile = await this.read()
+		const new_pile = {...pile, ...options}
+		return await this.write(new_pile)
 	}
 
 })

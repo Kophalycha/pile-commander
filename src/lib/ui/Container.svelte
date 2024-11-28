@@ -6,7 +6,7 @@
             ondblclick={() => emit("Show_folder", {folder_path})}
         >
             <span class="drag-handle">{widget.name}</span>
-
+            -
             <select bind:value={selected_view} onchange={async () => {
                 pile = await Change_view(folder_path, selected_view)
             }}>
@@ -16,6 +16,10 @@
                 <option value="slides">slides</option>
             </select>
 
+            {#if pile.view === "masonry"}
+            - <input type="number" min="2" max="10" bind:value={pile_masonry_column} onchange={set_masonry_column}>
+            {/if}
+
             <button onclick={async () => {
                 const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
                 const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
@@ -24,7 +28,7 @@
         </p>
     {/if}
     <section
-        style="background: {pile.background || "#f5f5f5"};"
+        style="background: {pile.background || "#f5f5f5"}; grid-template-columns: repeat({pile_masonry_column}, minmax(auto, auto));"
         class="container {pile.view}"
         class:fullscreen
         class:surface={["board","stack"].includes(pile.view)}
@@ -74,7 +78,6 @@ article span {
 } */
 .container.masonry {
     display: grid !important;
-    grid-template-columns: repeat(4, minmax(auto, auto));
     grid-auto-rows: 17px;
     gap: 5px;
     padding: 10px;
@@ -95,18 +98,20 @@ article span {
 <script>
 import Cell from "./Cell.svelte"
 import { Folder_pile } from '$lib/services/folder_pile'
-import { Update_widget, Reorder_widgets, Move_widget, Change_view } from "$lib/services/widget"
+import { Update_widget, Reorder_widgets, Move_widget, Change_view, Set_folder_option } from "$lib/services/widget"
 
 let { fullscreen = false, folder_path, widget } = $props()
 let pile = $state()
 $inspect(pile)
 let selected_view = $state()
+let pile_masonry_column = $state()
 let container_element = $state()
 
 $effect(async () => {
     console.log("effect: ")
     pile = await load_container(folder_path)
     selected_view = pile.view
+    pile_masonry_column = pile.masonry_column || 3
 })
 listen('Update_folder', ({payload}) => {
     if (payload.folder_path === folder_path) {
@@ -118,6 +123,9 @@ listen('Update_folder', ({payload}) => {
 async function load_container(folder_path) {
     console.log("load_container: ", folder_path)
     return await Folder_pile(folder_path).read()
+}
+function set_masonry_column(e) {
+    Set_folder_option(folder_path, {masonry_column: pile_masonry_column})
 }
 
 $effect(() => {

@@ -86,6 +86,8 @@ export async function Remove_widget(folder_path: WidgetPath, widget_name: string
 
 
 export async function Change_view(folder_path: WidgetPath, view: ViewType) {
-	console.log(folder_path, view)
 	return await Folder_pile(folder_path).change_view(view)
+}
+export async function Set_folder_option(folder_path: WidgetPath, option: {}) {
+	return await Folder_pile(folder_path).set_option(option)
 }
