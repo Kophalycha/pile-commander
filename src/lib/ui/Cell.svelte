@@ -25,6 +25,29 @@
 </div>
 
 <style>
+.cell.board {
+    position: absolute;
+}
+.cell.stack {
+    display: block;
+    width: 100% !important;
+    margin-bottom: 10px;
+}
+.cell.slides {
+    display: none;
+    width: 100% !important;
+}
+.cell.slides.selected_slide {
+    display: block;
+}
+.cell.masonry {
+    width: 100% !important;
+}
+.cell.masonry:hover {
+    background-color: #ffffff;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+}
+
 .resize-handle {
     visibility: hidden;
     width: 10px;
