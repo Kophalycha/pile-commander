@@ -15,6 +15,12 @@
                 <option value="masonry">masonry</option>
                 <option value="slides">slides</option>
             </select>
+
+            <button onclick={async () => {
+                const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+                const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
+                emit("Update_folder", {folder_path, pile})
+            }}>Change to folder</button>
         </p>
     {/if}
     <section
@@ -38,15 +44,6 @@
             </article>
         {/each}
     </section>
-    {#if !fullscreen}
-        <footer>
-            <button onclick={async () => {
-                const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
-                const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
-                emit("Update_folder", {folder_path, pile})
-            }}>Change to folder</button>
-        </footer>
-    {/if}
 {/if}
 
 <style>
@@ -96,11 +93,6 @@ article span {
     height: 60px;
     position: absolute;
     top: -60px;
-}
-footer {
-    background-color: #eee;
-    padding: 20px;
-    box-sizing: border-box;
 }
 </style>
 <script>
