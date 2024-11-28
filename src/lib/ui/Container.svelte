@@ -37,9 +37,9 @@
                 emit("Update_folder", {folder_path, pile})
             }}>Change to folder</button>
             <select bind:value={selected_view} onchange={async () => {
-                pile = await Change_view(path, selected_view)
+                pile = await Change_view(folder_path, selected_view)
             }}>
-                <!-- <option value="board">board</option> -->
+                <option value="board">board</option>
                 <option value="stack">stack</option>
                 <option value="masonry">masonry</option>
                 <option value="slides">slides</option>
