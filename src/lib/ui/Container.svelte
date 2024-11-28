@@ -33,11 +33,9 @@
     {#if !fullscreen}
         <footer>
             <button onclick={async () => {
-                const folder_path = widget.path.replace(widget.name, "")
-                console.log("есть ли символ вконце?", folder_path)
-                await Update_widget(folder_path, widget.name, {type: "folder"})
-                emit("Show_folder", {folder_path})
-                // или просто апдейт?
+                const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+                const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
+                emit("Update_folder", {folder_path, pile})
             }}>Change to folder</button>
             <select bind:value={selected_view} onchange={async () => {
                 pile = await Change_view(path, selected_view)
