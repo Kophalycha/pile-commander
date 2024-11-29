@@ -13,7 +13,7 @@ interface FolderPile {
 	view: ViewType
 	widgets: Widget[]
 }
-type ViewType = "stack" | "board" | "masonry"
+type ViewType = "stack" | "board" | "masonry" | "slides"
 
 
 // Всё есть Widget. Папка, файл и заметка являются Виджетами 

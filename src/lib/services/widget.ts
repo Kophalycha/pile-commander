@@ -8,14 +8,19 @@ async function make(folder_path: WidgetName, payload: Partial<Widget>) {
 	const generic_widget = {
 		type,
 		position: {x: 30, y: 30},
-		size: {width: 100, height: 80},
 	}
 	const typed_records = {
 		"note": {
 			name: `unnamed_note_${+new Date()}.md`,
+			size: {width: 200, height: 120},
 		},
 		"folder": {
 			name: `New folder ${+new Date()}`,
+			size: {width: 200, height: 260}
+		},
+		"container": {
+			name: `New container ${+new Date()}`,
+			size: {width: 420, height: 380}
 		},
 	}
 	const path = await join(folder_path, typed_records[type].name)
@@ -32,8 +37,10 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
 				await writeTextFile(new_widget.path, "")
 				break
 			case "folder":
+			case "container":
 				await mkdir(new_widget.path)
-				await Folder_pile(new_widget.path).init()
+				const view = new_widget.type === "container" ? "stack" : "board"
+				await Folder_pile(new_widget.path).init(view)
 				break
 		}
 		return await Folder_pile(folder_path).create_widget(new_widget)
@@ -55,6 +62,10 @@ export async function Update_widget(folder_path: WidgetPath, widget_name: Widget
 	return await Folder_pile(folder_path).update_widget(widget_name, payload)
 }
 
+export async function Reorder_widgets(folder_path: WidgetPath, from_index: number, to_index: number) {
+	return await Folder_pile(folder_path).reorder_widgets(from_index, to_index)
+}
+
 export async function Move_widget(buffer: Buffer) {
 	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
 	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
@@ -71,4 +82,12 @@ export async function Remove_widget(folder_path: WidgetPath, widget_name: string
 	const widget_path = await join(folder_path, widget_name)
 	await remove(widget_path, { recursive: true })
 	return await Folder_pile(folder_path).remove_widget(widget_name)
+}
+
+
+export async function Change_view(folder_path: WidgetPath, view: ViewType) {
+	return await Folder_pile(folder_path).change_view(view)
+}
+export async function Set_folder_option(folder_path: WidgetPath, option: {}) {
+	return await Folder_pile(folder_path).set_option(option)
 }

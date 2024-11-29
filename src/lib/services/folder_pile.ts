@@ -5,20 +5,31 @@ import YAML from 'yaml'
 const FOLDER_PILE_FILE_NAME = "folder.pile"
 
 export const Folder_pile = (folder_path: string) => ({
-	fcpath: `${folder_path}/${FOLDER_PILE_FILE_NAME}`,
-	async init() {
+	async init(view: ViewType = "board") {
 		const init_folder_pile: FolderPile = {
-			"view": "board",
+			"view": view,
 			"widgets": []
 		}
 		return await this.write(init_folder_pile)
 	},
 	async read(path?: WidgetPath) {
-		const contents = await readTextFile(path || this.fcpath)
-		return YAML.parse(contents)
+		const fp_path = await join(folder_path, FOLDER_PILE_FILE_NAME)
+		const contents = await readTextFile(path || fp_path)
+		let json = YAML.parse(contents)
+		return await this.update_widgets_path(json, folder_path)
+	},
+	async update_widgets_path(pile, parent_path) {
+		const aggregated_widgets = []
+		for await (const widget of pile.widgets) {
+			widget.path = await join(parent_path, widget.name)
+			aggregated_widgets.push(widget)
+		}
+		pile.widgets = aggregated_widgets
+		return pile
 	},
 	async write(pile: FolderPile) {
-		await writeTextFile(this.fcpath, YAML.stringify(pile))
+		const fp_path = await join(folder_path, FOLDER_PILE_FILE_NAME)
+		await writeTextFile(fp_path, YAML.stringify(pile))
 		return pile
 	},
 
@@ -41,21 +52,49 @@ export const Folder_pile = (folder_path: string) => ({
 		return await this.write(pile)
 	},
 	async move_widget(name: WidgetName, to: WidgetPath) {
-		const from_pile = await this.read()
+		let from_pile = await this.read()
 		let moved_widget = from_pile.widgets.filter((w: Widget) => w.name === name)[0]
 		from_pile.widgets = from_pile.widgets.filter((w: Widget) => w.name !== name)
 		const to_path = await join(to, FOLDER_PILE_FILE_NAME)
-		const to_pile = await this.read(to_path)
+		let to_pile = await this.read(to_path)
 		moved_widget.path = await join(to, moved_widget.name)
 		to_pile.widgets.push(moved_widget)
+		to_pile = await this.update_widgets_path(to_pile, to)
 		await writeTextFile(to_path, YAML.stringify(to_pile))
 		await this.write(from_pile)
 		return { from_pile, to_pile }
 	},
+	async reorder_widgets(from_index: number, to_index: number) {
+		const pile = await this.read()
+		const moving_widget = pile.widgets[from_index]
+		pile.widgets.splice(from_index, 1)
+		pile.widgets.splice(to_index, 0, moving_widget)
+		return await this.write(pile)
+
+	},
 	async remove_widget(name: WidgetName) {
 		const pile = await this.read()
 		pile.widgets = pile.widgets.filter((w: Widget) => w.name !== name)
+		if (pile.selected_widget_index) {
+			pile.widgets.length > 0 ?
+				pile.selected_widget_index = pile.widgets.length - 1
+				: pile.selected_widget_index = 0
+		}
 		return await this.write(pile)
 	},
+
+	async change_view(view: ViewType) {
+		const pile = await this.read()
+		pile.view = view
+		if (view === "slides" && !pile.selected_widget_index) {
+			pile.selected_widget_index = 0
+		}
+		return await this.write(pile)
+	},
+	async set_option(options: {}) {
+		const pile = await this.read()
+		const new_pile = {...pile, ...options}
+		return await this.write(new_pile)
+	}
 
 })
