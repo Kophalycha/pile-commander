@@ -75,6 +75,11 @@ export const Folder_pile = (folder_path: string) => ({
 	async remove_widget(name: WidgetName) {
 		const pile = await this.read()
 		pile.widgets = pile.widgets.filter((w: Widget) => w.name !== name)
+		if (pile.selected_widget_index) {
+			pile.widgets.length > 0 ?
+				pile.selected_widget_index = pile.widgets.length - 1
+				: pile.selected_widget_index = 0
+		}
 		return await this.write(pile)
 	},
 
