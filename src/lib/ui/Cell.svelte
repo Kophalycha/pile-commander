@@ -20,6 +20,8 @@
         <Image {view} {widget} />
     {:else if widget.type === "rect"}
         <Rect {view} {widget} />
+    {:else if widget.type === "circle"}
+        <Circle {view} {widget} />
     {:else if widget.type === "folder"}
         <Folder {view} {widget} />
     {:else if widget.type === "container"}
@@ -88,6 +90,7 @@
 import Note from "$lib/ui/widgets/Note.svelte"
 import Image from "$lib/ui/widgets/Image.svelte"
 import Rect from "$lib/ui/widgets/Rect.svelte"
+import Circle from "$lib/ui/widgets/Circle.svelte"
 import Folder from "$lib/ui/widgets/Folder.svelte"
 import Container from "./Container.svelte"
 const { view, widget, selected_slide } = $props()

@@ -1,7 +1,8 @@
 <div>
     <button onclick={() => image_picker.click()}>Image</button>
     <input type="file" bind:this={image_picker} accept="image/png, image/jpeg, image/gif" hidden onchange={addImage} />
-    <button onclick={addRect}>Rect</button>
+    <button onclick={() => addShape("rect")}>Rect</button>
+    <button onclick={() => addShape("circle")}>Circle</button>
 </div>
 
 <style>
@@ -13,7 +14,7 @@ div {
 </style>
 
 <script>
-import { Add_rect, Upload_image } from "$lib/services/widget"
+import { Add_shape, Upload_image } from "$lib/services/widget"
 
 let {selected_folder_path} = $props()
 let image_picker = $state()
@@ -29,8 +30,8 @@ function addImage(e) {
     }
     reader.onerror = function() {console.log(reader.error)}
 }
-async function addRect() {
-    const pile = await Add_rect(selected_folder_path)
+async function addShape(type) {
+    const pile = await Add_shape(selected_folder_path, type)
     emit("Update_folder", {folder_path: selected_folder_path, pile})
 }
 </script>
