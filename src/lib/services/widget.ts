@@ -81,7 +81,8 @@ export async function Move_widget(buffer: Buffer) {
 
 export async function Remove_widget(folder_path: WidgetPath, widget_name: string) {
 	const widget_path = await join(folder_path, widget_name)
-	await remove(widget_path, { recursive: true })
+	const is_exists = await exists(widget_path)
+	if (is_exists) await remove(widget_path, { recursive: true })
 	return await Folder_pile(folder_path).remove_widget(widget_name)
 }
 
