@@ -1,6 +1,6 @@
 <div>
     <button onclick={() => image_picker.click()}>Image</button>
-    <input type="file" bind:this={image_picker} accept="image/png, image/jpeg" hidden onchange={addImage} />
+    <input type="file" bind:this={image_picker} accept="image/png, image/jpeg, image/gif" hidden onchange={addImage} />
 </div>
 
 <style>
