@@ -94,11 +94,12 @@ export async function Set_folder_option(folder_path: WidgetPath, option: {}) {
 }
 
 export async function Upload_image(folder_path: WidgetPath, image_name: string, data: Uint8Array, position?: Position) {
-	const image_path = await join(folder_path, image_name)
+	const filename = `${+new Date()}.${image_name.split(".")[1]}`
+	const image_path = await join(folder_path, filename)
 	await writeFile(image_path, data)
 	const image_widget = {
 		type: <WidgetType>"image",
-		name: image_name,
+		name: filename,
 		position: position || {x: 30, y: 30},
 		size: {width: 200, height: 200},
 		path: image_path
