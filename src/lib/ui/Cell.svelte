@@ -13,6 +13,7 @@
     class:dropzone={["folder", "container"].includes(widget.type) && view === "board"}
     class:selected_widget
     class:selected_slide
+    class:shape={["rect", "circle"].includes(widget.type)}
 >
     {#if widget.type === "note"}
         <Note {view} {widget} />

@@ -174,17 +174,13 @@ interact('.dropzone').dropzone({
 		event.relatedTarget.classList.remove('can-drop')
 	},
 	ondrop: async (event) => {
-		if (event.target !== event.relatedTarget.parentElement.parentElement) {
-			console.log(event)
+		if (event.target !== event.relatedTarget.parentElement.parentElement && !event.relatedTarget.classList.contains("shape")) {
 			const dropzone_position = {x: +event.target.style.left.replace("px", ""), y: +event.target.style.top.replace("px", "")}
 			const dropwidget_position = {x: +event.relatedTarget.style.left.replace("px", ""), y: +event.relatedTarget.style.top.replace("px", "")}
-			console.log(dropzone_position)
-			console.log(dropwidget_position)
 			const new_widget_position = {
 				x: dropwidget_position.x - dropzone_position.x,
 				y: dropwidget_position.y - dropzone_position.y,
 			}
-			console.log(new_widget_position)
 			
 			const widget_name = event.relatedTarget.dataset.name
 			const from_folder_path = await join(event.relatedTarget.dataset.path.replace(widget_name, ""))
