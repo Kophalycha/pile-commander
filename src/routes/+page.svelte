@@ -7,12 +7,15 @@
 	separator={data.SEPARATOR}
 	{selected_folder_path}
 />
+<Toolbar {selected_folder_path} />
 <script>
 import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
-import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
-import { join } from '@tauri-apps/api/path'
+import Toolbar from "$lib/ui/Toolbar.svelte"
+import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget, Upload_image } from "$lib/services/widget"
+import { join, basename } from '@tauri-apps/api/path'
+import { readFile } from '@tauri-apps/plugin-fs'
 import { emit, listen } from "@tauri-apps/api/event"
 window.emit = emit
 window.listen = listen
@@ -25,6 +28,12 @@ listen('Show_folder', ({payload}) => {
     selected_folder_path = payload.folder_path
 })
 
+listen('tauri://drag-drop', async ({payload}) => {
+	const file_name = await basename(payload.paths[0])
+	const uint8View = await readFile(payload.paths[0])
+	const pile = await Upload_image(selected_folder_path, file_name, uint8View, payload.position)
+	emit("Update_folder", {folder_path: selected_folder_path, pile})
+})
 
 document.addEventListener("dblclick", async e => {
 	if (e.target.classList.contains("surface")) {
@@ -165,17 +174,13 @@ interact('.dropzone').dropzone({
 		event.relatedTarget.classList.remove('can-drop')
 	},
 	ondrop: async (event) => {
-		if (event.target !== event.relatedTarget.parentElement.parentElement) {
-			console.log(event)
+		if (event.target !== event.relatedTarget.parentElement.parentElement && !event.relatedTarget.classList.contains("shape")) {
 			const dropzone_position = {x: +event.target.style.left.replace("px", ""), y: +event.target.style.top.replace("px", "")}
 			const dropwidget_position = {x: +event.relatedTarget.style.left.replace("px", ""), y: +event.relatedTarget.style.top.replace("px", "")}
-			console.log(dropzone_position)
-			console.log(dropwidget_position)
 			const new_widget_position = {
 				x: dropwidget_position.x - dropzone_position.x,
 				y: dropwidget_position.y - dropzone_position.y,
 			}
-			console.log(new_widget_position)
 			
 			const widget_name = event.relatedTarget.dataset.name
 			const from_folder_path = await join(event.relatedTarget.dataset.path.replace(widget_name, ""))

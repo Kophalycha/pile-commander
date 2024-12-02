@@ -1,7 +1,7 @@
 import { exists, mkdir, rename, remove } from '@tauri-apps/plugin-fs'
 import { join } from '@tauri-apps/api/path'
 import { Folder_pile } from './folder_pile'
-import { writeTextFile } from '@tauri-apps/plugin-fs'
+import { writeTextFile, writeFile } from '@tauri-apps/plugin-fs'
 
 async function make(folder_path: WidgetName, payload: Partial<Widget>) {
 	const type = payload.type || "note"
@@ -23,6 +23,7 @@ async function make(folder_path: WidgetName, payload: Partial<Widget>) {
 			size: {width: 420, height: 380}
 		},
 	}
+	console.log(folder_path, typed_records[type].name)
 	const path = await join(folder_path, typed_records[type].name)
 	return {...generic_widget, ...typed_records[type], ...payload, path}
 }
@@ -90,4 +91,30 @@ export async function Change_view(folder_path: WidgetPath, view: ViewType) {
 }
 export async function Set_folder_option(folder_path: WidgetPath, option: {}) {
 	return await Folder_pile(folder_path).set_option(option)
+}
+
+export async function Upload_image(folder_path: WidgetPath, image_name: string, data: Uint8Array, position?: Position) {
+	const filename = `${+new Date()}.${image_name.split(".")[1]}`
+	const image_path = await join(folder_path, filename)
+	await writeFile(image_path, data)
+	const image_widget = {
+		type: <WidgetType>"image",
+		name: filename,
+		position: position || {x: 30, y: 30},
+		size: {width: 200, height: 200},
+		path: image_path
+	}
+	return await Folder_pile(folder_path).create_widget(image_widget)
+}
+export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "circle", position?: Position) {
+	const name = `${+new Date()}.svg`
+	const image_path = await join(folder_path, name)
+	const image_widget = {
+		type: <WidgetType>shape_kind,
+		name,
+		position: position || {x: 30, y: 30},
+		size: {width: 200, height: 200},
+		path: image_path
+	}
+	return await Folder_pile(folder_path).create_widget(image_widget)
 }
