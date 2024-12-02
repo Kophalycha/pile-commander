@@ -13,8 +13,9 @@ import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import Toolbar from "$lib/ui/Toolbar.svelte"
-import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
-import { join } from '@tauri-apps/api/path'
+import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget, Upload_image } from "$lib/services/widget"
+import { join, basename } from '@tauri-apps/api/path'
+import { readFile } from '@tauri-apps/plugin-fs'
 import { emit, listen } from "@tauri-apps/api/event"
 window.emit = emit
 window.listen = listen
@@ -27,6 +28,12 @@ listen('Show_folder', ({payload}) => {
     selected_folder_path = payload.folder_path
 })
 
+listen('tauri://drag-drop', async ({payload}) => {
+	const file_name = await basename(payload.paths[0])
+	const uint8View = await readFile(payload.paths[0])
+	const pile = await Upload_image(selected_folder_path, file_name, uint8View, payload.position)
+	emit("Update_folder", {folder_path: selected_folder_path, pile})
+})
 
 document.addEventListener("dblclick", async e => {
 	if (e.target.classList.contains("surface")) {
