@@ -16,6 +16,8 @@
 >
     {#if widget.type === "note"}
         <Note {view} {widget} />
+    {:else if widget.type === "image"}
+        <Image {view} {widget} />
     {:else if widget.type === "folder"}
         <Folder {view} {widget} />
     {:else if widget.type === "container"}
@@ -82,6 +84,7 @@
 </style>
 <script>
 import Note from "$lib/ui/widgets/Note.svelte"
+import Image from "$lib/ui/widgets/Image.svelte"
 import Folder from "$lib/ui/widgets/Folder.svelte"
 import Container from "./Container.svelte"
 const { view, widget, selected_slide } = $props()

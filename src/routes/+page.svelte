@@ -7,10 +7,12 @@
 	separator={data.SEPARATOR}
 	{selected_folder_path}
 />
+<Toolbar {selected_folder_path} />
 <script>
 import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
+import Toolbar from "$lib/ui/Toolbar.svelte"
 import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget } from "$lib/services/widget"
 import { join } from '@tauri-apps/api/path'
 import { emit, listen } from "@tauri-apps/api/event"
