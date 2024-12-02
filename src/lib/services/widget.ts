@@ -106,3 +106,15 @@ export async function Upload_image(folder_path: WidgetPath, image_name: string, 
 	}
 	return await Folder_pile(folder_path).create_widget(image_widget)
 }
+export async function Add_rect(folder_path: WidgetPath, position?: Position) {
+	const name = `${+new Date()}.svg`
+	const image_path = await join(folder_path, name)
+	const image_widget = {
+		type: <WidgetType>"rect",
+		name,
+		position: position || {x: 30, y: 30},
+		size: {width: 200, height: 200},
+		path: image_path
+	}
+	return await Folder_pile(folder_path).create_widget(image_widget)
+}
