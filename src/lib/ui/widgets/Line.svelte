@@ -35,14 +35,16 @@
 <script>
 let { widget } = $props()
 
-let line = null
+let line = $state(null)
 let anchor_kind = $state({
     start: "position",
     end: "position",
 })
+let selected_widget = $state(false)
+let u1, u2, u3, u4
 
 import { onDestroy, onMount } from "svelte"
-onMount(() => {
+onMount(async () => {
     let start, end
     if (widget.start.x) {
         start = document.getElementById(`line-anchor-${widget.name}-1`)
@@ -64,21 +66,25 @@ onMount(() => {
             node.dataset.name = widget.name
         }
     }
+    u1 = await listen("Update_line_position", AnimEvent.add(() => line.position()))
+    u2 = await listen('Select_widget', ({payload}) => {
+        selected_widget = payload.widget_path === widget.path ? true : false
+    })
+    u3 = await listen('Connect_widget', ({payload}) => {
+        if (payload.widget_name === widget.name) {
+            line[payload.anchor_kind] = document.querySelector(`[data-name="${payload.connection_name}"]`)
+            anchor_kind[payload.anchor_kind] = "element"
+        }
+    })
+    u4 = await listen("Remove_line", ({payload}) => {
+        if (payload.widget_name === widget.name) line.remove()
+    })
 })
-onDestroy(() => line.remove())
-
-let selected_widget = $state(false)
-listen('Select_widget', ({payload}) => {
-    selected_widget = payload.widget_path === widget.path ? true : false
-})
-listen("Update_line_position", AnimEvent.add(() => line.position()))
-listen('Connect_widget', ({payload}) => {
-    if (payload.widget_name === widget.name) {
-        line[payload.anchor_kind] = document.querySelector(`[data-name="${payload.connection_name}"]`)
-        anchor_kind[payload.anchor_kind] = "element"        
-    }
-})
-listen("Remove_line", ({payload}) => {
-    if (payload.widget_name === widget.name) line.remove()
+onDestroy(() => {
+    line.remove()
+    u1()
+    u2()
+    u3()
+    u4()
 })
 </script>
