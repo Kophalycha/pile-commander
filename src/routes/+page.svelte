@@ -124,11 +124,16 @@ interact('.draggable')
 		move(event) {
 			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
 			event.target.style.top = +event.target.style.top.replace("px", "") + event.delta.y + "px"
+			// if (event.target.classList.contains("arrow")) emit("Update_arrow_position")
 		},
 		end(event) {
 			const widget_name = event.currentTarget.dataset.name
 			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
-			Update_widget(folder_path, widget_name, {position: {x: +event.target.style.left.replace("px", ""), y: +event.target.style.top.replace("px", "")}})
+			if (event.target.classList.contains("arrow")) {
+				emit("Update_arrow_position")
+			} else {
+				Update_widget(folder_path, widget_name, {position: {x: +event.target.style.left.replace("px", ""), y: +event.target.style.top.replace("px", "")}})
+			}
 		}
 	},
 	modifiers: [
@@ -205,6 +210,25 @@ interact('.dropzone').dropzone({
 		event.target.classList.remove('drop-active')
 		event.target.classList.remove('drop-target')
 		event.relatedTarget.classList.remove('can-drop')
+	}
+})
+
+interact('.line-anchor')
+.draggable({
+	listeners: {
+		move(event) {
+			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
+			event.target.style.top = +event.target.style.top.replace("px", "") + event.delta.y + "px"
+		},
+		async end(event) {
+			emit("Update_arrow_position")
+			const widget_name = event.currentTarget.dataset.name
+			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
+			const line = event.currentTarget.dataset.lineAnchorKind
+			const anchor_position = {x: +event.currentTarget.style.left.replace("px", ""), y: +event.currentTarget.style.top.replace("px", "")}
+			const line_pos = {[line]: anchor_position}
+			await Update_widget(folder_path, widget_name, line_pos)
+		}
 	}
 })
 </script>

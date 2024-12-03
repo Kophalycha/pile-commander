@@ -39,11 +39,15 @@
         bind:this={container_element}
     >
         {#each pile.widgets as widget, i(widget.path)}
-            <Cell
-                {widget}
-                view={pile.view}
-                selected_slide={i === pile_selected_widget_index}
-            />
+            {#if widget.type === "arrow"}
+                <Arrow {widget} />
+            {:else}
+                <Cell
+                    {widget}
+                    view={pile.view}
+                    selected_slide={i === pile_selected_widget_index}
+                />
+            {/if}
         {:else}
             <article>
                 <p><span>Create note</span>&emsp;&ensp;Double click mouse</p>
@@ -100,6 +104,7 @@ article span {
 </style>
 <script>
 import Cell from "./Cell.svelte"
+import Arrow from "$lib/ui/widgets/Arrow.svelte"
 import { Folder_pile } from '$lib/services/folder_pile'
 import { Update_widget, Reorder_widgets, Move_widget, Change_view, Set_folder_option } from "$lib/services/widget"
 
