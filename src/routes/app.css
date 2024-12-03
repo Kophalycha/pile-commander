@@ -16,3 +16,10 @@
 .cutted_widget {
 	opacity: .3;
 }
+
+.leader-line.selectable {
+	pointer-events: all !important;
+}
+.leader-line.selectable:hover {
+	opacity: .5;
+}

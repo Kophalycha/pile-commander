@@ -46,8 +46,16 @@ document.addEventListener("dblclick", async e => {
 	}
 })
 
-document.addEventListener("click", e => 
-    emit("Select_widget", {widget_path: e.target.dataset.path}))
+document.addEventListener("click", async e => {
+	if (e.target.classList.value.includes("leader-line")) {
+		const folder_path = e.target.dataset.path.replace(e.target.dataset.name, "")
+		const pile = await Remove_widget(folder_path, e.target.dataset.name)
+		emit("Remove_line", {widget_name: e.target.dataset.name})
+		emit("Update_folder", {folder_path, pile})
+	} else {
+		emit("Select_widget", {widget_path: e.target.dataset.path})
+	}
+})
 
 async function onRename() {
 	const selected_widget = document.querySelector(".selected_widget")

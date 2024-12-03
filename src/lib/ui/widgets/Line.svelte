@@ -57,6 +57,14 @@ onMount(() => {
         anchor_kind.end = "element"
     }
     line = new LeaderLine(start, end)
+    for (const [index, node] of document.querySelectorAll(".leader-line").entries()) {
+        node.classList.add("selectable")
+        if (line._id - 1 === index ) {
+            node.dataset.path = widget.path
+            node.dataset.name = widget.name
+        }
+    }
+
 })
 onDestroy(() => line.remove())
 
@@ -70,5 +78,8 @@ listen('Connect_widget', ({payload}) => {
         line[payload.anchor_kind] = document.querySelector(`[data-name="${payload.connection_name}"]`)
         anchor_kind[payload.anchor_kind] = "element"        
     }
+})
+listen("Remove_line", ({payload}) => {
+    if (payload.widget_name === widget.name) line.remove()
 })
 </script>
