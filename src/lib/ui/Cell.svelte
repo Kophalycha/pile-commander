@@ -1,5 +1,5 @@
 <div
-    class="cell widget resizable {widget.type} {view}"
+    class="cell widget resizable {widget.type} {view} connector-zone"
     style="
         top: {widget.position.y}px;
         left: {widget.position.x}px;
@@ -82,9 +82,6 @@
 
 .selected_widget {
 	outline: 5px solid blue !important;
-}
-.cutted_widget {
-	opacity: .3;
 }
 </style>
 <script>

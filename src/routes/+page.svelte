@@ -46,8 +46,16 @@ document.addEventListener("dblclick", async e => {
 	}
 })
 
-document.addEventListener("click", e => 
-    emit("Select_widget", {widget_path: e.target.dataset.path}))
+document.addEventListener("click", async e => {
+	if (e.target.classList.value.includes("leader-line")) {
+		const folder_path = e.target.dataset.path.replace(e.target.dataset.name, "")
+		const pile = await Remove_widget(folder_path, e.target.dataset.name)
+		emit("Remove_line", {widget_name: e.target.dataset.name})
+		emit("Update_folder", {folder_path, pile})
+	} else {
+		emit("Select_widget", {widget_path: e.target.dataset.path})
+	}
+})
 
 async function onRename() {
 	const selected_widget = document.querySelector(".selected_widget")
@@ -93,7 +101,7 @@ let Buffer = {
 	},
 	cut() {
 		const selected_widget = document.querySelector(".selected_widget")
-		if (!selected_widget) return
+		if (!selected_widget || selected_widget.classList.contains("line-anchor")) return
 		this._buffer.from_folder_path = selected_widget.dataset.path.replace(selected_widget.dataset.name, "")
 		this._buffer.widget_name = selected_widget.dataset.name
 		selected_widget.classList.add("cutted_widget")
@@ -124,6 +132,7 @@ interact('.draggable')
 		move(event) {
 			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
 			event.target.style.top = +event.target.style.top.replace("px", "") + event.delta.y + "px"
+			if (document.querySelector(".line.element")) emit("Update_line_position")
 		},
 		end(event) {
 			const widget_name = event.currentTarget.dataset.name
@@ -143,6 +152,7 @@ interact('.resizable')
 		move (event) {
 			event.target.style.width = event.rect.width + "px"
 			event.target.style.height = event.rect.height + "px"
+			if (document.querySelector(".line.element")) emit("Update_line_position")
 		},
 		async end(event) {
 			const widget_name = event.currentTarget.dataset.name
@@ -199,6 +209,65 @@ interact('.dropzone').dropzone({
 			if (event.target.classList.contains("container")) {
 				emit("Update_folder", {folder_path: to_folder_path, pile: to_pile})
 			}
+		}
+	},
+	ondropdeactivate: (event) => {
+		event.target.classList.remove('drop-active')
+		event.target.classList.remove('drop-target')
+		event.relatedTarget.classList.remove('can-drop')
+	}
+})
+
+interact('.line-anchor')
+.draggable({
+	listeners: {
+		move(event) {
+			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
+			event.target.style.top = +event.target.style.top.replace("px", "") + event.delta.y + "px"
+			emit("Update_line_position")
+		},
+		async end(event) {
+			// console.log(event.relatedTarget?.classList.contains("cell"))
+			// if (event.relatedTarget?.classList.contains("cell")) return
+			const widget_name = event.currentTarget.dataset.name
+			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
+			const line = event.currentTarget.dataset.lineAnchorKind
+			const anchor_position = {x: +event.currentTarget.style.left.replace("px", ""), y: +event.currentTarget.style.top.replace("px", "")}
+			const line_pos = {[line]: anchor_position}
+			await Update_widget(folder_path, widget_name, line_pos)
+		}
+	}
+})
+interact('.connector-zone').dropzone({
+	accept: '.line-anchor',
+	overlap: 0.10,
+	ondropactivate: (event) => {
+		if (event.target !== event.relatedTarget.parentElement.parentElement) {
+			event.target.classList.add('drop-active')
+		}
+	},
+	ondragenter: (event) => {
+		if (event.target !== event.relatedTarget.parentElement.parentElement) {
+			event.target.classList.add('drop-target')
+			event.relatedTarget.classList.add('can-drop')
+		}
+	},
+	ondragleave: (event) => {
+		event.target.classList.remove('drop-target')
+		event.relatedTarget.classList.remove('can-drop')
+	},
+	ondrop: async (event) => {
+		if (event.target !== event.relatedTarget.parentElement.parentElement && !event.relatedTarget.classList.contains("shape")) {
+
+			const anchor_kind = event.relatedTarget.dataset.lineAnchorKind
+			const widget_name = event.relatedTarget.dataset.name
+			const connection_name = event.target.dataset.name
+			emit("Connect_widget", {widget_name, anchor_kind, connection_name })
+			console.log(selected_folder_path, widget_name, {[anchor_kind]: connection_name})
+			setTimeout(async () => {
+				await Update_widget(selected_folder_path, widget_name, {[anchor_kind]: connection_name})
+			}, 100)
+
 		}
 	},
 	ondropdeactivate: (event) => {

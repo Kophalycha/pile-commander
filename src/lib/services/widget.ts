@@ -74,7 +74,11 @@ export async function Move_widget(buffer: Buffer) {
 	if (is_exists) {
 		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
 	} else {
-		await rename(old_widget_path, new_widget_path)
+		try {
+			await rename(old_widget_path, new_widget_path)
+		} catch (error) {
+			console.log(error)
+		}
 		return await Folder_pile(buffer.from_folder_path).move_widget(buffer.widget_name, buffer.to_folder_path)
 	}
 }
@@ -107,10 +111,16 @@ export async function Upload_image(folder_path: WidgetPath, image_name: string, 
 	}
 	return await Folder_pile(folder_path).create_widget(image_widget)
 }
-export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "circle", position?: Position) {
+export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "circle" | "line", position?: Position) {
 	const name = `${+new Date()}.svg`
 	const image_path = await join(folder_path, name)
-	const image_widget = {
+	const image_widget = shape_kind === "line" ? {
+		type: shape_kind,
+		name,
+		start: {x: 30, y: 30},
+		end: {x: 230, y: 130},
+		path: image_path
+	} : {
 		type: <WidgetType>shape_kind,
 		name,
 		position: position || {x: 30, y: 30},

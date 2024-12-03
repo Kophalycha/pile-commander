@@ -1,6 +1,6 @@
 {
 	"name": "pile-commander-dev",
-	"version": "0.3.0",
+	"version": "0.4.0",
 	"description": "",
 	"type": "module",
 	"scripts": {
@@ -15,7 +15,9 @@
 		"@tauri-apps/api": "^2",
 		"@tauri-apps/plugin-fs": "^2.0.2",
 		"@tauri-apps/plugin-shell": "^2",
+		"anim-event": "^1.0.17",
 		"interactjs": "^1.10.27",
+		"leader-line": "^1.0.7",
 		"sortablejs": "^1.15.4",
 		"yaml": "^2.6.0"
 	},

@@ -8,7 +8,18 @@
 }
 .drop-target {
     outline: 5px solid yellowgreen;
-	transition: 0.2s;
-	/* transition-property: scale; */
-	/* transform: scale(1.1); */
+}
+
+.selected_widget {
+	outline: 5px solid blue !important;
+}
+.cutted_widget {
+	opacity: .3;
+}
+
+.leader-line.selectable {
+	pointer-events: all !important;
+}
+.leader-line.selectable:hover {
+	opacity: .5;
 }

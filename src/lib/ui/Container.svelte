@@ -39,11 +39,15 @@
         bind:this={container_element}
     >
         {#each pile.widgets as widget, i(widget.path)}
-            <Cell
-                {widget}
-                view={pile.view}
-                selected_slide={i === pile_selected_widget_index}
-            />
+            {#if widget.type === "line"}
+                <Line {widget} />
+            {:else}
+                <Cell
+                    {widget}
+                    view={pile.view}
+                    selected_slide={i === pile_selected_widget_index}
+                />
+            {/if}
         {:else}
             <article>
                 <p><span>Create note</span>&emsp;&ensp;Double click mouse</p>
@@ -100,6 +104,7 @@ article span {
 </style>
 <script>
 import Cell from "./Cell.svelte"
+import Line from "$lib/ui/widgets/Line.svelte"
 import { Folder_pile } from '$lib/services/folder_pile'
 import { Update_widget, Reorder_widgets, Move_widget, Change_view, Set_folder_option } from "$lib/services/widget"
 
@@ -142,6 +147,13 @@ $effect(() => {
     if (container_element && ["stack","masonry"].includes(pile.view)) {
         console.log("sort!")
         make_sortable()
+    }
+})
+$effect(() => {
+    if (container_element) {
+        container_element.addEventListener('scroll', e => {
+	        if (document.querySelector(".line")) emit("Update_line_position")
+        })
     }
 })
 
