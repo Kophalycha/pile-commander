@@ -149,6 +149,13 @@ $effect(() => {
         make_sortable()
     }
 })
+$effect(() => {
+    if (container_element) {
+        container_element.addEventListener('scroll', e => {
+	        if (document.querySelector(".line")) emit("Update_line_position")
+        })
+    }
+})
 
 import Sortable from 'sortablejs'
 let started_drop_target = null
