@@ -83,9 +83,6 @@
 .selected_widget {
 	outline: 5px solid blue !important;
 }
-.cutted_widget {
-	opacity: .3;
-}
 </style>
 <script>
 import Note from "$lib/ui/widgets/Note.svelte"

@@ -93,7 +93,7 @@ let Buffer = {
 	},
 	cut() {
 		const selected_widget = document.querySelector(".selected_widget")
-		if (!selected_widget) return
+		if (!selected_widget || selected_widget.classList.contains("line-anchor")) return
 		this._buffer.from_folder_path = selected_widget.dataset.path.replace(selected_widget.dataset.name, "")
 		this._buffer.widget_name = selected_widget.dataset.name
 		selected_widget.classList.add("cutted_widget")

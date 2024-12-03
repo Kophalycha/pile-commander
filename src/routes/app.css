@@ -9,6 +9,10 @@
 .drop-target {
     outline: 5px solid yellowgreen;
 }
+
 .selected_widget {
 	outline: 5px solid blue !important;
+}
+.cutted_widget {
+	opacity: .3;
 }
