@@ -107,10 +107,10 @@ export async function Upload_image(folder_path: WidgetPath, image_name: string, 
 	}
 	return await Folder_pile(folder_path).create_widget(image_widget)
 }
-export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "circle" | "arrow", position?: Position) {
+export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "circle" | "line", position?: Position) {
 	const name = `${+new Date()}.svg`
 	const image_path = await join(folder_path, name)
-	const image_widget = shape_kind === "arrow" ? {
+	const image_widget = shape_kind === "line" ? {
 		type: shape_kind,
 		name,
 		from: {x: 30, y: 30},

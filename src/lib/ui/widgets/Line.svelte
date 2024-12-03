@@ -7,7 +7,7 @@
         data-name={widget.name}
         data-path={widget.path}
         class:selected_widget
-        id={`arrow-anchor-${widget.name}-1`}></span>
+        id={`line-anchor-${widget.name}-1`}></span>
     <span
         style="top: {widget.to.y}px; left: {widget.to.x}px;"
         class="line-anchor"
@@ -16,7 +16,7 @@
         data-name={widget.name}
         data-path={widget.path}
         class:selected_widget
-        id={`arrow-anchor-${widget.name}-2`}></span>
+        id={`line-anchor-${widget.name}-2`}></span>
 </div>
 
 <style>
@@ -38,10 +38,10 @@ let line_index = $state()
 import { onDestroy, onMount } from "svelte"
 onMount(() => {
     line = new LeaderLine(
-        document.getElementById(`arrow-anchor-${widget.name}-1`),
-        document.getElementById(`arrow-anchor-${widget.name}-2`)
+        document.getElementById(`line-anchor-${widget.name}-1`),
+        document.getElementById(`line-anchor-${widget.name}-2`)
     )
-    listen("Update_arrow_position", () => line.position())
+    listen("Update_line_position", () => line.position())
 })
 onDestroy(() => line.remove())
 

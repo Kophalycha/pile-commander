@@ -39,8 +39,8 @@
         bind:this={container_element}
     >
         {#each pile.widgets as widget, i(widget.path)}
-            {#if widget.type === "arrow"}
-                <Arrow {widget} />
+            {#if widget.type === "line"}
+                <Line {widget} />
             {:else}
                 <Cell
                     {widget}
@@ -104,7 +104,7 @@ article span {
 </style>
 <script>
 import Cell from "./Cell.svelte"
-import Arrow from "$lib/ui/widgets/Arrow.svelte"
+import Line from "$lib/ui/widgets/Line.svelte"
 import { Folder_pile } from '$lib/services/folder_pile'
 import { Update_widget, Reorder_widgets, Move_widget, Change_view, Set_folder_option } from "$lib/services/widget"
 

@@ -3,7 +3,7 @@
     <input type="file" bind:this={image_picker} accept="image/png, image/jpeg, image/gif" hidden onchange={addImage} />
     <button onclick={() => addShape("rect")}>Rect</button>
     <button onclick={() => addShape("circle")}>Circle</button>
-    <button onclick={() => addShape("arrow")}>Line</button>
+    <button onclick={() => addShape("line")}>Line</button>
 </div>
 
 <style>
