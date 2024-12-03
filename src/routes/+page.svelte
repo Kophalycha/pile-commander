@@ -124,16 +124,11 @@ interact('.draggable')
 		move(event) {
 			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
 			event.target.style.top = +event.target.style.top.replace("px", "") + event.delta.y + "px"
-			// if (event.target.classList.contains("line")) emit("Update_line_position")
 		},
 		end(event) {
 			const widget_name = event.currentTarget.dataset.name
 			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
-			if (event.target.classList.contains("line")) {
-				emit("Update_line_position")
-			} else {
-				Update_widget(folder_path, widget_name, {position: {x: +event.target.style.left.replace("px", ""), y: +event.target.style.top.replace("px", "")}})
-			}
+			Update_widget(folder_path, widget_name, {position: {x: +event.target.style.left.replace("px", ""), y: +event.target.style.top.replace("px", "")}})
 		}
 	},
 	modifiers: [
@@ -219,9 +214,9 @@ interact('.line-anchor')
 		move(event) {
 			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
 			event.target.style.top = +event.target.style.top.replace("px", "") + event.delta.y + "px"
+			emit("Update_line_position")
 		},
 		async end(event) {
-			emit("Update_line_position")
 			const widget_name = event.currentTarget.dataset.name
 			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
 			const line = event.currentTarget.dataset.lineAnchorKind

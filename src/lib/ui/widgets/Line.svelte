@@ -41,7 +41,7 @@ onMount(() => {
         document.getElementById(`line-anchor-${widget.name}-1`),
         document.getElementById(`line-anchor-${widget.name}-2`)
     )
-    listen("Update_line_position", () => line.position())
+    listen("Update_line_position", AnimEvent.add(() => line.position()))
 })
 onDestroy(() => line.remove())
 
