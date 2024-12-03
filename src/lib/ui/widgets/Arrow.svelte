@@ -33,15 +33,17 @@
 <script>
 let { widget } = $props()
 
+let line = null
 let line_index = $state()
-import { onMount } from "svelte"
+import { onDestroy, onMount } from "svelte"
 onMount(() => {
-    let line = new LeaderLine(
+    line = new LeaderLine(
         document.getElementById(`arrow-anchor-${widget.name}-1`),
         document.getElementById(`arrow-anchor-${widget.name}-2`)
     )
     listen("Update_arrow_position", () => line.position())
 })
+onDestroy(() => line.remove())
 
 let selected_widget = $state(false)
 listen('Select_widget', ({payload}) => {
