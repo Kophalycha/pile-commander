@@ -117,8 +117,8 @@ export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "c
 	const image_widget = shape_kind === "line" ? {
 		type: shape_kind,
 		name,
-		from: {x: 30, y: 30},
-		to: {x: 230, y: 130},
+		start: {x: 30, y: 30},
+		end: {x: 230, y: 130},
 		path: image_path
 	} : {
 		type: <WidgetType>shape_kind,

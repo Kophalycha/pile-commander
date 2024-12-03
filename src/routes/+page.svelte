@@ -124,6 +124,7 @@ interact('.draggable')
 		move(event) {
 			event.target.style.left = +event.target.style.left.replace("px", "") + event.delta.x + "px"
 			event.target.style.top = +event.target.style.top.replace("px", "") + event.delta.y + "px"
+			if (document.querySelector(".line.element")) emit("Update_line_position")
 		},
 		end(event) {
 			const widget_name = event.currentTarget.dataset.name
@@ -143,6 +144,7 @@ interact('.resizable')
 		move (event) {
 			event.target.style.width = event.rect.width + "px"
 			event.target.style.height = event.rect.height + "px"
+			if (document.querySelector(".line.element")) emit("Update_line_position")
 		},
 		async end(event) {
 			const widget_name = event.currentTarget.dataset.name
@@ -217,6 +219,8 @@ interact('.line-anchor')
 			emit("Update_line_position")
 		},
 		async end(event) {
+			// console.log(event.relatedTarget?.classList.contains("cell"))
+			// if (event.relatedTarget?.classList.contains("cell")) return
 			const widget_name = event.currentTarget.dataset.name
 			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
 			const line = event.currentTarget.dataset.lineAnchorKind
@@ -224,6 +228,44 @@ interact('.line-anchor')
 			const line_pos = {[line]: anchor_position}
 			await Update_widget(folder_path, widget_name, line_pos)
 		}
+	}
+})
+interact('.connector-zone').dropzone({
+	accept: '.line-anchor',
+	overlap: 0.10,
+	ondropactivate: (event) => {
+		if (event.target !== event.relatedTarget.parentElement.parentElement) {
+			event.target.classList.add('drop-active')
+		}
+	},
+	ondragenter: (event) => {
+		if (event.target !== event.relatedTarget.parentElement.parentElement) {
+			event.target.classList.add('drop-target')
+			event.relatedTarget.classList.add('can-drop')
+		}
+	},
+	ondragleave: (event) => {
+		event.target.classList.remove('drop-target')
+		event.relatedTarget.classList.remove('can-drop')
+	},
+	ondrop: async (event) => {
+		if (event.target !== event.relatedTarget.parentElement.parentElement && !event.relatedTarget.classList.contains("shape")) {
+
+			const anchor_kind = event.relatedTarget.dataset.lineAnchorKind
+			const widget_name = event.relatedTarget.dataset.name
+			const connection_name = event.target.dataset.name
+			emit("Connect_widget", {widget_name, anchor_kind, connection_name })
+			console.log(selected_folder_path, widget_name, {[anchor_kind]: connection_name})
+			setTimeout(async () => {
+				await Update_widget(selected_folder_path, widget_name, {[anchor_kind]: connection_name})
+			}, 100)
+
+		}
+	},
+	ondropdeactivate: (event) => {
+		event.target.classList.remove('drop-active')
+		event.target.classList.remove('drop-target')
+		event.relatedTarget.classList.remove('can-drop')
 	}
 })
 </script>
