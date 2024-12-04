@@ -129,3 +129,16 @@ export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "c
 	}
 	return await Folder_pile(folder_path).create_widget(image_widget)
 }
+export async function Create_path(folder_path: WidgetPath, svg_text: string, position: Position, size: Size) {
+	const file_name = `${+new Date()}.svg`
+	const file_path = await join(folder_path, file_name)
+	await writeTextFile(file_path, svg_text)
+	const path_widget = {
+		type: <WidgetType>"path",
+		name: file_name,
+		position: position || {x: 30, y: 30},
+		size: size || {width: 200, height: 200},
+		path: file_path
+	}
+	return await Folder_pile(folder_path).create_widget(path_widget)
+}

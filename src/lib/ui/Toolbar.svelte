@@ -4,6 +4,7 @@
     <button onclick={() => addShape("rect")}>Rect</button>
     <button onclick={() => addShape("circle")}>Circle</button>
     <button onclick={() => addShape("line")}>Line</button>
+    <button onclick={ontoggle}>Pen</button>
 </div>
 
 <style>
@@ -11,13 +12,14 @@ div {
     position: fixed;
     bottom: 30px;
     right: 30px;
+    z-index: 9999;
 }
 </style>
 
 <script>
 import { Add_shape, Upload_image } from "$lib/services/widget"
 
-let {selected_folder_path} = $props()
+let {selected_folder_path, ontoggle} = $props()
 let image_picker = $state()
 
 function addImage(e) {
