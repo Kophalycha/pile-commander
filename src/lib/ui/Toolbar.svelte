@@ -4,7 +4,7 @@
     <button onclick={() => addShape("rect")}>Rect</button>
     <button onclick={() => addShape("circle")}>Circle</button>
     <button onclick={() => addShape("line")}>Line</button>
-    <button onclick={ontoggle}>Pen</button>
+    <button onclick={ontoggle} class:selected_tool>Pen</button>
 </div>
 
 <style>
@@ -14,12 +14,15 @@ div {
     right: 30px;
     z-index: 9999;
 }
+button.selected_tool {
+    outline: 2px solid orange;
+}
 </style>
 
 <script>
 import { Add_shape, Upload_image } from "$lib/services/widget"
 
-let {selected_folder_path, ontoggle} = $props()
+let {selected_folder_path, ontoggle, selected_tool} = $props()
 let image_picker = $state()
 
 function addImage(e) {

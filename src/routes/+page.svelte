@@ -7,7 +7,7 @@
 	separator={data.SEPARATOR}
 	{selected_folder_path}
 />
-<Toolbar {selected_folder_path} ontoggle={toggle_tool} />
+<Toolbar {selected_folder_path} ontoggle={toggle_tool} selected_tool={tool === "pen"} />
 {#if tool === "pen"}
 	<PenCanvas {selected_folder_path} />
 {/if}
