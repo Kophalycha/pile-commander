@@ -10,6 +10,10 @@
 }
 </style>
 <script>
+/**
+ * based on this excellent answer:
+ * https://stackoverflow.com/a/40700068/9055415
+*/
 import { Create_path } from "$lib/services/widget"
 import { onMount } from "svelte"
 let {selected_folder_path} = $props()
