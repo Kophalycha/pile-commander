@@ -7,6 +7,7 @@
     top: 0;
     z-index: 999;
     border: 1px solid orange;
+    cursor: pointer;
 }
 </style>
 <script>
