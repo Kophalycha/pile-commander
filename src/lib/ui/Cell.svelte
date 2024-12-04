@@ -27,6 +27,8 @@
         <Path {view} {widget} />
     {:else if widget.type === "audio"}
         <Audio {view} {widget} />
+    {:else if widget.type === "video"}
+        <Video {view} {widget} />
     {:else if widget.type === "folder"}
         <Folder {view} {widget} />
     {:else if widget.type === "container"}
@@ -95,6 +97,7 @@ import Rect from "$lib/ui/widgets/Rect.svelte"
 import Circle from "$lib/ui/widgets/Circle.svelte"
 import Path from "$lib/ui/widgets/Path.svelte"
 import Audio from "$lib/ui/widgets/Audio.svelte"
+import Video from "$lib/ui/widgets/Video.svelte"
 import Folder from "$lib/ui/widgets/Folder.svelte"
 import Container from "./Container.svelte"
 const { view, widget, selected_slide } = $props()
