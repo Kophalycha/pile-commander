@@ -7,12 +7,16 @@
 	separator={data.SEPARATOR}
 	{selected_folder_path}
 />
-<Toolbar {selected_folder_path} />
+<Toolbar {selected_folder_path} ontoggle={toggle_tool} selected_tool={tool === "pen"} />
+{#if tool === "pen"}
+	<PenCanvas {selected_folder_path} />
+{/if}
 <script>
 import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import Toolbar from "$lib/ui/Toolbar.svelte"
+import PenCanvas from "$lib/ui/PenCanvas.svelte"
 import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget, Upload_image } from "$lib/services/widget"
 import { join, basename } from '@tauri-apps/api/path'
 import { readFile } from '@tauri-apps/plugin-fs'
@@ -23,6 +27,10 @@ window.listen = listen
 
 let { data } = $props()
 let selected_folder_path = $state(data.ROOT_FOLDER_PATH)
+let tool = $state("selection")
+function toggle_tool() {
+	tool = tool === "selection" ? "pen" : "selection"
+}
 listen('Show_folder', ({payload}) => {
     console.log(`show folder:`, payload.folder_path)
     selected_folder_path = payload.folder_path
@@ -52,6 +60,8 @@ document.addEventListener("click", async e => {
 		const pile = await Remove_widget(folder_path, e.target.dataset.name)
 		emit("Remove_line", {widget_name: e.target.dataset.name})
 		emit("Update_folder", {folder_path, pile})
+	} else if (["svg", "path"].includes(e.target.nodeName) && e.target.closest("div.path")) {
+		emit("Select_widget", {widget_path: e.target.closest("div.path").dataset.path})
 	} else {
 		emit("Select_widget", {widget_path: e.target.dataset.path})
 	}
