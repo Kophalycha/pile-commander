@@ -98,18 +98,18 @@ export async function Set_folder_option(folder_path: WidgetPath, option: {}) {
 	return await Folder_pile(folder_path).set_option(option)
 }
 
-export async function Upload_image(folder_path: WidgetPath, image_name: string, data: Uint8Array, position?: Position) {
-	const filename = `${+new Date()}.${image_name.split(".")[1]}`
-	const image_path = await join(folder_path, filename)
-	await writeFile(image_path, data)
-	const image_widget = {
-		type: <WidgetType>"image",
-		name: filename,
+export async function Upload_file(folder_path: WidgetPath, type: WidgetType, filename: string, data: Uint8Array, position?: Position) {
+	const file_name = `${+new Date()}.${filename.split(".")[1]}`
+	const file_path = await join(folder_path, file_name)
+	await writeFile(file_path, data)
+	const file_widget = {
+		type,
+		name: file_name,
 		position: position || {x: 30, y: 30},
 		size: {width: 200, height: 200},
-		path: image_path
+		path: file_path
 	}
-	return await Folder_pile(folder_path).create_widget(image_widget)
+	return await Folder_pile(folder_path).create_widget(file_widget)
 }
 export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "circle" | "line", position?: Position) {
 	const name = `${+new Date()}.svg`
