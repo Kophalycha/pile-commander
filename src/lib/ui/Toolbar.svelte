@@ -9,8 +9,9 @@
     <input type="file" bind:this={audio_picker} accept="audio/*" hidden onchange={e => addFile(e, "audio")} />
     <button onclick={() => video_picker.click()}>Video</button>
     <input type="file" bind:this={video_picker} accept="video/*" hidden onchange={e => addFile(e, "video")} />
+    <button onclick={() => model_picker.click()}>3D model</button>
+    <input type="file" bind:this={model_picker} accept="model/gltf-binary, model/gltf+json" hidden onchange={e => addFile(e, "3d_model")} />
 </div>
-
 <style>
 div {
     position: fixed;
@@ -30,8 +31,9 @@ let {selected_folder_path, ontoggle, selected_tool} = $props()
 let image_picker = $state()
 let audio_picker = $state()
 let video_picker = $state()
+let model_picker = $state()
 
-function addFile(e, type) { // "image" | "audio" | "video"
+function addFile(e, type) { // "image" | "audio" | "video" | "3d_model"
     const file = e.target.files[0]
     let reader = new FileReader()
     reader.readAsArrayBuffer(file)
