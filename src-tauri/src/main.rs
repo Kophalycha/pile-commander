@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    pile_commander_dev_lib::run()
+    pile_commander_lib::run()
 }

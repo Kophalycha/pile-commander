@@ -106,7 +106,13 @@ import Container from "./Container.svelte"
 const { view, widget, selected_slide } = $props()
 
 let selected_widget = $state(false)
-listen('Select_widget', ({payload}) => {
-    selected_widget = payload.widget_path === widget.path ? true : false
+let l1
+
+import { onDestroy, onMount } from "svelte"
+onMount(async () => {
+    l1 = await listen('Select_widget', ({payload}) => {
+        selected_widget = payload.widget_path === widget.path ? true : false
+    })
 })
+onDestroy(() => l1())
 </script>

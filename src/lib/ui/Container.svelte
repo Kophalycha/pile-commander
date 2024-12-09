@@ -123,14 +123,20 @@ $effect(async () => {
     pile_masonry_column = pile.masonry_column || 3
     pile_selected_widget_index = pile.selected_widget_index || 0
 })
-listen('Update_folder', ({payload}) => {
-    if (payload.folder_path === folder_path) {
-        pile = payload.pile
-        pile_masonry_column = pile.masonry_column || 3
-        pile_selected_widget_index = pile.selected_widget_index || 0
-        console.log(`Update_folder:`, payload.folder_path)
-    }
+
+import { onDestroy, onMount } from "svelte"
+let l1
+onMount(async () => {
+    l1 = await listen('Update_folder', ({payload}) => {
+        if (payload.folder_path === folder_path) {
+            pile = payload.pile
+            pile_masonry_column = pile.masonry_column || 3
+            pile_selected_widget_index = pile.selected_widget_index || 0
+            console.log(`Update_folder:`, payload.folder_path)
+        }
+    })
 })
+onDestroy(() => l1())
 
 async function load_container(folder_path) {
     console.log("load_container: ", folder_path)
