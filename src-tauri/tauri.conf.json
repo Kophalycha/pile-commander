@@ -1,8 +1,8 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
-  "productName": "pile-commander-dev",
+  "productName": "pile-commander",
   "version": "0.6.0",
-  "identifier": "com.pile-commander-dev.app",
+  "identifier": "com.pile-commander.app",
   "build": {
     "beforeDevCommand": "npm run dev",
     "devUrl": "http://localhost:1420",
