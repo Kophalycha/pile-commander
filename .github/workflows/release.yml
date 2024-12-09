@@ -44,9 +44,6 @@ jobs:
       - name: install frontend dependencies
         run: yarn install
 
-      - name: install keys
-        run: yarn tauri signer generate -w ~/.tauri/myapp.key
-
       - uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -56,6 +53,6 @@ jobs:
           releaseName: "v__VERSION__"
           releaseBody: "See the assets to download this version and install."
           releaseDraft: true
-          prerelease: false
+          prerelease: true
           includeUpdaterJson: true
           args: ${{ matrix.args }}
