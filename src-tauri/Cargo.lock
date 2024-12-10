@@ -2449,7 +2449,7 @@ dependencies = [
 
 [[package]]
 name = "pile-commander"
-version = "0.7.2"
+version = "0.7.0"
 dependencies = [
  "serde",
  "serde_json",
