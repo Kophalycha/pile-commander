@@ -37,7 +37,7 @@
     "updater": {
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDU3NkUwQzc0MUM5NzhFNUQKUldSZGpwY2NkQXh1VndidW1JMEVrNGNFVDB3YXdJNHZPYmJhZG1CSVpCREhiTzUvU2pMVjBodVoK",
       "endpoints": [
-        "https://a-matyukh.github.io/pile-commander/latest.json"
+        "https://a-matyukh.github.io/latest.json"
       ]
     }
   }

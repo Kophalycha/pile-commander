@@ -26,7 +26,7 @@ window.listen = listen
 
 import { onMount } from 'svelte'
 import { checkForAppUpdates } from './updater'
-onMount(async () => await checkForAppUpdates())
+// onMount(async () => await checkForAppUpdates())
 
 
 let { data } = $props()
