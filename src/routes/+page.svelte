@@ -24,11 +24,6 @@ import { emit, listen } from "@tauri-apps/api/event"
 window.emit = emit
 window.listen = listen
 
-import { onMount } from 'svelte'
-import { checkForAppUpdates } from './updater'
-// onMount(async () => await checkForAppUpdates())
-
-
 let { data } = $props()
 let selected_folder_path = $state(data.ROOT_FOLDER_PATH)
 let tool = $state("selection")
