@@ -31,7 +31,7 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
 	const new_widget = await make(folder_path, payload)
 	const is_exists = await exists(new_widget.path)
 	if (is_exists) {
-		throw new Error("Такое имя уже есть, дайте другое имя")
+		throw new Error("This name already exists, please give another name")
 	} else {
 		switch (new_widget.type) {
 			case "note":
@@ -53,7 +53,7 @@ export async function Rename_widget(current_path: string, old_widget_name: strin
 	const new_widget_path = await join(current_path, new_widget_name)
 	const is_exists = await exists(new_widget_path)
 	if (is_exists) {
-		throw new Error("Такое имя уже есть, дайте другое имя")
+		throw new Error("This name already exists, please give another name")
 	} else {
 		await rename(old_widget_path, new_widget_path)
 		return await Folder_pile(current_path).update_widget(old_widget_name, { name: new_widget_name, path: new_widget_path})
@@ -83,7 +83,7 @@ export async function Move_widget(buffer: Buffer) {
 	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
 	const is_exists = await exists(new_widget_path)
 	if (is_exists) {
-		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
+		throw new Error("There is already such a name in the dragged folder, please give it a different name")
 	} else {
 		try {
 			await rename(old_widget_path, new_widget_path)
