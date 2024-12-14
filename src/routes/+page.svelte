@@ -100,6 +100,7 @@ document.addEventListener("keydown", async e => {
     if (e.code === "KeyX" && e.ctrlKey) Buffer.cut()
     if (e.code === "KeyC" && e.ctrlKey) Buffer.copy()
 	if (e.code === "KeyV" && e.ctrlKey) Buffer.paste()
+	if (e.code === "KeyD" && e.ctrlKey) Buffer.duplicate()
 })
 
 let Buffer = {
@@ -130,6 +131,10 @@ let Buffer = {
 		const {to_pile} = this._status === "cutted" ? await Move_widget(this._buffer) : await Copy_widget(this._buffer)
 		emit("Update_folder", {folder_path: selected_folder_path, pile: to_pile})
 		this.clean()
+	},
+	duplicate() {
+		this.copy()
+		this.paste()
 	},
 	clean() {
 		this._buffer = {
