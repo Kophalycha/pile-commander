@@ -1,4 +1,4 @@
-import { exists, mkdir, rename, remove } from '@tauri-apps/plugin-fs'
+import { exists, mkdir, rename, copyFile, remove } from '@tauri-apps/plugin-fs'
 import { join } from '@tauri-apps/api/path'
 import { Folder_pile } from './folder_pile'
 import { writeTextFile, writeFile } from '@tauri-apps/plugin-fs'
@@ -67,6 +67,17 @@ export async function Reorder_widgets(folder_path: WidgetPath, from_index: numbe
 	return await Folder_pile(folder_path).reorder_widgets(from_index, to_index)
 }
 
+export async function Copy_widget(buffer: Buffer) {
+	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
+	const new_widget_name = `${+new Date()}.${buffer.widget_name.split(".")[1]}`
+	const new_widget_path = await join(buffer.to_folder_path, new_widget_name)
+	try {
+		await copyFile(old_widget_path, new_widget_path)
+	} catch (error) {
+		console.log(error)
+	}
+	return await Folder_pile(buffer.from_folder_path).copy_widget(buffer.widget_name, buffer.to_folder_path, new_widget_name, new_widget_path)
+}
 export async function Move_widget(buffer: Buffer) {
 	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
 	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
