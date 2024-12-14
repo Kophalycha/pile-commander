@@ -1,4 +1,4 @@
-import { exists, mkdir, rename, remove } from '@tauri-apps/plugin-fs'
+import { exists, mkdir, rename, copyFile, remove } from '@tauri-apps/plugin-fs'
 import { join } from '@tauri-apps/api/path'
 import { Folder_pile } from './folder_pile'
 import { writeTextFile, writeFile } from '@tauri-apps/plugin-fs'
@@ -31,7 +31,7 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
 	const new_widget = await make(folder_path, payload)
 	const is_exists = await exists(new_widget.path)
 	if (is_exists) {
-		throw new Error("Такое имя уже есть, дайте другое имя")
+		throw new Error("This name already exists, please give another name")
 	} else {
 		switch (new_widget.type) {
 			case "note":
@@ -53,7 +53,7 @@ export async function Rename_widget(current_path: string, old_widget_name: strin
 	const new_widget_path = await join(current_path, new_widget_name)
 	const is_exists = await exists(new_widget_path)
 	if (is_exists) {
-		throw new Error("Такое имя уже есть, дайте другое имя")
+		throw new Error("This name already exists, please give another name")
 	} else {
 		await rename(old_widget_path, new_widget_path)
 		return await Folder_pile(current_path).update_widget(old_widget_name, { name: new_widget_name, path: new_widget_path})
@@ -67,12 +67,23 @@ export async function Reorder_widgets(folder_path: WidgetPath, from_index: numbe
 	return await Folder_pile(folder_path).reorder_widgets(from_index, to_index)
 }
 
+export async function Copy_widget(buffer: Buffer) {
+	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
+	const new_widget_name = `${+new Date()}.${buffer.widget_name.split(".")[1]}`
+	const new_widget_path = await join(buffer.to_folder_path, new_widget_name)
+	try {
+		await copyFile(old_widget_path, new_widget_path)
+	} catch (error) {
+		console.log(error)
+	}
+	return await Folder_pile(buffer.from_folder_path).copy_widget(buffer.widget_name, buffer.to_folder_path, new_widget_name, new_widget_path)
+}
 export async function Move_widget(buffer: Buffer) {
 	const old_widget_path = await join(buffer.from_folder_path, buffer.widget_name)
 	const new_widget_path = await join(buffer.to_folder_path, buffer.widget_name)
 	const is_exists = await exists(new_widget_path)
 	if (is_exists) {
-		throw new Error("Такое имя в перетаскиваемой папке уже есть, дайте другое имя")
+		throw new Error("There is already such a name in the dragged folder, please give it a different name")
 	} else {
 		try {
 			await rename(old_widget_path, new_widget_path)

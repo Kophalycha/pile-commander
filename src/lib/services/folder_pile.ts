@@ -51,6 +51,19 @@ export const Folder_pile = (folder_path: string) => ({
 		})
 		return await this.write(pile)
 	},
+	async copy_widget(name: WidgetName, to_folder_path: WidgetPath, new_widget_name: WidgetName, new_widget_path: WidgetPath) {
+		let from_pile = await this.read()
+		let copied_widget = from_pile.widgets.find((w: Widget) => w.name === name)
+		copied_widget.position.x += 20
+		copied_widget.position.y += 20
+		copied_widget.name = new_widget_name
+		copied_widget.path = new_widget_path
+		const to_folder_pile_path = await join(to_folder_path, FOLDER_PILE_FILE_NAME)
+		let to_pile = await this.read(to_folder_pile_path)
+		to_pile.widgets.push(copied_widget)
+		await writeTextFile(to_folder_pile_path, YAML.stringify(to_pile))
+		return { from_pile, to_pile }
+	},
 	async move_widget(name: WidgetName, to: WidgetPath) {
 		let from_pile = await this.read()
 		let moved_widget = from_pile.widgets.filter((w: Widget) => w.name === name)[0]

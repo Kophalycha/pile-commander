@@ -36,7 +36,9 @@
     {:else if widget.type === "container"}
         <Container folder_path={widget.path} {widget} />
     {/if}
-    <span class="resize-handle {view}"></span>
+    <span class="resize-handle {view}">
+        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M213.66,133.66l-80,80a8,8,0,0,1-11.32-11.32l80-80a8,8,0,0,1,11.32,11.32Zm-16-99.32a8,8,0,0,0-11.32,0l-152,152a8,8,0,0,0,11.32,11.32l152-152A8,8,0,0,0,197.66,34.34Z"></path></svg>
+    </span>
 </div>
 
 <style>
@@ -66,12 +68,7 @@
 
 .resize-handle {
     visibility: hidden;
-    width: 10px;
-    height: 10px;
     float: right;
-    background-color: #ccc;
-    padding: 15px;
-    box-sizing: border-box;
     position: relative;
     bottom: 30px;
     opacity: .2;
