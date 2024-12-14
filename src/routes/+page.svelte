@@ -17,7 +17,7 @@ import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import Toolbar from "$lib/ui/Toolbar.svelte"
 import PenCanvas from "$lib/ui/PenCanvas.svelte"
-import { Create_widget, Rename_widget, Update_widget, Remove_widget, Move_widget, Upload_file } from "$lib/services/widget"
+import { Create_widget, Rename_widget, Update_widget, Remove_widget, Copy_widget, Move_widget, Upload_file } from "$lib/services/widget"
 import { join, basename } from '@tauri-apps/api/path'
 import { readFile } from '@tauri-apps/plugin-fs'
 import { emit, listen } from "@tauri-apps/api/event"
@@ -98,7 +98,9 @@ document.addEventListener("keydown", async e => {
 	if (e.key === "F2") onRename()
 	if (e.key === "Delete") onRemove()
     if (e.code === "KeyX" && e.ctrlKey) Buffer.cut()
+    if (e.code === "KeyC" && e.ctrlKey) Buffer.copy()
 	if (e.code === "KeyV" && e.ctrlKey) Buffer.paste()
+	if (e.code === "KeyD" && e.ctrlKey) Buffer.duplicate()
 })
 
 let Buffer = {
@@ -116,12 +118,23 @@ let Buffer = {
 		selected_widget.classList.add("cutted_widget")
 		this._status = "cutted"
 	},
+	copy() {
+		const selected_widget = document.querySelector(".selected_widget")
+		if (!selected_widget || selected_widget.classList.contains("line-anchor")) return
+		this._buffer.from_folder_path = selected_widget.dataset.path.replace(selected_widget.dataset.name, "")
+		this._buffer.widget_name = selected_widget.dataset.name
+		this._status = "copied"
+	},
 	async paste() {
-		if (this._status !== "cutted") return
+		if (!["cutted", "copied"].includes(this._status)) return
 		this._buffer.to_folder_path = selected_folder_path
-		const {to_pile} = await Move_widget(this._buffer)
+		const {to_pile} = this._status === "cutted" ? await Move_widget(this._buffer) : await Copy_widget(this._buffer)
 		emit("Update_folder", {folder_path: selected_folder_path, pile: to_pile})
 		this.clean()
+	},
+	duplicate() {
+		this.copy()
+		this.paste()
 	},
 	clean() {
 		this._buffer = {
@@ -193,7 +206,7 @@ interact('.dropzone').dropzone({
 		event.relatedTarget.classList.remove('can-drop')
 	},
 	ondrop: async (event) => {
-		if (event.target !== event.relatedTarget.parentElement.parentElement && !event.relatedTarget.classList.contains("shape")) {
+		if (event.target !== event.relatedTarget.parentElement.parentElement) {
 			const dropzone_position = {x: +event.target.style.left.replace("px", ""), y: +event.target.style.top.replace("px", "")}
 			const dropwidget_position = {x: +event.relatedTarget.style.left.replace("px", ""), y: +event.relatedTarget.style.top.replace("px", "")}
 			const new_widget_position = {
