@@ -50,7 +50,7 @@
             {/if}
         {:else}
             <article>
-                <p><span>Create note</span>&emsp;&ensp;Double click mouse</p>
+                <p><span>Create text</span>&emsp;&ensp;Double click mouse</p>
                 <p><span>Create folder</span>&emsp;Shift + double click mouse</p>
             </article>
         {/each}

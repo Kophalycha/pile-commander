@@ -44,7 +44,7 @@ listen('tauri://drag-drop', async ({payload}) => {
 
 document.addEventListener("dblclick", async e => {
 	if (e.target.classList.contains("surface")) {
-		let type = "note"
+		let type = "text"
         if (e.shiftKey) type = e.ctrlKey ? "container" : "folder"
 		const position = {x: e.x, y: e.y}
 		const folder_path = e.target.dataset.path

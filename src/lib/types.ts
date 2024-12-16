@@ -17,7 +17,7 @@ type ViewType = "board" | "stack" | "masonry" | "slides"
 
 type WidgetType = 
 	"folder" | "container" | 
-	"note" | "path" | "rect" | "circle" | 
+	"text" | "path" | "rect" | "circle" | 
 	"file" | "image" | "audio" | "video" | "3d_model"
 type WidgetPath = string // file path + identifier
 type WidgetName = string // file name + identifier
