@@ -1,15 +1,17 @@
 <section>
     <p>{widget.name}</p>
-    <div> 
-        <button onclick={onRename}>
-            Rename
-            <kbd>F2</kbd>
-        </button>
-        <button onclick={onRemove}>
-            Remove
-            <kbd>Del</kbd>
-        </button>
-    </div>
+    {#if widget.type !== "crumb"}    
+        <div> 
+            <button onclick={onRename}>
+                Rename
+                <kbd>F2</kbd>
+            </button>
+            <button onclick={onRemove}>
+                Remove
+                <kbd>Del</kbd>
+            </button>
+        </div>
+    {/if}
     {#if widget.type === "folder"}
         <hr>
         <button onclick={async () => {
@@ -25,27 +27,27 @@
             const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
             emit("Update_folder", {folder_path, pile})
         }}>Change to folder</button>
-        {#if pile}
-            <hr>
-            View type: 
-            <select bind:value={selected_view} onchange={async () => {
-                pile = await Change_view(widget.path, selected_view)
-                emit("Update_folder", {folder_path: widget.path, pile})
-            }}>
-                <option value="board">board</option>
-                <option value="stack">stack</option>
-                <option value="masonry">masonry</option>
-                <option value="slides">slides</option>
-            </select>
-            {#if pile.view === "masonry"}
-            <p>Columns: <input type="number" min="2" max="10" bind:value={pile_masonry_column} onchange={set_masonry_column}></p>
-            {/if}
-            {#if pile.view === "slides"}
-            <p>Selected widget: <input type="number" min="1" max={pile.widgets.length} bind:value={pile_selected_widget_index} onchange={set_selected_widget_index}></p>
-            {/if}
+    {/if}
+    {#if pile && ["crumb", "container"].includes(widget.type)}
+        <hr>
+        View type: 
+        <select bind:value={selected_view} onchange={async () => {
+            pile = await Change_view(widget.path, selected_view)
+            emit("Update_folder", {folder_path: widget.path, pile})
+        }}>
+            <option value="board">board</option>
+            <option value="stack">stack</option>
+            <option value="masonry">masonry</option>
+            <option value="slides">slides</option>
+        </select>
+        {#if pile.view === "masonry"}
+        <p>Columns: <input type="number" min="2" max="10" bind:value={pile_masonry_column} onchange={set_masonry_column}></p>
+        {/if}
+        {#if pile.view === "slides"}
+        <p>Selected widget: <input type="number" min="1" max={pile.widgets.length} bind:value={pile_selected_widget_index} onchange={set_selected_widget_index}></p>
         {/if}
     {/if}
-    {#if widget.type !== "container"}
+    <!-- {#if widget.type !== "container"} -->
         <hr>
         <p>Background:</p>
         <div>
@@ -61,7 +63,7 @@
                 {/each}
             </span>
         </div>
-    {/if}
+    <!-- {/if} -->
 </section>
 <style>
 section {
@@ -106,7 +108,7 @@ let selected_view = $state()
 let pile_masonry_column = $state()
 let pile_selected_widget_index = $state()
 $effect(async () => {
-    if (!["folder", "container"].includes(widget.type)) return
+    if (!["crumb", "folder", "container"].includes(widget.type)) return
     pile = await Folder_pile(widget.path).read()
     selected_view = pile.view
     pile_masonry_column = pile.masonry_column || 3
@@ -122,8 +124,13 @@ async function set_selected_widget_index() {
 }
 
 async function change_background(color) {
-    const pile = await Update_widget(folder_path, widget.name, {background: color})
-    emit("Update_folder", {folder_path, pile})
+    if (["crumb", "container"].includes(widget.type)) {
+        pile = await Set_folder_option(widget.path, {background: color})
+        emit("Update_folder", {folder_path: widget.path, pile})
+    } else {
+        const pile = await Update_widget(folder_path, widget.name, {background: color})
+        emit("Update_folder", {folder_path, pile})
+    }
 }
 
 const colors = ["AliceBlue", "Azure", "Beige", "Bisque", "BlanchedAlmond", "Cornsilk", "FloralWhite",

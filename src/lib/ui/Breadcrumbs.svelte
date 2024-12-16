@@ -9,7 +9,11 @@
                 <span>{name}</span>
             </button>
         {:else}
-            {name}
+            {name} 
+            <button
+                onclick={() => emit("Widget_selected", {widget: {type: "crumb",name, path}})}>
+                Menu
+            </button>
         {/if}
     {/each}
 </nav>
@@ -29,7 +33,7 @@ nav button {
     box-sizing: border-box;
     transition-property: padding;
 }
-:global(nav button::after) {
+:global(nav button:not(:last-child):after) {
     content: "/";
     margin-left: 20px;
     opacity: .3;
