@@ -12,7 +12,7 @@
 	<PenCanvas {selected_folder_path} />
 {/if}
 {#if selected_widget}
-	<SelectedWidgetMenu {selected_widget} {onRename} {onRemove} />
+	<SelectedWidgetMenu folder_path={selected_folder_path} {selected_widget} {onRename} {onRemove} />
 {/if}
 <script>
 import "./app.css"
@@ -76,14 +76,15 @@ document.addEventListener("click", async e => {
 })
 
 async function onRename() {
-	const selected_widget = document.querySelector(".selected_widget")
-	if (!selected_widget) return
+	const selected_widget_node = document.querySelector(".selected_widget")
+	if (!selected_widget_node) return
 	try {
-		const folder_path = selected_widget.parentElement.closest(".container").dataset.path
-		let new_folder_name = prompt("Enter new name", selected_widget.dataset.name)
+		const folder_path = selected_widget_node.parentElement.closest(".container").dataset.path
+		let new_folder_name = prompt("Enter new name", selected_widget_node.dataset.name)
 		if (new_folder_name) {
-			const pile = await Rename_widget(folder_path, selected_widget.dataset.name, new_folder_name)
+			const pile = await Rename_widget(folder_path, selected_widget_node.dataset.name, new_folder_name)
             emit("Update_folder", {folder_path, pile})
+			selected_widget = null
 		}
 	} catch (error) {
 		if (error instanceof Error) {
@@ -93,13 +94,14 @@ async function onRename() {
 	}
 }
 async function onRemove() {
-	const selected_widget = document.querySelector(".selected_widget")
-	if (!selected_widget) return
+	const selected_widget_node = document.querySelector(".selected_widget")
+	if (!selected_widget_node) return
 	let is_remove = confirm("Are you sure remove?")
 	if (is_remove) {
-		const folder_path = selected_widget.parentElement.closest(".container").dataset.path
-		const pile = await Remove_widget(folder_path, selected_widget.dataset.name)
+		const folder_path = selected_widget_node.parentElement.closest(".container").dataset.path
+		const pile = await Remove_widget(folder_path, selected_widget_node.dataset.name)
         emit("Update_folder", {folder_path, pile})
+		selected_widget = null
 	}
 }
 

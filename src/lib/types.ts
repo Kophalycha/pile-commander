@@ -26,7 +26,7 @@ type Widget = {
 	name: WidgetName
 	position: Position
 	size: Size
-	bg_color?: string
+	background?: string
 	path?: string
 }
 

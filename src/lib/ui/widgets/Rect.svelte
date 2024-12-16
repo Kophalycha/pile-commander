@@ -1,6 +1,6 @@
 <div
     data-path={widget.path}
-    style="background-color: {widget.bg_color || "inherit"};"
+    style="background-color: {widget.background || "inherit"};"
     class:drag-handle={view === "board"}
 >
 </div>

@@ -1,6 +1,6 @@
 <div
     data-path={widget.path}
-    style="background-color: {widget.bg_color || "white"};"
+    style="background-color: {widget.background || "white"};"
     class:is_edit
     class:drag-handle={view === "board"}
     {ondblclick}

@@ -1,5 +1,5 @@
 <div
-    style="background-color: {widget.bg_color || "initial"};"
+    style="background-color: {widget.background || "initial"};"
     class:drag-handle={view === "board"}
     data-name={widget.name}
     data-path={widget.path}
