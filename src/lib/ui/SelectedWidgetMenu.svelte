@@ -10,7 +10,14 @@
             <kbd>Del</kbd>
         </button>
     </div>
-    <br>
+    {#if selected_widget.type === "folder"}
+        <hr>
+        <button onclick={async () => {
+            const folder_path = selected_widget.path.replace(selected_widget.name, "").slice(0, -1)
+            const pile = await Update_widget(folder_path, selected_widget.name, {type: "container"})
+            emit("Update_folder", {folder_path, pile})
+        }}>Change to container</button>
+    {/if}
     <hr>
     <p>Background:</p>
     <div>
