@@ -33,7 +33,7 @@ section {
     bottom: 100px;
     right: 30px;
     z-index: 9999;
-    width: 300px;
+    width: 250px;
     padding: 20px;
     background-color: #fff;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
@@ -48,7 +48,7 @@ hr {
 
 .colors-board {
     display: grid;
-    grid-template-columns: repeat(7, auto);
+    grid-template-columns: repeat(6, auto);
     gap: 10px;
 }
 .colors-board > button {
@@ -71,6 +71,6 @@ async function change_background(color) {
 
 const colors = ["AliceBlue", "Azure", "Beige", "Bisque", "BlanchedAlmond", "Cornsilk", "FloralWhite",
     "GhostWhite", "Gainsboro", "HoneyDew", "Ivory", "Khaki", "LavenderBlush", "LightBlue",
-    "#F1F1EF", "#F4EEEE", "#FBECDD", "#FBF3DB", "#EDF3EC", "#E7F3F8", "#F6F3F9", "#FAF1F5", "#FDEBEC"
+    "#F1F1EF", "#F4EEEE", "#FBECDD", "#FBF3DB", "#EDF3EC", "#E7F3F8", "#F6F3F9", "#FAF1F5", "#FDEBEC", "plum"
 ]
 </script>

@@ -11,7 +11,7 @@ async function make(folder_path: WidgetName, payload: Partial<Widget>) {
 	}
 	const typed_records = {
 		"text": {
-			name: `unnamed_text_${+new Date()}.md`,
+			name: `${+new Date()}.md`,
 			size: {width: 200, height: 120},
 		},
 		"folder": {
