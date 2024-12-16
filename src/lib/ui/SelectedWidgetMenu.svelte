@@ -25,6 +25,25 @@
             const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
             emit("Update_folder", {folder_path, pile})
         }}>Change to folder</button>
+        {#if pile}
+            <hr>
+            View type: 
+            <select bind:value={selected_view} onchange={async () => {
+                pile = await Change_view(widget.path, selected_view)
+                emit("Update_folder", {folder_path: widget.path, pile})
+            }}>
+                <option value="board">board</option>
+                <option value="stack">stack</option>
+                <option value="masonry">masonry</option>
+                <option value="slides">slides</option>
+            </select>
+            {#if pile.view === "masonry"}
+            <p>Columns: <input type="number" min="2" max="10" bind:value={pile_masonry_column} onchange={set_masonry_column}></p>
+            {/if}
+            {#if pile.view === "slides"}
+            <p>Selected widget: <input type="number" min="1" max={pile.widgets.length} bind:value={pile_selected_widget_index} onchange={set_selected_widget_index}></p>
+            {/if}
+        {/if}
     {/if}
     {#if widget.type !== "container"}
         <hr>
@@ -75,11 +94,32 @@ hr {
 </style>
 
 <script>
-import { Update_widget } from "$lib/services/widget"
+import { Update_widget, Change_view, Set_folder_option } from "$lib/services/widget"
+import { Folder_pile } from '$lib/services/folder_pile'
 
 let {folder_path, widget, onRename, onRemove} = $props()
 let color_picker = $state()
 let selected_color = $state(widget.background || "black")
+
+let pile = $state()
+let selected_view = $state()
+let pile_masonry_column = $state()
+let pile_selected_widget_index = $state()
+$effect(async () => {
+    if (!["folder", "container"].includes(widget.type)) return
+    pile = await Folder_pile(widget.path).read()
+    selected_view = pile.view
+    pile_masonry_column = pile.masonry_column || 3
+    pile_selected_widget_index = pile.selected_widget_index || 0
+})
+async function set_masonry_column() {
+    pile = await Set_folder_option(widget.path, {masonry_column: pile_masonry_column})
+    emit("Update_folder", {folder_path: widget.path, pile})
+}
+async function set_selected_widget_index() {
+    pile = await Set_folder_option(widget.path, {selected_widget_index: pile_selected_widget_index})
+    emit("Update_folder", {folder_path: widget.path, pile})
+}
 
 async function change_background(color) {
     const pile = await Update_widget(folder_path, widget.name, {background: color})
