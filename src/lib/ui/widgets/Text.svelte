@@ -6,7 +6,7 @@
     {ondblclick}
 >
 {#if !is_edit}
-    {text}
+    {@html marked(text)}
 {:else}
     <textarea
         bind:this={textarea}
@@ -40,6 +40,8 @@ textarea {
 }
 </style>
 <script>
+import { marked } from 'marked'
+
 let { view, widget } = $props()
 
 let text = $state("")
