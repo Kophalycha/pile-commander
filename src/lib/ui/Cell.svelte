@@ -108,8 +108,12 @@ let l1
 import { onDestroy, onMount } from "svelte"
 onMount(async () => {
     l1 = await listen('Select_widget', ({payload}) => {
-        selected_widget = payload.widget_path === widget.path ? true : false
-        emit("Widget_selected", {widget: selected_widget ? widget : null})
+        if (payload.widget_path === widget.path) {
+            selected_widget = true
+            emit("Widget_selected", {widget})
+        } else {
+            selected_widget = false
+        }
     })
 })
 onDestroy(() => l1())

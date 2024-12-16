@@ -41,7 +41,7 @@ listen('Show_folder', ({payload}) => {
 
 let selected_widget = $state(null)
 listen('Widget_selected', ({payload}) => {
-    selected_widget = payload.widget
+	selected_widget = payload.widget
 })
 
 listen('tauri://drag-drop', async ({payload}) => {
@@ -71,6 +71,7 @@ document.addEventListener("click", async e => {
 	} else if (["svg", "path"].includes(e.target.nodeName) && e.target.closest("div.path")) {
 		emit("Select_widget", {widget_path: e.target.closest("div.path").dataset.path})
 	} else {
+		if (e.target.classList.contains("surface")) selected_widget = null
 		emit("Select_widget", {widget_path: e.target.dataset.path})
 	}
 })
