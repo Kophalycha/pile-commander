@@ -11,12 +11,16 @@
 {#if tool === "pen"}
 	<PenCanvas {selected_folder_path} />
 {/if}
+{#if selected_widget}
+	<SelectedWidgetMenu {selected_widget} {onRename} {onRemove} />
+{/if}
 <script>
 import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import Toolbar from "$lib/ui/Toolbar.svelte"
 import PenCanvas from "$lib/ui/PenCanvas.svelte"
+import SelectedWidgetMenu from "$lib/ui/SelectedWidgetMenu.svelte"
 import { Create_widget, Rename_widget, Update_widget, Remove_widget, Copy_widget, Move_widget, Upload_file } from "$lib/services/widget"
 import { join, basename } from '@tauri-apps/api/path'
 import { readFile } from '@tauri-apps/plugin-fs'
@@ -33,6 +37,11 @@ function toggle_tool() {
 listen('Show_folder', ({payload}) => {
     console.log(`show folder:`, payload.folder_path)
     selected_folder_path = payload.folder_path
+})
+
+let selected_widget = $state(null)
+listen('Widget_selected', ({payload}) => {
+    selected_widget = payload.widget
 })
 
 listen('tauri://drag-drop', async ({payload}) => {

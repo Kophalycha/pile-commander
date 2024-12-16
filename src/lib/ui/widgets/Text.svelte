@@ -23,6 +23,9 @@ div {
     height: 100%;
     user-select: none;
 }
+:global(div > p:first-child) {
+    margin-top: 0;
+}
 div.is_edit {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
     height: 100%;

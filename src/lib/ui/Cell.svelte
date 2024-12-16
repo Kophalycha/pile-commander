@@ -86,7 +86,7 @@
 }
 
 .selected_widget {
-	outline: 5px solid blue !important;
+	outline: 5px solid #2182F8 !important;
 }
 </style>
 <script>
@@ -109,6 +109,7 @@ import { onDestroy, onMount } from "svelte"
 onMount(async () => {
     l1 = await listen('Select_widget', ({payload}) => {
         selected_widget = payload.widget_path === widget.path ? true : false
+        emit("Widget_selected", {widget: selected_widget ? widget : null})
     })
 })
 onDestroy(() => l1())
