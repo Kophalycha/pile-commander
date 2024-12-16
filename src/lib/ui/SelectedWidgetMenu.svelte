@@ -1,5 +1,5 @@
 <section>
-    <p>{selected_widget.name}</p>
+    <p>{widget.name}</p>
     <div> 
         <button onclick={onRename}>
             Rename
@@ -10,29 +10,39 @@
             <kbd>Del</kbd>
         </button>
     </div>
-    {#if selected_widget.type === "folder"}
+    {#if widget.type === "folder"}
         <hr>
         <button onclick={async () => {
-            const folder_path = selected_widget.path.replace(selected_widget.name, "").slice(0, -1)
-            const pile = await Update_widget(folder_path, selected_widget.name, {type: "container"})
+            const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+            const pile = await Update_widget(folder_path, widget.name, {type: "container"})
             emit("Update_folder", {folder_path, pile})
         }}>Change to container</button>
     {/if}
-    <hr>
-    <p>Background:</p>
-    <div>
-        <button onclick={() => change_background("none")}>None</button>
-        <button onclick={() => change_background("white")}>White</button>
-        <br><br>
-        {#snippet color_ficker(color)}
-            <button style="background-color: {color};" onclick={() => change_background(color)}></button>
-        {/snippet}
-        <span class="colors-board">
-            {#each colors as color}
-                {@render color_ficker(color)}
-            {/each}
-        </span>
-    </div>
+    {#if widget.type === "container"}
+        <hr>
+        <button onclick={async () => {
+            const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+            const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
+            emit("Update_folder", {folder_path, pile})
+        }}>Change to folder</button>
+    {/if}
+    {#if widget.type !== "container"}
+        <hr>
+        <p>Background:</p>
+        <div>
+            <button onclick={() => change_background("none")}>None</button>
+            <button onclick={() => change_background("white")}>White</button>
+            <br><br>
+            {#snippet color_ficker(color)}
+                <button style="background-color: {color};" onclick={() => change_background(color)}></button>
+            {/snippet}
+            <span class="colors-board">
+                {#each colors as color}
+                    {@render color_ficker(color)}
+                {/each}
+            </span>
+        </div>
+    {/if}
 </section>
 <style>
 section {
@@ -67,12 +77,12 @@ hr {
 <script>
 import { Update_widget } from "$lib/services/widget"
 
-let {folder_path, selected_widget, onRename, onRemove} = $props()
+let {folder_path, widget, onRename, onRemove} = $props()
 let color_picker = $state()
-let selected_color = $state(selected_widget.background || "black")
+let selected_color = $state(widget.background || "black")
 
 async function change_background(color) {
-    const pile = await Update_widget(folder_path, selected_widget.name, {background: color})
+    const pile = await Update_widget(folder_path, widget.name, {background: color})
     emit("Update_folder", {folder_path, pile})
 }
 

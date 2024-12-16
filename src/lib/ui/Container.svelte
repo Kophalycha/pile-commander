@@ -6,7 +6,8 @@
             ondblclick={() => emit("Show_folder", {folder_path})}
         >
             <span class="drag-handle">{widget.name}</span>
-            -
+
+            - //// -
             <select bind:value={selected_view} onchange={async () => {
                 pile = await Change_view(folder_path, selected_view)
             }}>
@@ -15,19 +16,12 @@
                 <option value="masonry">masonry</option>
                 <option value="slides">slides</option>
             </select>
-
             {#if pile.view === "masonry"}
             - <input type="number" min="2" max="10" bind:value={pile_masonry_column} onchange={set_masonry_column}>
             {/if}
             {#if pile.view === "slides"}
             - <input type="number" min="0" max={pile.widgets.length - 1} bind:value={pile_selected_widget_index} onchange={set_selected_widget_index}>
             {/if}
-
-            <button onclick={async () => {
-                const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
-                const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
-                emit("Update_folder", {folder_path, pile})
-            }}>Change to folder</button>
         </p>
     {/if}
     <section

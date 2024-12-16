@@ -12,7 +12,7 @@
 	<PenCanvas {selected_folder_path} />
 {/if}
 {#if selected_widget}
-	<SelectedWidgetMenu folder_path={selected_folder_path} {selected_widget} {onRename} {onRemove} />
+	<SelectedWidgetMenu folder_path={selected_folder_path} widget={selected_widget} {onRename} {onRemove} />
 {/if}
 <script>
 import "./app.css"
