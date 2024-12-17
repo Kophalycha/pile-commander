@@ -1,4 +1,7 @@
-<div data-path={widget.path}>
+<div
+    data-path={widget.path}
+    style="background-color: {widget.background || "none"};"
+>
     <p class:drag-handle={view === "board"}>
         <span class="">{widget.name}</span>
     </p>

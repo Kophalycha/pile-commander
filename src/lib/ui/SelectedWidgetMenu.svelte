@@ -88,7 +88,7 @@
         <p>Selected widget: <input type="number" min="1" max={pile.widgets.length} bind:value={pile_selected_widget_index} onchange={set_selected_widget_index}></p>
         {/if}
     {/if}
-    {#if !["path", "image", "audio", "video", "3d_model"].includes(widget.type)}
+    {#if !["path", "image", "audio", "video"].includes(widget.type)}
         <hr>
         <details open>
             <summary>Background</summary>
