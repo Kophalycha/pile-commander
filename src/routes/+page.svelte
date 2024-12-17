@@ -47,8 +47,21 @@ listen('Widget_selected', ({payload}) => {
 listen('tauri://drag-drop', async ({payload}) => {
 	const file_name = await basename(payload.paths[0])
 	const uint8View = await readFile(payload.paths[0])
-	const pile = await Upload_file(selected_folder_path, "image", file_name, uint8View, payload.position)
-	emit("Update_folder", {folder_path: selected_folder_path, pile})
+	const file_ext = file_name.split(".")[1]
+	let widget_type
+	if (["jpg", "jpeg", "png", "gif"].includes(file_ext)) {
+		widget_type = "image"
+	} else if (["mp3", "wav", "ogg"].includes(file_ext)) {
+		widget_type = "audio"
+	} else if (["mp4", "mpg", "mov", "avi"].includes(file_ext)) {
+		widget_type = "video"
+	} else if (["glb", "gltf"].includes(file_ext)) {
+		widget_type = "3d_model"
+	}
+	if (widget_type) {
+		const pile = await Upload_file(selected_folder_path, widget_type, file_name, uint8View, payload.position)
+		emit("Update_folder", {folder_path: selected_folder_path, pile})
+	}
 })
 
 document.addEventListener("dblclick", async e => {
