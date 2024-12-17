@@ -1,6 +1,6 @@
 <div
     data-path={widget.path}
-    style="background-color: {widget.background || "inherit"};"
+    style="background-color: {widget.background || "inherit"}; outline: {widget.stroke.width}px {widget.stroke.style} {widget.stroke.color}; outline-offset: -{widget.stroke.width}px;"
     class:drag-handle={view === "board"}
 >
 </div>
@@ -11,8 +11,6 @@ div {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    outline: 3px solid black;
-    outline-offset: -3px;
 }
 </style>
 <script>
