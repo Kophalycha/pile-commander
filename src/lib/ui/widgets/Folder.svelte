@@ -14,7 +14,7 @@ div {
     border-radius: 10px;
 }
 div.outlined {
-    outline: 2px solid #ccc;
+    outline: 2px solid rgba(0, 0, 0, 0.15);
 }
 div::after {
     content: attr(data-name);

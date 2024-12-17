@@ -49,7 +49,7 @@ article span {
     height: 100%;
     overflow: auto;
     outline-offset: -1px;
-    outline: 1px solid #ccc;
+    outline: 1px solid rgba(0, 0, 0, 0.15);
     padding: 20px;
     box-sizing: border-box;
 }
