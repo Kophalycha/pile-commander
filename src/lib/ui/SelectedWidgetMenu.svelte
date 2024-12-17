@@ -48,6 +48,7 @@
                 widget.stroke.style = stroke_style
                 const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
                 emit("Update_folder", {folder_path, pile})
+                if (widget.type === "line") emit("Update_line_stroke_style")
             }}>
                 <option value="solid">solid</option>
                 <option value="dashed">dashed</option>

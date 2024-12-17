@@ -61,6 +61,7 @@ onMount(async () => {
     line = new LeaderLine(start, end)
     line.size = widget.stroke.width
     line.color = widget.stroke.color
+    line.dash = widget.stroke.style === "dashed" ? true : false
     for (const [index, node] of document.querySelectorAll(".leader-line").entries()) {
         node.classList.add("selectable")
         if (line._id - 1 === index ) {
@@ -84,6 +85,7 @@ onMount(async () => {
     })
     u5 = await listen("Update_line_stroke_width", AnimEvent.add(() => line.size = widget.stroke.width))
     u6 = await listen("Update_line_stroke_color", AnimEvent.add(() => line.color = widget.stroke.color))
+    u6 = await listen("Update_line_stroke_style", AnimEvent.add(() => line.dash = widget.stroke.style === "dashed" ? true : false))
 })
 onDestroy(() => {
     line.remove()
