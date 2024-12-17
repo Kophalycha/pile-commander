@@ -39,6 +39,19 @@
                 emit("Update_folder", {folder_path, pile})
             }}>
         </p>
+        <p>
+            Style:
+            <select bind:value={stroke_style} onchange={async () => {
+                const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+                widget.stroke.style = stroke_style
+                const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
+                emit("Update_folder", {folder_path, pile})
+            }}>
+                <option value="solid">solid</option>
+                <option value="dotted">dotted</option>
+                <option value="dashed">dashed</option>
+            </select>
+        </p>
     {/if}
     {#if pile && ["crumb", "container"].includes(widget.type)}
         <hr>
@@ -119,6 +132,7 @@ let {folder_path, widget, onRename, onRemove} = $props()
 let color_picker = $state()
 let selected_color = $state(widget.background || "black")
 let stroke_width = $state(widget.stroke?.width || 0)
+let stroke_style = $state(widget.stroke?.style || "solid")
 
 let pile = $state()
 let selected_view = $state()
@@ -132,6 +146,7 @@ $effect(async () => {
         pile_selected_widget_index = pile.selected_widget_index || 0
     } else {
         stroke_width = widget.stroke?.width || 0
+        stroke_style = widget.stroke?.style || "solid"
     }
 })
 async function set_masonry_column() {
