@@ -57,6 +57,18 @@
                 {/if}
             </select>
         </p>
+        {#if widget.type === "line"}
+            <p>
+                Animate: 
+                <input type="checkbox" bind:checked={stroke_is_animate} onchange={async () => {
+                    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+                    widget.stroke.is_animate = stroke_is_animate
+                    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
+                    emit("Update_folder", {folder_path, pile})
+                    if (widget.type === "line") emit("Update_line_stroke_style")
+                }}>
+            </p>
+        {/if}
         <details>
             <summary>Color</summary>
             <p>
@@ -158,6 +170,7 @@ let color_picker = $state()
 let selected_color = $state(widget.background || "black")
 let stroke_width = $state(widget.stroke?.width || 0)
 let stroke_style = $state(widget.stroke?.style || "solid")
+let stroke_is_animate = $state(widget.stroke?.is_animate || false)
 
 let pile = $state()
 let selected_view = $state()
