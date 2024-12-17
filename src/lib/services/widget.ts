@@ -136,7 +136,12 @@ export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "c
 		name,
 		position: position || {x: 30, y: 30},
 		size: {width: 200, height: 200},
-		path: image_path
+		path: image_path,
+		stroke: {
+			width: 3,
+			style: "solid",
+			color: "black"
+		}
 	}
 	return await Folder_pile(folder_path).create_widget(image_widget)
 }

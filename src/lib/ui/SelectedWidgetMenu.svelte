@@ -28,6 +28,18 @@
             emit("Update_folder", {folder_path, pile})
         }}>Change to folder</button>
     {/if}
+    {#if ["rect", "circle"].includes(widget.type)}
+        <hr>
+        Stroke:
+        <p>Width: 
+            <input type="number" bind:value={stroke_width} onchange={async () => {
+                const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+                widget.stroke.width = stroke_width
+                const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
+                emit("Update_folder", {folder_path, pile})
+            }}>
+        </p>
+    {/if}
     {#if pile && ["crumb", "container"].includes(widget.type)}
         <hr>
         View type: 
@@ -84,6 +96,10 @@ hr {
     border-bottom: none;
 }
 
+input[type="number"] {
+    width: 40px;
+}
+
 .colors-board {
     display: grid;
     grid-template-columns: repeat(6, auto);
@@ -102,17 +118,21 @@ import { Folder_pile } from '$lib/services/folder_pile'
 let {folder_path, widget, onRename, onRemove} = $props()
 let color_picker = $state()
 let selected_color = $state(widget.background || "black")
+let stroke_width = $state(widget.stroke?.width || 0)
 
 let pile = $state()
 let selected_view = $state()
 let pile_masonry_column = $state()
 let pile_selected_widget_index = $state()
 $effect(async () => {
-    if (!["crumb", "folder", "container"].includes(widget.type)) return
-    pile = await Folder_pile(widget.path).read()
-    selected_view = pile.view
-    pile_masonry_column = pile.masonry_column || 3
-    pile_selected_widget_index = pile.selected_widget_index || 0
+    if (["crumb", "folder", "container"].includes(widget.type)) {
+        pile = await Folder_pile(widget.path).read()
+        selected_view = pile.view
+        pile_masonry_column = pile.masonry_column || 3
+        pile_selected_widget_index = pile.selected_widget_index || 0
+    } else {
+        stroke_width = widget.stroke?.width || 0
+    }
 })
 async function set_masonry_column() {
     pile = await Set_folder_option(widget.path, {masonry_column: pile_masonry_column})
