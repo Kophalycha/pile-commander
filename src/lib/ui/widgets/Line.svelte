@@ -41,7 +41,7 @@ let anchor_kind = $state({
     end: "position",
 })
 let selected_widget = $state(false)
-let u1, u2, u3, u4, u5
+let u1, u2, u3, u4, u5, u6
 
 import { onDestroy, onMount } from "svelte"
 onMount(async () => {
@@ -60,6 +60,7 @@ onMount(async () => {
     }
     line = new LeaderLine(start, end)
     line.size = widget.stroke.width
+    line.color = widget.stroke.color
     for (const [index, node] of document.querySelectorAll(".leader-line").entries()) {
         node.classList.add("selectable")
         if (line._id - 1 === index ) {
@@ -82,6 +83,7 @@ onMount(async () => {
         if (payload.widget_name === widget.name) line.remove()
     })
     u5 = await listen("Update_line_stroke_width", AnimEvent.add(() => line.size = widget.stroke.width))
+    u6 = await listen("Update_line_stroke_color", AnimEvent.add(() => line.color = widget.stroke.color))
 })
 onDestroy(() => {
     line.remove()
@@ -90,5 +92,6 @@ onDestroy(() => {
     u3()
     u4()
     u5()
+    u6()
 })
 </script>

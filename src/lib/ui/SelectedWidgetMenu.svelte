@@ -197,6 +197,7 @@ async function change_stroke_color(color) {
     widget.stroke.color = color
     const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
     emit("Update_folder", {folder_path, pile})
+    if (widget.type === "line") emit("Update_line_stroke_color")
 }
 
 const colors = ["AliceBlue", "Azure", "Beige", "Bisque", "BlanchedAlmond", "Cornsilk", "FloralWhite",
