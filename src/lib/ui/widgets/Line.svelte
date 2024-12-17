@@ -41,7 +41,7 @@ let anchor_kind = $state({
     end: "position",
 })
 let selected_widget = $state(false)
-let u1, u2, u3, u4
+let u1, u2, u3, u4, u5
 
 import { onDestroy, onMount } from "svelte"
 onMount(async () => {
@@ -59,6 +59,7 @@ onMount(async () => {
         anchor_kind.end = "element"
     }
     line = new LeaderLine(start, end)
+    line.size = widget.stroke.width
     for (const [index, node] of document.querySelectorAll(".leader-line").entries()) {
         node.classList.add("selectable")
         if (line._id - 1 === index ) {
@@ -69,6 +70,7 @@ onMount(async () => {
     u1 = await listen("Update_line_position", AnimEvent.add(() => line.position()))
     u2 = await listen('Select_widget', ({payload}) => {
         selected_widget = payload.widget_path === widget.path ? true : false
+        if (selected_widget) emit("Widget_selected", {widget})
     })
     u3 = await listen('Connect_widget', ({payload}) => {
         if (payload.widget_name === widget.name) {
@@ -79,6 +81,7 @@ onMount(async () => {
     u4 = await listen("Remove_line", ({payload}) => {
         if (payload.widget_name === widget.name) line.remove()
     })
+    u5 = await listen("Update_line_stroke_width", AnimEvent.add(() => line.size = widget.stroke.width))
 })
 onDestroy(() => {
     line.remove()
@@ -86,5 +89,6 @@ onDestroy(() => {
     u2()
     u3()
     u4()
+    u5()
 })
 </script>

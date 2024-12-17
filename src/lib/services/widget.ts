@@ -130,7 +130,16 @@ export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "c
 		name,
 		start: {x: 30, y: 30},
 		end: {x: 230, y: 130},
-		path: image_path
+		path: image_path,
+		stroke: {
+			width: 4,
+			style: "solid",
+			color: "coral",
+			is_animate: false,
+			curve: "fluid",
+			startPlug: "behind",
+			endPlug: "arrow1",
+		},
 	} : {
 		type: <WidgetType>shape_kind,
 		name,

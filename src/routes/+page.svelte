@@ -77,10 +77,7 @@ document.addEventListener("dblclick", async e => {
 
 document.addEventListener("click", async e => {
 	if (e.target.classList.value.includes("leader-line")) {
-		const folder_path = e.target.dataset.path.replace(e.target.dataset.name, "")
-		const pile = await Remove_widget(folder_path, e.target.dataset.name)
-		emit("Remove_line", {widget_name: e.target.dataset.name})
-		emit("Update_folder", {folder_path, pile})
+		emit("Select_widget", {widget_path: e.target.closest("svg").dataset.path})
 	} else if (["svg", "path"].includes(e.target.nodeName) && e.target.closest("div.path")) {
 		emit("Select_widget", {widget_path: e.target.closest("div.path").dataset.path})
 	} else {
@@ -114,6 +111,9 @@ async function onRemove() {
 	if (is_remove) {
 		const folder_path = selected_widget_node.parentElement.closest(".container").dataset.path
 		const pile = await Remove_widget(folder_path, selected_widget_node.dataset.name)
+		// if (e.target.classList.value.includes("leader-line")) {
+		// emit("Remove_line", {widget_name: e.target.dataset.name})
+		// }
         emit("Update_folder", {folder_path, pile})
 		selected_widget = null
 	}

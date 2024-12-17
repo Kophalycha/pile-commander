@@ -28,15 +28,17 @@
             emit("Update_folder", {folder_path, pile})
         }}>Change to folder</button>
     {/if}
-    {#if ["rect", "circle"].includes(widget.type)}
+    {#if ["rect", "circle", "line"].includes(widget.type)}
         <hr>
         Stroke:
-        <p>Width: 
+        <p>
+            Width: 
             <input type="number" bind:value={stroke_width} onchange={async () => {
                 const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
                 widget.stroke.width = stroke_width
                 const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
                 emit("Update_folder", {folder_path, pile})
+                if (widget.type === "line") emit("Update_line_stroke_width")
             }}>
         </p>
         <p>
@@ -48,14 +50,18 @@
                 emit("Update_folder", {folder_path, pile})
             }}>
                 <option value="solid">solid</option>
-                <option value="dotted">dotted</option>
                 <option value="dashed">dashed</option>
+                {#if widget.type !== "line"}
+                    <option value="dotted">dotted</option>
+                {/if}
             </select>
         </p>
         <details>
             <summary>Color</summary>
             <p>
-                <button onclick={() => change_stroke_color("none")}>None</button>
+                {#if widget.type !== "line"}
+                    <button onclick={() => change_stroke_color("none")}>None</button>
+                {/if}
                 <button onclick={() => change_stroke_color("black")}>Black</button>
                 <br><br>
                 {#snippet color_ficker(color)}
@@ -88,7 +94,7 @@
         <p>Selected widget: <input type="number" min="1" max={pile.widgets.length} bind:value={pile_selected_widget_index} onchange={set_selected_widget_index}></p>
         {/if}
     {/if}
-    {#if !["path", "image", "audio", "video"].includes(widget.type)}
+    {#if !["line", "path", "image", "audio", "video"].includes(widget.type)}
         <hr>
         <details open>
             <summary>Background</summary>
