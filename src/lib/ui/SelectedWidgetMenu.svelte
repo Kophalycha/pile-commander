@@ -181,6 +181,7 @@ async function change_background(color) {
         pile = await Set_folder_option(widget.path, {background: color})
         emit("Update_folder", {folder_path: widget.path, pile})
     } else {
+        const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
         const pile = await Update_widget(folder_path, widget.name, {background: color})
         emit("Update_folder", {folder_path, pile})
     }
