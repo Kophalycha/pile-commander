@@ -68,7 +68,7 @@ document.addEventListener("dblclick", async e => {
 	if (e.target.classList.contains("surface")) {
 		let type = "text"
         if (e.shiftKey) type = e.ctrlKey ? "container" : "folder"
-		const position = {x: e.x, y: e.y}
+		const position = {x: e.layerX, y: e.layerY}
 		const folder_path = e.target.dataset.path
 		const pile = await Create_widget(folder_path, {type, position})
 		emit("Update_folder", {folder_path, pile})
