@@ -52,6 +52,22 @@
                 <option value="dashed">dashed</option>
             </select>
         </p>
+        <details>
+            <summary>Color</summary>
+            <p>
+                <button onclick={() => change_stroke_color("none")}>None</button>
+                <button onclick={() => change_stroke_color("black")}>Black</button>
+                <br><br>
+                {#snippet color_ficker(color)}
+                    <button style="background-color: {color};" onclick={() => change_stroke_color(color)}></button>
+                {/snippet}
+                <span class="colors-board">
+                    {#each colors as color}
+                        {@render color_ficker(color)}
+                    {/each}
+                </span>
+            </p>
+        </details>
     {/if}
     {#if pile && ["crumb", "container"].includes(widget.type)}
         <hr>
@@ -166,6 +182,12 @@ async function change_background(color) {
         const pile = await Update_widget(folder_path, widget.name, {background: color})
         emit("Update_folder", {folder_path, pile})
     }
+}
+async function change_stroke_color(color) {
+    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+    widget.stroke.color = color
+    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
+    emit("Update_folder", {folder_path, pile})
 }
 
 const colors = ["AliceBlue", "Azure", "Beige", "Bisque", "BlanchedAlmond", "Cornsilk", "FloralWhite",
