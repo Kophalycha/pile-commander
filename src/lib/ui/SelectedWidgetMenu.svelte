@@ -90,20 +90,22 @@
     {/if}
     <!-- {#if widget.type !== "container"} -->
         <hr>
-        <p>Background:</p>
-        <div>
-            <button onclick={() => change_background("none")}>None</button>
-            <button onclick={() => change_background("white")}>White</button>
-            <br><br>
-            {#snippet color_ficker(color)}
-                <button style="background-color: {color};" onclick={() => change_background(color)}></button>
-            {/snippet}
-            <span class="colors-board">
-                {#each colors as color}
-                    {@render color_ficker(color)}
-                {/each}
-            </span>
-        </div>
+        <details open>
+            <summary>Background</summary>
+            <p>
+                <button onclick={() => change_background("none")}>None</button>
+                <button onclick={() => change_background("white")}>White</button>
+                <br><br>
+                {#snippet color_ficker(color)}
+                    <button style="background-color: {color};" onclick={() => change_background(color)}></button>
+                {/snippet}
+                <span class="colors-board">
+                    {#each colors as color}
+                        {@render color_ficker(color)}
+                    {/each}
+                </span>    
+            </p>
+        </details>
     <!-- {/if} -->
 </section>
 <style>
