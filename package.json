@@ -1,6 +1,6 @@
 {
 	"name": "pile-commander",
-	"version": "0.8.0",
+	"version": "0.8.1",
 	"description": "",
 	"type": "module",
 	"scripts": {
@@ -19,6 +19,7 @@
 		"anim-event": "^1.0.17",
 		"interactjs": "^1.10.27",
 		"leader-line": "^1.0.7",
+		"marked": "^15.0.4",
 		"sortablejs": "^1.15.4",
 		"yaml": "^2.6.0"
 	},

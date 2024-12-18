@@ -11,12 +11,16 @@
 {#if tool === "pen"}
 	<PenCanvas {selected_folder_path} />
 {/if}
+{#if selected_widget}
+	<SelectedWidgetMenu folder_path={selected_folder_path} widget={selected_widget} {onRename} {onRemove} />
+{/if}
 <script>
 import "./app.css"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import Toolbar from "$lib/ui/Toolbar.svelte"
 import PenCanvas from "$lib/ui/PenCanvas.svelte"
+import SelectedWidgetMenu from "$lib/ui/SelectedWidgetMenu.svelte"
 import { Create_widget, Rename_widget, Update_widget, Remove_widget, Copy_widget, Move_widget, Upload_file } from "$lib/services/widget"
 import { join, basename } from '@tauri-apps/api/path'
 import { readFile } from '@tauri-apps/plugin-fs'
@@ -35,18 +39,36 @@ listen('Show_folder', ({payload}) => {
     selected_folder_path = payload.folder_path
 })
 
+let selected_widget = $state(null)
+listen('Widget_selected', ({payload}) => {
+	selected_widget = payload.widget
+})
+
 listen('tauri://drag-drop', async ({payload}) => {
 	const file_name = await basename(payload.paths[0])
 	const uint8View = await readFile(payload.paths[0])
-	const pile = await Upload_file(selected_folder_path, "image", file_name, uint8View, payload.position)
-	emit("Update_folder", {folder_path: selected_folder_path, pile})
+	const file_ext = file_name.split(".")[1]
+	let widget_type
+	if (["jpg", "jpeg", "png", "gif"].includes(file_ext)) {
+		widget_type = "image"
+	} else if (["mp3", "wav", "ogg"].includes(file_ext)) {
+		widget_type = "audio"
+	} else if (["mp4", "mpg", "mov", "avi"].includes(file_ext)) {
+		widget_type = "video"
+	} else if (["glb", "gltf"].includes(file_ext)) {
+		widget_type = "3d_model"
+	}
+	if (widget_type) {
+		const pile = await Upload_file(selected_folder_path, widget_type, file_name, uint8View, payload.position)
+		emit("Update_folder", {folder_path: selected_folder_path, pile})
+	}
 })
 
 document.addEventListener("dblclick", async e => {
 	if (e.target.classList.contains("surface")) {
-		let type = "note"
+		let type = "text"
         if (e.shiftKey) type = e.ctrlKey ? "container" : "folder"
-		const position = {x: e.x, y: e.y}
+		const position = {x: e.layerX, y: e.layerY}
 		const folder_path = e.target.dataset.path
 		const pile = await Create_widget(folder_path, {type, position})
 		emit("Update_folder", {folder_path, pile})
@@ -55,26 +77,26 @@ document.addEventListener("dblclick", async e => {
 
 document.addEventListener("click", async e => {
 	if (e.target.classList.value.includes("leader-line")) {
-		const folder_path = e.target.dataset.path.replace(e.target.dataset.name, "")
-		const pile = await Remove_widget(folder_path, e.target.dataset.name)
-		emit("Remove_line", {widget_name: e.target.dataset.name})
-		emit("Update_folder", {folder_path, pile})
+		emit("Select_widget", {widget_path: e.target.closest("svg").dataset.path})
 	} else if (["svg", "path"].includes(e.target.nodeName) && e.target.closest("div.path")) {
 		emit("Select_widget", {widget_path: e.target.closest("div.path").dataset.path})
 	} else {
+		if (e.target.classList.contains("surface")) selected_widget = null
 		emit("Select_widget", {widget_path: e.target.dataset.path})
 	}
 })
 
 async function onRename() {
-	const selected_widget = document.querySelector(".selected_widget")
-	if (!selected_widget) return
+	const selected_widget_node = document.querySelector(".selected_widget")
+	if (!selected_widget_node && !selected_widget) return
 	try {
-		const folder_path = selected_widget.parentElement.closest(".container").dataset.path
-		let new_folder_name = prompt("Enter new name", selected_widget.dataset.name)
-		if (new_folder_name) {
-			const pile = await Rename_widget(folder_path, selected_widget.dataset.name, new_folder_name)
+		const folder_path = selected_widget.path.replace(selected_widget.name, "").slice(0, -1)
+		const old_widget_name = selected_widget.name
+		let new_widget_name = prompt("Enter new name", old_widget_name)
+		if (new_widget_name) {
+			const pile = await Rename_widget(folder_path, old_widget_name, new_widget_name)
             emit("Update_folder", {folder_path, pile})
+			selected_widget = null
 		}
 	} catch (error) {
 		if (error instanceof Error) {
@@ -84,13 +106,15 @@ async function onRename() {
 	}
 }
 async function onRemove() {
-	const selected_widget = document.querySelector(".selected_widget")
-	if (!selected_widget) return
+	const selected_widget_node = document.querySelector(".selected_widget")
+	if (!selected_widget_node && !selected_widget) return
 	let is_remove = confirm("Are you sure remove?")
 	if (is_remove) {
-		const folder_path = selected_widget.parentElement.closest(".container").dataset.path
-		const pile = await Remove_widget(folder_path, selected_widget.dataset.name)
+		const folder_path = selected_widget.path.replace(selected_widget.name, "").slice(0, -1)
+		const widget_name = selected_widget.name
+		const pile = await Remove_widget(folder_path, widget_name)
         emit("Update_folder", {folder_path, pile})
+		selected_widget = null
 	}
 }
 

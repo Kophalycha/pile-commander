@@ -15,8 +15,8 @@
     class:selected_slide
     class:shape={["rect", "circle"].includes(widget.type)}
 >
-    {#if widget.type === "note"}
-        <Note {view} {widget} />
+    {#if widget.type === "text"}
+        <Text {view} {widget} />
     {:else if widget.type === "image"}
         <Image {view} {widget} />
     {:else if widget.type === "rect"}
@@ -86,11 +86,11 @@
 }
 
 .selected_widget {
-	outline: 5px solid blue !important;
+	outline: 5px solid #2182F8 !important;
 }
 </style>
 <script>
-import Note from "$lib/ui/widgets/Note.svelte"
+import Text from "$lib/ui/widgets/Text.svelte"
 import Image from "$lib/ui/widgets/Image.svelte"
 import Rect from "$lib/ui/widgets/Rect.svelte"
 import Circle from "$lib/ui/widgets/Circle.svelte"
@@ -108,7 +108,12 @@ let l1
 import { onDestroy, onMount } from "svelte"
 onMount(async () => {
     l1 = await listen('Select_widget', ({payload}) => {
-        selected_widget = payload.widget_path === widget.path ? true : false
+        if (payload.widget_path === widget.path) {
+            selected_widget = true
+            emit("Widget_selected", {widget})
+        } else {
+            selected_widget = false
+        }
     })
 })
 onDestroy(() => l1())

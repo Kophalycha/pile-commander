@@ -4,14 +4,14 @@ import { Folder_pile } from './folder_pile'
 import { writeTextFile, writeFile } from '@tauri-apps/plugin-fs'
 
 async function make(folder_path: WidgetName, payload: Partial<Widget>) {
-	const type = payload.type || "note"
+	const type = payload.type || "text"
 	const generic_widget = {
 		type,
 		position: {x: 30, y: 30},
 	}
 	const typed_records = {
-		"note": {
-			name: `unnamed_note_${+new Date()}.md`,
+		"text": {
+			name: `${+new Date()}.md`,
 			size: {width: 200, height: 120},
 		},
 		"folder": {
@@ -34,7 +34,7 @@ export async function Create_widget(folder_path: WidgetName, payload: Partial<Wi
 		throw new Error("This name already exists, please give another name")
 	} else {
 		switch (new_widget.type) {
-			case "note":
+			case "text":
 				await writeTextFile(new_widget.path, "")
 				break
 			case "folder":
@@ -130,13 +130,27 @@ export async function Add_shape(folder_path: WidgetPath, shape_kind: "rect" | "c
 		name,
 		start: {x: 30, y: 30},
 		end: {x: 230, y: 130},
-		path: image_path
+		path: image_path,
+		stroke: {
+			width: 4,
+			style: "solid",
+			color: "coral",
+			is_animate: false,
+			curve: "fluid",
+			startPlug: "behind",
+			endPlug: "arrow1",
+		},
 	} : {
 		type: <WidgetType>shape_kind,
 		name,
 		position: position || {x: 30, y: 30},
 		size: {width: 200, height: 200},
-		path: image_path
+		path: image_path,
+		stroke: {
+			width: 3,
+			style: "solid",
+			color: "black"
+		}
 	}
 	return await Folder_pile(folder_path).create_widget(image_widget)
 }

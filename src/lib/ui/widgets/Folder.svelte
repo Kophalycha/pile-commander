@@ -1,22 +1,20 @@
 <div
-    style="background-color: {widget.bg_color || "initial"};"
+    style="background-color: {widget.background || "initial"};"
     class:drag-handle={view === "board"}
+    class:outlined={!widget.background || widget.background === "none"}
     data-name={widget.name}
     data-path={widget.path}
     ondblclick={() => emit("Show_folder", {folder_path: widget.path})}
 >
-<button onclick={async () => {
-    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
-    const pile = await Update_widget(folder_path, widget.name, {type: "container"})
-    emit("Update_folder", {folder_path, pile})
-}}>Change to container</button>
 </div>
 
 <style>
 div {
     height: 100%;
-    outline: 2px solid #ccc;
     border-radius: 10px;
+}
+div.outlined {
+    outline: 2px solid rgba(0, 0, 0, 0.15);
 }
 div::after {
     content: attr(data-name);

@@ -1,12 +1,12 @@
 <div
     data-path={widget.path}
-    style="background-color: {widget.bg_color || "white"};"
+    style="background-color: {widget.background || "white"};"
     class:is_edit
     class:drag-handle={view === "board"}
     {ondblclick}
 >
 {#if !is_edit}
-    {text}
+    {@html marked(text)}
 {:else}
     <textarea
         bind:this={textarea}
@@ -22,6 +22,9 @@ div {
     box-sizing: border-box;
     height: 100%;
     user-select: none;
+}
+:global(div > p:first-child) {
+    margin-top: 0;
 }
 div.is_edit {
     box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
@@ -40,6 +43,8 @@ textarea {
 }
 </style>
 <script>
+import { marked } from 'marked'
+
 let { view, widget } = $props()
 
 let text = $state("")

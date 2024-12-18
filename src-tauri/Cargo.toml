@@ -1,6 +1,6 @@
 [package]
 name = "pile-commander"
-version = "0.8.0"
+version = "0.8.1"
 description = "Open-source file manager for creative people"
 authors = ["Alexander Matyukh"]
 edition = "2021"
