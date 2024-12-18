@@ -30,7 +30,6 @@
     {/if}
     {#if ["rect", "circle", "line"].includes(widget.type)}
         <hr>
-        Stroke:
         <p>
             Width: 
             <input type="number" bind:value={stroke_width} onchange={async () => {
@@ -82,6 +81,42 @@
                     <option value="fluid">fluid</option>
                     <option value="magnet">magnet</option>
                     <option value="grid">grid</option>
+                </select>
+            </p>
+            <p>
+                Start plug:
+                <select bind:value={stroke_startPlug} onchange={async () => {
+                    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+                    widget.stroke.startPlug = stroke_startPlug
+                    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
+                    emit("Update_folder", {folder_path, pile})
+                    if (widget.type === "line") emit("Update_line_stroke_startPlug")
+                }}>
+                    <option value="behind">behind</option>
+                    <option value="disc">disc</option>
+                    <option value="square">square</option>
+                    <option value="arrow1">arrow1</option>
+                    <option value="arrow2">arrow2</option>
+                    <option value="arrow3">arrow3</option>
+                    <option value="hand">hand</option>
+                </select>
+            </p>
+            <p>
+                End plug:
+                <select bind:value={stroke_endPlug} onchange={async () => {
+                    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+                    widget.stroke.endPlug = stroke_endPlug
+                    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
+                    emit("Update_folder", {folder_path, pile})
+                    if (widget.type === "line") emit("Update_line_stroke_endPlug")
+                }}>
+                    <option value="behind">behind</option>
+                    <option value="disc">disc</option>
+                    <option value="square">square</option>
+                    <option value="arrow1">arrow1</option>
+                    <option value="arrow2">arrow2</option>
+                    <option value="arrow3">arrow3</option>
+                    <option value="hand">hand</option>
                 </select>
             </p>
         {/if}
@@ -188,6 +223,8 @@ let stroke_width = $state(widget.stroke?.width || 0)
 let stroke_style = $state(widget.stroke?.style || "solid")
 let stroke_is_animate = $state(widget.stroke?.is_animate || false)
 let stroke_curve = $state(widget.stroke?.curve || "fluid")
+let stroke_startPlug = $state(widget.stroke?.startPlug || "behind")
+let stroke_endPlug = $state(widget.stroke?.endPlug || "arrow1")
 
 let pile = $state()
 let selected_view = $state()
