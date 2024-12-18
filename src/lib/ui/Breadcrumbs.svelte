@@ -9,29 +9,32 @@
                 <span>{name}</span>
             </button>
         {:else}
-            {name} 
             <button
                 onclick={() => emit("Widget_selected", {widget: {type: "crumb",name, path}})}>
-                Menu
+                {name} &nbsp;&nbsp;
+                &middot; &middot; &middot;
             </button>
-        {/if}
+            {/if}
     {/each}
 </nav>
 
 <style>
 nav {
     position: fixed;
-    left: 30px;
-    bottom: 30px;
+    left: 0;
+    bottom: 0;
     z-index: 9999;
+    background-color: #fff;
+    box-sizing: border-box;
+    padding: 10px 20px;
 }
 nav button {
     border: none;
     font-size: medium;
     background-color: inherit;
-    margin-right: 10px;
     box-sizing: border-box;
     transition-property: padding;
+    outline: none;
 }
 :global(nav button:not(:last-child):after) {
     content: "/";
@@ -43,6 +46,7 @@ nav button {
     box-sizing: border-box;
     padding: 20px;
     opacity: 1;
+    outline: 3px solid orange;
 }
 </style>
 
