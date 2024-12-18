@@ -45,6 +45,18 @@ export const Folder_pile = (folder_path: string) => ({
 			...old_widget,
 			...payload,
 		}
+		if (payload.name) {
+			pile.widgets = pile.widgets.filter(w => !this.is_any_connection(w, name))
+			// pile.widgets = pile.widgets.map(w => {
+			// 	if (this.is_any_connection(w, name)) {
+			// 		let line: LineWidget = w
+			// 		const side = w.start === name ? "start" : "end"
+			// 		line[side] = payload.name
+			// 		return line
+			// 	}
+			// 	return w
+			// })
+		}
 		pile.widgets = pile.widgets.map((w: Widget) => {
 			if (w.name === name) return new_widget
 			return w
@@ -68,7 +80,7 @@ export const Folder_pile = (folder_path: string) => ({
 		let from_pile = await this.read()
 		let moved_widget = from_pile.widgets.filter((w: Widget) => w.name === name)[0]
 		from_pile.widgets = from_pile.widgets.filter((w: Widget) => w.name !== name)
-		from_pile.widgets = from_pile.widgets.filter(w => this.is_any_connection(w, name))
+		from_pile.widgets = from_pile.widgets.filter(w => !this.is_any_connection(w, name))
 		const to_path = await join(to, FOLDER_PILE_FILE_NAME)
 		let to_pile = await this.read(to_path)
 		moved_widget.path = await join(to, moved_widget.name)
@@ -89,7 +101,7 @@ export const Folder_pile = (folder_path: string) => ({
 	async remove_widget(name: WidgetName) {
 		const pile = await this.read()
 		pile.widgets = pile.widgets.filter((w: Widget) => w.name !== name)
-		pile.widgets = pile.widgets.filter(w => this.is_any_connection(w, name))
+		pile.widgets = pile.widgets.filter(w => !this.is_any_connection(w, name))
 		if (pile.selected_widget_index) {
 			pile.widgets.length > 0 ?
 				pile.selected_widget_index = pile.widgets.length - 1
@@ -98,7 +110,7 @@ export const Folder_pile = (folder_path: string) => ({
 		return await this.write(pile)
 	},
 	is_any_connection(w, widget_name) {
-		return !(w.type === "line" && ([w.start, w.end].includes(widget_name)))
+		return (w.type === "line" && ([w.start, w.end].includes(widget_name)))
 	},
 
 	async change_view(view: ViewType) {

@@ -88,12 +88,13 @@ document.addEventListener("click", async e => {
 
 async function onRename() {
 	const selected_widget_node = document.querySelector(".selected_widget")
-	if (!selected_widget_node) return
+	if (!selected_widget_node && !selected_widget) return
 	try {
-		const folder_path = selected_widget_node.parentElement.closest(".container").dataset.path
-		let new_folder_name = prompt("Enter new name", selected_widget_node.dataset.name)
-		if (new_folder_name) {
-			const pile = await Rename_widget(folder_path, selected_widget_node.dataset.name, new_folder_name)
+		const folder_path = selected_widget.path.replace(selected_widget.name, "").slice(0, -1)
+		const old_widget_name = selected_widget.name
+		let new_widget_name = prompt("Enter new name", old_widget_name)
+		if (new_widget_name) {
+			const pile = await Rename_widget(folder_path, old_widget_name, new_widget_name)
             emit("Update_folder", {folder_path, pile})
 			selected_widget = null
 		}
