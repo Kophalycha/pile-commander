@@ -111,9 +111,6 @@ async function onRemove() {
 	if (is_remove) {
 		const folder_path = selected_widget_node.parentElement.closest(".container").dataset.path
 		const pile = await Remove_widget(folder_path, selected_widget_node.dataset.name)
-		// if (e.target.classList.value.includes("leader-line")) {
-		// emit("Remove_line", {widget_name: e.target.dataset.name})
-		// }
         emit("Update_folder", {folder_path, pile})
 		selected_widget = null
 	}

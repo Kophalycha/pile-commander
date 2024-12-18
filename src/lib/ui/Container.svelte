@@ -10,7 +10,7 @@
         </p>
     {/if}
     <section
-        style="background: {pile.background === "none" ? "#f5f5f5" : pile.background}; grid-template-columns: repeat({pile_masonry_column}, minmax(auto, auto));"
+        style="background: {pile.background ? pile.background === "none" ? "#f5f5f5" : pile.background : "#f5f5f5"}; grid-template-columns: repeat({pile_masonry_column}, minmax(auto, auto));"
         class="container {pile.view}"
         class:fullscreen
         class:surface={["board","stack"].includes(pile.view)}

@@ -87,7 +87,15 @@ export const Folder_pile = (folder_path: string) => ({
 	},
 	async remove_widget(name: WidgetName) {
 		const pile = await this.read()
+		const removed_widget = pile.widgets.find((w: Widget) => w.name === name)
 		pile.widgets = pile.widgets.filter((w: Widget) => w.name !== name)
+		pile.widgets = pile.widgets.map(w => {
+			if (w.type === "line" && ([w.start, w.end].includes(name))) {
+				const side = w.start === name ? "start" : "end"
+				w[side] = removed_widget.position
+			}
+			return w
+		})
 		if (pile.selected_widget_index) {
 			pile.widgets.length > 0 ?
 				pile.selected_widget_index = pile.widgets.length - 1

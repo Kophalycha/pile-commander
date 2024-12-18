@@ -17,7 +17,7 @@ type ViewType = "board" | "stack" | "masonry" | "slides"
 
 type WidgetType = 
 	"folder" | "container" | 
-	"text" | "path" | "rect" | "circle" | 
+	"text" | "path" | "rect" | "circle" | "line" |
 	"file" | "image" | "audio" | "video" | "3d_model"
 type WidgetPath = string // file path + identifier
 type WidgetName = string // file name + identifier
@@ -28,6 +28,22 @@ type Widget = {
 	size: Size
 	background?: string
 	path?: string
+}
+type LineWidget = {
+	type: WidgetType
+	name: WidgetName
+	path?: string
+	start: Position | WidgetName
+	end: Position | WidgetName
+	stroke: {
+		width: number,
+		style: "solid" | "dashed",
+		color: string,
+		is_animate: boolean,
+		curve: string,
+		startPlug: string,
+		endPlug: string,
+	}
 }
 
 //////////////////////////////////////////

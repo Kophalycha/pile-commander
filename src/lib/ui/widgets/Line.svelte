@@ -49,14 +49,14 @@ onMount(async () => {
     if (widget.start.x) {
         start = document.getElementById(`line-anchor-${widget.name}-1`)
     } else {
-        start = document.querySelector(`[data-name="${widget.start}"]`)
         anchor_kind.start = "element"
+        start = document.querySelector(`[data-name="${widget.start}"]`)
     }
     if (widget.end.x) {
         end = document.getElementById(`line-anchor-${widget.name}-2`)
     } else {
-        end = document.querySelector(`[data-name="${widget.end}"]`)
         anchor_kind.end = "element"
+        end = document.querySelector(`[data-name="${widget.end}"]`)
     }
     line = new LeaderLine(start, end)
     line.size = widget.stroke.width
@@ -73,6 +73,7 @@ onMount(async () => {
             node.dataset.name = widget.name
         }
     }
+
     u1 = await listen("Update_line_position", AnimEvent.add(() => line.position()))
     u2 = await listen('Select_widget', ({payload}) => {
         selected_widget = payload.widget_path === widget.path ? true : false
