@@ -106,11 +106,12 @@ async function onRename() {
 }
 async function onRemove() {
 	const selected_widget_node = document.querySelector(".selected_widget")
-	if (!selected_widget_node) return
+	if (!selected_widget_node && !selected_widget) return
 	let is_remove = confirm("Are you sure remove?")
 	if (is_remove) {
-		const folder_path = selected_widget_node.parentElement.closest(".container").dataset.path
-		const pile = await Remove_widget(folder_path, selected_widget_node.dataset.name)
+		const folder_path = selected_widget.path.replace(selected_widget.name, "").slice(0, -1)
+		const widget_name = selected_widget.name
+		const pile = await Remove_widget(folder_path, widget_name)
         emit("Update_folder", {folder_path, pile})
 		selected_widget = null
 	}
