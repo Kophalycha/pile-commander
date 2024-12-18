@@ -41,7 +41,7 @@ let anchor_kind = $state({
     end: "position",
 })
 let selected_widget = $state(false)
-let u1, u2, u3, u4, u5, u6
+let u1, u2, u3, u4, u5, u6, u7
 
 import { onDestroy, onMount } from "svelte"
 onMount(async () => {
@@ -63,6 +63,7 @@ onMount(async () => {
     line.color = widget.stroke.color
     line.dash = widget.stroke.style === "dashed" ? true : false
     if (widget.stroke.is_animate) line.dash = {animation: true}
+    line.path = widget.stroke.curve
     for (const [index, node] of document.querySelectorAll(".leader-line").entries()) {
         node.classList.add("selectable")
         if (line._id - 1 === index ) {
@@ -87,6 +88,7 @@ onMount(async () => {
     u5 = await listen("Update_line_stroke_width", AnimEvent.add(() => line.size = widget.stroke.width))
     u6 = await listen("Update_line_stroke_color", AnimEvent.add(() => line.color = widget.stroke.color))
     u6 = await listen("Update_line_stroke_style", AnimEvent.add(() => line.dash = widget.stroke.style === "dashed" ? widget.stroke.is_animate ? {animation: true} : true : false))
+    u7 = await listen("Update_line_stroke_curve", AnimEvent.add(() => line.path = widget.stroke.curve))
 })
 onDestroy(() => {
     line.remove()
@@ -96,5 +98,6 @@ onDestroy(() => {
     u4()
     u5()
     u6()
+    u7()
 })
 </script>

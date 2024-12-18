@@ -68,6 +68,22 @@
                     if (widget.type === "line") emit("Update_line_stroke_style")
                 }}>
             </p>
+            <p>
+                Curve:
+                <select bind:value={stroke_curve} onchange={async () => {
+                    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+                    widget.stroke.curve = stroke_curve
+                    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
+                    emit("Update_folder", {folder_path, pile})
+                    if (widget.type === "line") emit("Update_line_stroke_curve")
+                }}>
+                    <option value="straight">straight</option>
+                    <option value="arc">arc</option>
+                    <option value="fluid">fluid</option>
+                    <option value="magnet">magnet</option>
+                    <option value="grid">grid</option>
+                </select>
+            </p>
         {/if}
         <details>
             <summary>Color</summary>
@@ -171,6 +187,7 @@ let selected_color = $state(widget.background || "black")
 let stroke_width = $state(widget.stroke?.width || 0)
 let stroke_style = $state(widget.stroke?.style || "solid")
 let stroke_is_animate = $state(widget.stroke?.is_animate || false)
+let stroke_curve = $state(widget.stroke?.curve || "fluid")
 
 let pile = $state()
 let selected_view = $state()
