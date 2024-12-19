@@ -1,10 +1,10 @@
 <div>
-    <button onclick={ontoggle} class:selected_tool={selected_tool === "selection"} class="tooltip">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M168,132.69,214.08,115l.33-.13A16,16,0,0,0,213,85.07L52.92,32.8A15.95,15.95,0,0,0,32.8,52.92L85.07,213a15.82,15.82,0,0,0,14.41,11l.78,0a15.84,15.84,0,0,0,14.61-9.59l.13-.33L132.69,168,184,219.31a16,16,0,0,0,22.63,0l12.68-12.68a16,16,0,0,0,0-22.63ZM195.31,208,144,156.69a16,16,0,0,0-26,4.93c0,.11-.09.22-.13.32l-17.65,46L48,48l159.85,52.2-45.95,17.64-.32.13a16,16,0,0,0-4.93,26h0L208,195.31Z"></path></svg>
+    <button onclick={ontoggle} class="tooltip">
+        <Cursor_1 size={32} fill={selected_tool === "selection" ? "orange": "black"} />
         <span class="tooltiptext">Selection</span>
     </button>
     <button onclick={ontoggle} class:selected_tool={selected_tool === "pen"} class="tooltip">
-        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="#000000" viewBox="0 0 256 256"><path d="M227.32,73.37,182.63,28.69a16,16,0,0,0-22.63,0L36.69,152A15.86,15.86,0,0,0,32,163.31V208a16,16,0,0,0,16,16H92.69A15.86,15.86,0,0,0,104,219.31l83.67-83.66,3.48,13.9-36.8,36.79a8,8,0,0,0,11.31,11.32l40-40a8,8,0,0,0,2.11-7.6l-6.9-27.61L227.32,96A16,16,0,0,0,227.32,73.37ZM48,179.31,76.69,208H48Zm48,25.38L51.31,160,136,75.31,180.69,120Zm96-96L147.32,64l24-24L216,84.69Z"></path></svg>
+        <Pen size={32} fill={selected_tool === "pen" ? "orange": "black"} />
         <span class="tooltiptext">Pen</span>
     </button>
     <span>&nbsp; &nbsp; &nbsp;</span>
@@ -55,18 +55,15 @@
 <style>
 div {
     position: fixed;
-    bottom: 50px;
-    right: 0;
+    bottom: 0;
+    right: 200px;
     z-index: 9999;
-    background-color: #fff;
-    padding: 5px 20px 0 20px;
+    height: 49px;
+    padding: 0 20px 0 20px;
 }
 
 button {
     outline: none;
-}
-button.selected_tool svg {
-    fill: orange;
 }
 
 .tooltip {
@@ -92,6 +89,8 @@ button.selected_tool svg {
 
 <script>
 import { Create_widget, Add_shape, Upload_file } from "$lib/services/widget"
+import Cursor_1 from "carbon-icons-svelte/lib/Cursor_1.svelte"
+import Pen from "carbon-icons-svelte/lib/Pen.svelte"
 
 let {selected_folder_path, ontoggle, selected_tool} = $props()
 let image_picker = $state()
