@@ -24,9 +24,10 @@ nav {
     left: 0;
     bottom: 0;
     z-index: 9999;
-    background-color: #fff;
+    background-color: #eee;
     box-sizing: border-box;
-    padding: 10px 20px;
+    padding: 8px 15px;
+    height: 49px;
 }
 nav button {
     border: none;

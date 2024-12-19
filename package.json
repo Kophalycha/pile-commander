@@ -17,6 +17,7 @@
 		"@tauri-apps/plugin-shell": "^2",
 		"@tauri-apps/plugin-updater": "^2.2.0",
 		"anim-event": "^1.0.17",
+		"carbon-icons-svelte": "^12.13.0",
 		"interactjs": "^1.10.27",
 		"leader-line": "^1.0.7",
 		"marked": "^15.0.4",

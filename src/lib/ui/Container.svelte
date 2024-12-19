@@ -54,6 +54,7 @@ article span {
     box-sizing: border-box;
 }
 .container.fullscreen {
+    outline: none;
     height: calc(100vh - 50px);
 }
 .container.board {
