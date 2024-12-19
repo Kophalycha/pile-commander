@@ -11,6 +11,16 @@
                 <kbd>Del</kbd>
             </button>
         </div>
+    {:else}
+        <details open>
+            <summary>Layers</summary>
+            <br>
+            <div bind:this={layers_element}>
+                {#each pile?.widgets as widget}
+                    <p><span style="opacity: .3;">{widget.type}</span> {widget.name}</p>
+                {/each}
+            </div>
+        </details>
     {/if}
     {#if widget.type === "folder"}
         <hr>
@@ -181,8 +191,8 @@
 <style>
 section {
     position: fixed;
-    bottom: 100px;
-    right: 30px;
+    bottom: 80px;
+    right: 20px;
     z-index: 9999;
     width: 250px;
     padding: 20px;
@@ -213,8 +223,9 @@ input[type="number"] {
 </style>
 
 <script>
-import { Update_widget, Change_view, Set_folder_option } from "$lib/services/widget"
+import { Update_widget, Reorder_widgets, Change_view, Set_folder_option } from "$lib/services/widget"
 import { Folder_pile } from '$lib/services/folder_pile'
+import Sortable from 'sortablejs'
 
 let {folder_path, widget, onRename, onRemove} = $props()
 let color_picker = $state()
@@ -230,6 +241,7 @@ let pile = $state()
 let selected_view = $state()
 let pile_masonry_column = $state()
 let pile_selected_widget_index = $state()
+let layers_element = $state()
 $effect(async () => {
     if (["crumb", "folder", "container"].includes(widget.type)) {
         pile = await Folder_pile(widget.path).read()
@@ -249,6 +261,16 @@ async function set_selected_widget_index() {
     pile = await Set_folder_option(widget.path, {selected_widget_index: pile_selected_widget_index})
     emit("Update_folder", {folder_path: widget.path, pile})
 }
+$effect(() => {
+    if (layers_element) {
+        new Sortable(layers_element, {
+            onUpdate: async e => {
+                const pile = await Reorder_widgets(folder_path, e.oldIndex, e.newIndex)
+                emit("Update_folder", {folder_path, pile})
+            },
+        })
+    }
+})
 
 async function change_background(color) {
     if (["crumb", "container"].includes(widget.type)) {
