@@ -54,9 +54,8 @@ article span {
     box-sizing: border-box;
 }
 .container.fullscreen {
-    height: 100vh;
+    height: calc(100vh - 50px);
 }
-
 .container.board {
     position: absolute;
 }

@@ -1,21 +1,39 @@
-<Container
-	fullscreen
-	folder_path={selected_folder_path}
-/>
-<Breadcrumbs
-	root_folder_path={data.ROOT_FOLDER_PATH}
-	separator={data.SEPARATOR}
-	{selected_folder_path}
-/>
-<Toolbar {selected_folder_path} ontoggle={toggle_tool} selected_tool={tool} />
-{#if tool === "pen"}
-	<PenCanvas {selected_folder_path} />
-{/if}
-{#if selected_widget}
-	<SelectedWidgetMenu folder_path={selected_folder_path} widget={selected_widget} {onRename} {onRemove} />
-{/if}
+<main>
+	<div>
+		<Container
+			fullscreen
+			folder_path={selected_folder_path}
+		/>
+		<Breadcrumbs
+			root_folder_path={data.ROOT_FOLDER_PATH}
+			separator={data.SEPARATOR}
+			{selected_folder_path}
+		/>
+		<Toolbar {selected_folder_path} ontoggle={toggle_tool} selected_tool={tool} />
+		{#if tool === "pen"}
+			<PenCanvas {selected_folder_path} />
+		{/if}
+		{#if selected_widget}
+			<SelectedWidgetMenu folder_path={selected_folder_path} widget={selected_widget} {onRename} {onRemove} />
+		{/if}
+	</div>
+	<div>
+		<Appbar />
+	</div>
+</main>
+<style>
+main {
+	display: grid;
+	grid-template-rows: auto 50px;
+	height: 100vh;
+}
+main div {
+	user-select: none;
+}
+</style>
 <script>
 import "./app.css"
+import Appbar from "$lib/ui/Appbar.svelte"
 import Container from "$lib/ui/Container.svelte"
 import Breadcrumbs from "$lib/ui/Breadcrumbs.svelte"
 import Toolbar from "$lib/ui/Toolbar.svelte"

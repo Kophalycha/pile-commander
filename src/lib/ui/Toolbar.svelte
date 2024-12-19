@@ -55,7 +55,7 @@
 <style>
 div {
     position: fixed;
-    bottom: 0;
+    bottom: 50px;
     right: 0;
     z-index: 9999;
     background-color: #fff;
