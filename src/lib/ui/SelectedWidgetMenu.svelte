@@ -12,12 +12,20 @@
             </button>
         </div>
     {:else}
+        {#snippet set_widget_type_icons(type)}
+            <svelte:component this={widget_type_icons[type]} />
+        {/snippet}
         <details open>
             <summary>Layers</summary>
             <br>
             <div bind:this={layers_element}>
                 {#each pile?.widgets as widget}
-                    <p><span style="opacity: .3;">{widget.type}</span> {widget.name}</p>
+                    <p>
+                        <span class="layer-icon">
+                            {@render set_widget_type_icons(widget.type)}
+                        </span>
+                        {widget.name}
+                    </p>
                 {/each}
             </div>
         </details>
@@ -220,6 +228,11 @@ input[type="number"] {
     width: 30px;
     height: 30px;
 }
+
+.layer-icon {
+    padding: 2px 5px 0 0;
+    opacity: .3;
+}
 </style>
 
 <script>
@@ -294,4 +307,30 @@ const colors = ["AliceBlue", "Azure", "Beige", "Bisque", "BlanchedAlmond", "Corn
     "GhostWhite", "Gainsboro", "HoneyDew", "Ivory", "Khaki", "LavenderBlush", "LightBlue",
     "#F1F1EF", "#F4EEEE", "#FBECDD", "#FBF3DB", "#EDF3EC", "#E7F3F8", "#F6F3F9", "#FAF1F5", "#FDEBEC", "plum"
 ]
+
+import TextScale from "carbon-icons-svelte/lib/TextScale.svelte"
+import Folder from "carbon-icons-svelte/lib/Folder.svelte"
+import ContainerImage from "carbon-icons-svelte/lib/ContainerImage.svelte"
+import Image from "carbon-icons-svelte/lib/Image.svelte"
+import DocumentAudio from "carbon-icons-svelte/lib/DocumentAudio.svelte"
+import Video from "carbon-icons-svelte/lib/Video.svelte"
+import WatsonHealth3DMprToggle from "carbon-icons-svelte/lib/WatsonHealth3DMprToggle.svelte"
+import WatsonHealth3DCurveAutoColon from "carbon-icons-svelte/lib/WatsonHealth3DCurveAutoColon.svelte"
+import CircleOutline from "carbon-icons-svelte/lib/CircleOutline.svelte"
+import SquareOutline from "carbon-icons-svelte/lib/SquareOutline.svelte"
+import Pen from "carbon-icons-svelte/lib/Pen.svelte"
+
+const widget_type_icons = {
+    "text": TextScale,
+    "folder": Folder,
+    "container": ContainerImage,
+    "image": Image,
+    "rect": SquareOutline,
+    "circle": CircleOutline,
+    "line": WatsonHealth3DCurveAutoColon,
+    "path": Pen,
+    "audio": DocumentAudio,
+    "video": Video,
+    "3d_model": WatsonHealth3DMprToggle,
+}
 </script>
