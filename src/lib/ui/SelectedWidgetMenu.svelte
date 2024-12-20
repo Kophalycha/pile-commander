@@ -1,3 +1,8 @@
+{#snippet select_options(variants)}
+    {#each variants as variant}
+        <option value={variant}>{variant}</option>
+    {/each}
+{/snippet}
 <section>
     <p>{widget.name}</p>
     {#if widget.type !== "crumb"}    
@@ -32,39 +37,32 @@
     {/if}
     {#if widget.type === "folder"}
         <hr>
-        <button onclick={async () => {
-            const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
-            const pile = await Update_widget(folder_path, widget.name, {type: "container"})
-            emit("Update_folder", {folder_path, pile})
-        }}>Change to container</button>
+        <button onclick={() => update_widget({type: "container"})}>
+            Change to container
+        </button>
     {/if}
     {#if widget.type === "container"}
         <hr>
-        <button onclick={async () => {
-            const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
-            const pile = await Update_widget(folder_path, widget.name, {type: "folder"})
-            emit("Update_folder", {folder_path, pile})
-        }}>Change to folder</button>
+        <button onclick={() => update_widget({type: "folder"})}>
+            Change to folder
+        </button>
     {/if}
     {#if ["rect", "circle", "line"].includes(widget.type)}
         <hr>
         <p>
             Width: 
-            <input type="number" bind:value={stroke_width} onchange={async () => {
-                const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+            <input type="number" bind:value={stroke_width}
+                onchange={async () => {
                 widget.stroke.width = stroke_width
-                const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
-                emit("Update_folder", {folder_path, pile})
+                await update_line_stroke()
                 if (widget.type === "line") emit("Update_line_stroke_width")
             }}>
         </p>
         <p>
             Style:
             <select bind:value={stroke_style} onchange={async () => {
-                const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
                 widget.stroke.style = stroke_style
-                const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
-                emit("Update_folder", {folder_path, pile})
+                await update_line_stroke()
                 if (widget.type === "line") emit("Update_line_stroke_style")
             }}>
                 <option value="solid">solid</option>
@@ -78,63 +76,39 @@
             <p>
                 Animate: 
                 <input type="checkbox" bind:checked={stroke_is_animate} onchange={async () => {
-                    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
                     widget.stroke.is_animate = stroke_is_animate
-                    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
-                    emit("Update_folder", {folder_path, pile})
+                    await update_line_stroke()
                     if (widget.type === "line") emit("Update_line_stroke_style")
                 }}>
             </p>
             <p>
                 Curve:
                 <select bind:value={stroke_curve} onchange={async () => {
-                    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
                     widget.stroke.curve = stroke_curve
-                    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
-                    emit("Update_folder", {folder_path, pile})
+                    await update_line_stroke()
                     if (widget.type === "line") emit("Update_line_stroke_curve")
                 }}>
-                    <option value="straight">straight</option>
-                    <option value="arc">arc</option>
-                    <option value="fluid">fluid</option>
-                    <option value="magnet">magnet</option>
-                    <option value="grid">grid</option>
+                    {@render select_options(variants["curve"])}
                 </select>
             </p>
             <p>
                 Start plug:
                 <select bind:value={stroke_startPlug} onchange={async () => {
-                    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
                     widget.stroke.startPlug = stroke_startPlug
-                    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
-                    emit("Update_folder", {folder_path, pile})
+                    await update_line_stroke()
                     if (widget.type === "line") emit("Update_line_stroke_startPlug")
                 }}>
-                    <option value="behind">behind</option>
-                    <option value="disc">disc</option>
-                    <option value="square">square</option>
-                    <option value="arrow1">arrow1</option>
-                    <option value="arrow2">arrow2</option>
-                    <option value="arrow3">arrow3</option>
-                    <option value="hand">hand</option>
+                    {@render select_options(variants["stroke_Plug"])}
                 </select>
             </p>
             <p>
                 End plug:
                 <select bind:value={stroke_endPlug} onchange={async () => {
-                    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
                     widget.stroke.endPlug = stroke_endPlug
-                    const pile = await Update_widget(folder_path, widget.name, {stroke: widget.stroke})
-                    emit("Update_folder", {folder_path, pile})
+                    await update_line_stroke()
                     if (widget.type === "line") emit("Update_line_stroke_endPlug")
                 }}>
-                    <option value="behind">behind</option>
-                    <option value="disc">disc</option>
-                    <option value="square">square</option>
-                    <option value="arrow1">arrow1</option>
-                    <option value="arrow2">arrow2</option>
-                    <option value="arrow3">arrow3</option>
-                    <option value="hand">hand</option>
+                    {@render select_options(variants["stroke_Plug"])}
                 </select>
             </p>
         {/if}
@@ -164,16 +138,21 @@
             pile = await Change_view(widget.path, selected_view)
             emit("Update_folder", {folder_path: widget.path, pile})
         }}>
-            <option value="board">board</option>
-            <option value="stack">stack</option>
-            <option value="masonry">masonry</option>
-            <option value="slides">slides</option>
+            {@render select_options(variants["view_type"])}
         </select>
         {#if pile.view === "masonry"}
-        <p>Columns: <input type="number" min="2" max="10" bind:value={pile_masonry_column} onchange={set_masonry_column}></p>
+            <p>Columns: 
+                <input type="number" min="2" max="10"
+                        bind:value={pile_masonry_column}
+                        onchange={set_masonry_column}>
+            </p>
         {/if}
         {#if pile.view === "slides"}
-        <p>Selected widget: <input type="number" min="1" max={pile.widgets.length} bind:value={pile_selected_widget_index} onchange={set_selected_widget_index}></p>
+            <p>Selected widget: 
+                <input type="number" min="1" max={pile.widgets.length} 
+                        bind:value={pile_selected_widget_index}
+                        onchange={set_selected_widget_index}>
+            </p>
         {/if}
     {/if}
     {#if !["line", "path", "image", "audio", "video"].includes(widget.type)}
@@ -285,6 +264,15 @@ $effect(() => {
     }
 })
 
+async function update_widget(payload) {
+    const folder_path = widget.path.replace(widget.name, "").slice(0, -1)
+    const pile = await Update_widget(folder_path, widget.name, payload)
+    emit("Update_folder", {folder_path, pile})
+}
+async function update_line_stroke() {
+    await update_widget({stroke: widget.stroke})
+}
+
 async function change_background(color) {
     if (["crumb", "container"].includes(widget.type)) {
         pile = await Set_folder_option(widget.path, {background: color})
@@ -307,6 +295,11 @@ const colors = ["AliceBlue", "Azure", "Beige", "Bisque", "BlanchedAlmond", "Corn
     "GhostWhite", "Gainsboro", "HoneyDew", "Ivory", "Khaki", "LavenderBlush", "LightBlue",
     "#F1F1EF", "#F4EEEE", "#FBECDD", "#FBF3DB", "#EDF3EC", "#E7F3F8", "#F6F3F9", "#FAF1F5", "#FDEBEC", "plum"
 ]
+const variants = {
+    "view_type": ["board", "stack", "masonry", "slides"],
+    "curve": ["straight", "arc", "fluid", "magnet", "grid"],
+    "stroke_Plug": ["behind", "disc", "square", "arrow1", "arrow2", "arrow3", "hand", ],
+}
 
 import TextScale from "carbon-icons-svelte/lib/TextScale.svelte"
 import Folder from "carbon-icons-svelte/lib/Folder.svelte"
