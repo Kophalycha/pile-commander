@@ -2,6 +2,10 @@
 
 Open-source file manager for creative people.
 
+<video controls>
+  <source src="about/main_flow.mp4" type="video/mp4">
+</video>
+
 # How does the app work
 
 The user creates widgets:
