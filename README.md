@@ -21,3 +21,7 @@ All files are stored in ```Documents/Pile Commander```, in the future it is poss
 # Development status
 
 The application is in beta stage, so it is not recommended to use it as a full-fledged application: breaking changes are possible, with the release of each new version the program must be reinstalled, and the ```Documents/Pile Commander``` folder must be deleted. Thank you for your patience and feedback!
+
+# Download the app
+
+You can download the app for Linux, Mac and Windows on the [latest release page](https://github.com/a-matyukh/pile-commander/releases/tag/v0.9.0).
