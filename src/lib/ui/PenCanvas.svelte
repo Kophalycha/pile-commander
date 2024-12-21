@@ -1,4 +1,22 @@
 <svg id="svgElement" x="0px" y="0px" width={viewport.width} height={viewport.height} viewBox="0 0 {viewport.width} {viewport.height}"></svg>
+<div>
+    <p>
+        Width: 
+        <input type="number" bind:value={strokeWidth}>
+    </p>
+    <p>
+        <button onclick={() => strokeColor = "black"}>Black</button>
+        <br><br>
+        {#snippet color_ficker(color)}
+            <button style="background-color: {color};" onclick={() => strokeColor = color}></button>
+        {/snippet}
+        <span class="colors-board">
+            {#each colors as color}
+                {@render color_ficker(color)}
+            {/each}
+        </span>
+    </p>
+</div>
 
 <style>
 #svgElement {
@@ -6,8 +24,29 @@
     left: 0;
     top: 0;
     z-index: 999;
-    border: 1px solid orange;
     cursor: pointer;
+}
+div {
+    position: fixed;
+    width: 250px;
+    bottom: 80px;
+    right: 20px;
+    z-index: 9999;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+}
+input[type="number"] {
+    width: 40px;
+}
+.colors-board {
+    display: grid;
+    grid-template-columns: repeat(6, auto);
+    gap: 10px;
+}
+.colors-board > button {
+    width: 30px;
+    height: 30px;
 }
 </style>
 <script>
@@ -24,6 +63,13 @@ let viewport = $state({
     height: null
 })
 
+let strokeWidth = $state(2)
+let strokeColor = $state("black")
+const colors = ["AliceBlue", "Azure", "Beige", "Bisque", "BlanchedAlmond", "Cornsilk", "FloralWhite",
+    "GhostWhite", "Gainsboro", "HoneyDew", "Ivory", "Khaki", "LavenderBlush", "LightBlue",
+    "#F1F1EF", "#F4EEEE", "#FBECDD", "#FBF3DB", "#EDF3EC", "#E7F3F8", "#F6F3F9", "#FAF1F5", "#FDEBEC", "plum"
+]
+
 onMount(() => {
 
     viewport.width = window.visualViewport.width
@@ -31,19 +77,17 @@ onMount(() => {
 
     let svgElement = document.getElementById("svgElement")
 
-    let strokeWidth = 2
-    let bufferSize
-
     let rect = svgElement.getBoundingClientRect()
     let path = null
     let strPath
+    let bufferSize
     let buffer = []
 
     svgElement.addEventListener("mousedown", e => {
         bufferSize = 4
         path = document.createElementNS('http://www.w3.org/2000/svg', 'path')
         path.setAttribute("fill", "none")
-        path.setAttribute("stroke", "#000")
+        path.setAttribute("stroke", strokeColor)
         path.setAttribute("stroke-width", strokeWidth)
         buffer = []
         const pt = getMousePosition(e)
@@ -88,7 +132,6 @@ onMount(() => {
             buffer.shift()
         }
     }
-
     const getAveragePoint = offset => {
         const len = buffer.length
         if (len % 2 === 1 || len >= bufferSize) {
@@ -121,7 +164,6 @@ onMount(() => {
             path.setAttribute("d", strPath + tmpPath)
         }
     }
-
 
 })
 </script>
