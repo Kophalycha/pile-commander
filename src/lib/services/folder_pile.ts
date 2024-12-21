@@ -47,15 +47,6 @@ export const Folder_pile = (folder_path: string) => ({
 		}
 		if (payload.name) {
 			pile.widgets = pile.widgets.filter(w => !this.is_any_connection(w, name))
-			// pile.widgets = pile.widgets.map(w => {
-			// 	if (this.is_any_connection(w, name)) {
-			// 		let line: LineWidget = w
-			// 		const side = w.start === name ? "start" : "end"
-			// 		line[side] = payload.name
-			// 		return line
-			// 	}
-			// 	return w
-			// })
 		}
 		pile.widgets = pile.widgets.map((w: Widget) => {
 			if (w.name === name) return new_widget
@@ -105,7 +96,7 @@ export const Folder_pile = (folder_path: string) => ({
 		if (pile.selected_widget_index) {
 			pile.widgets.length > 0 ?
 				pile.selected_widget_index = pile.widgets.length - 1
-				: pile.selected_widget_index = 0
+				: pile.selected_widget_index = 1
 		}
 		return await this.write(pile)
 	},
@@ -117,7 +108,7 @@ export const Folder_pile = (folder_path: string) => ({
 		const pile = await this.read()
 		pile.view = view
 		if (view === "slides" && !pile.selected_widget_index) {
-			pile.selected_widget_index = 0
+			pile.selected_widget_index = 1
 		}
 		return await this.write(pile)
 	},
