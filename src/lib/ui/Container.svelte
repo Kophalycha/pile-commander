@@ -31,6 +31,7 @@
             <article>
                 <p><span>Create text</span>&emsp;&ensp;Double click mouse</p>
                 <p><span>Create folder</span>&emsp;Shift + double click mouse</p>
+                <p><span>Create container</span>&emsp;Ctrl + Shift + double click mouse</p>
             </article>
         {/each}
     </section>
@@ -38,6 +39,7 @@
 
 <style>
 article {
+    display: inline-block;
     padding: 30px 40px;
 }
 article span {
