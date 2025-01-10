@@ -2,7 +2,7 @@
 	<div class="dropdown">
         <button class="dropbtn">Window</button>
         <div class="dropdown-content">
-			<div><small><a href="https://github.com/a-matyukh/pile-commander" target="_blank">Pile Commander 0.9.0</a></small></div>
+			<div><small><a href="https://github.com/a-matyukh/pile-commander" target="_blank">Pile Commander 1.0.0</a></small></div>
 			<div class="titlebar-button" onclick={appWindow.minimize}>
 				— &nbsp;<span>Minimize</span>
 			</div>

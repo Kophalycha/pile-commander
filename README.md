@@ -22,4 +22,4 @@ https://github.com/user-attachments/assets/e6b5d3ad-7c04-4e51-8aa2-1c3bfc29fd06
 
 # Download the app
 
-You can download the app for Linux, Mac and Windows on the [latest release page](https://github.com/a-matyukh/pile-commander/releases/tag/v0.9.0).
+You can download the app for Linux, Mac and Windows on the [latest release page](https://github.com/a-matyukh/pile-commander/releases/tag/v1.0.0).
