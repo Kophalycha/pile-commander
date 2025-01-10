@@ -1,8 +1,10 @@
-# Pile Commander <sup>β</sup>
+# Pile Commander
 
-Open-source file manager for creative people.
+#### Open-source file manager for creative people
 
-https://github.com/user-attachments/assets/e6b5d3ad-7c04-4e51-8aa2-1c3bfc29fd06
+A cross-platform desktop app for Linux, Mac and Windows that stores your ideas in files under the path "Home / Documents / Pile Commander”.
+
+https://github.com/user-attachments/assets/4449cc76-c38b-435d-ad81-007fd96474aa
 
 # How does the app work
 
@@ -16,9 +18,7 @@ All information about widgets is stored in files:
 
 All files are stored in ```Documents/Pile Commander```, in the future it is possible to add storages on any path.
 
-# Development status
-
-The application is in beta stage, so it is not recommended to use it as a full-fledged application: breaking changes are possible, with the release of each new version the program must be reinstalled, and the ```Documents/Pile Commander``` folder must be deleted. Thank you for your patience and feedback!
+https://github.com/user-attachments/assets/e6b5d3ad-7c04-4e51-8aa2-1c3bfc29fd06
 
 # Download the app
 
