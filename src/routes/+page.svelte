@@ -290,8 +290,6 @@ interact('.line-anchor')
 			emit("Update_line_position")
 		},
 		async end(event) {
-			// console.log(event.relatedTarget?.classList.contains("cell"))
-			// if (event.relatedTarget?.classList.contains("cell")) return
 			const widget_name = event.currentTarget.dataset.name
 			const folder_path = event.currentTarget.dataset.path.replace(widget_name, "")
 			const line = event.currentTarget.dataset.lineAnchorKind
