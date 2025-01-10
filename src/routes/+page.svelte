@@ -231,7 +231,6 @@ interact('.resizable')
 })
 interact('.dropzone').dropzone({
 	accept: '.widget',
-	overlap: 0.10,
 	ondropactivate: (event) => {
 		if (event.target !== event.relatedTarget.parentElement.parentElement) {
 			event.target.classList.add('drop-active')
