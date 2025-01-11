@@ -1,6 +1,6 @@
 {
 	"extends": "./.svelte-kit/tsconfig.json",
-	"compilerOptions": {
+	"compilerOptions": {0.9.0_First-beta-release
 		"allowJs": true,
 		"checkJs": false,
 		"esModuleInterop": true,
